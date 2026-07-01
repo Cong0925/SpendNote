@@ -1,0 +1,2352 @@
+{
+  "banks": [
+    {
+      "name": "anshunshishangye银行",
+      "shortName": "anshunshishangye银行",
+      "pinyin": "anshunshishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/anshunshishangyeyinhanglogo.png"
+    },
+    {
+      "name": "aomenshangye银行",
+      "shortName": "aomenshangye银行",
+      "pinyin": "aomenshangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/aomenshangyeyinhanglogo.png"
+    },
+    {
+      "name": "daqingshishangye银行",
+      "shortName": "daqingshishangye银行",
+      "pinyin": "daqingshishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/daqingshishangyeyinhanglogo.png"
+    },
+    {
+      "name": "hamishishangye银行",
+      "shortName": "hamishishangye银行",
+      "pinyin": "hamishishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/hamishishangyeyinhanglogo.png"
+    },
+    {
+      "name": "handanshishangye银行",
+      "shortName": "handanshishangye银行",
+      "pinyin": "handanshishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/handanshishangyeyinhanglogo.png"
+    },
+    {
+      "name": "huzhoushishangye银行",
+      "shortName": "huzhoushishangye银行",
+      "pinyin": "huzhoushishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/huzhoushishangyeyinhanglogo.png"
+    },
+    {
+      "name": "jiangsuchangjiangshangye银行",
+      "shortName": "jiangsuchangjiangshangye银行",
+      "pinyin": "jiangsuchangjiangshangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jiangsuchangjiangshangyeyinhanglogo.png"
+    },
+    {
+      "name": "jiaozuoshishangye银行",
+      "shortName": "jiaozuoshishangye银行",
+      "pinyin": "jiaozuoshishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jiaozuoshishangyeyinhanglogo.png"
+    },
+    {
+      "name": "jingdezhenshangye银行",
+      "shortName": "jingdezhenshangye银行",
+      "pinyin": "jingdezhenshangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jingdezhenshangyeyinhanglogo.png"
+    },
+    {
+      "name": "kaifengshishangye银行",
+      "shortName": "kaifengshishangye银行",
+      "pinyin": "kaifengshishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/kaifengshishangyeyinhanglogo.png"
+    },
+    {
+      "name": "kuerleshishangye银行",
+      "shortName": "kuerleshishangye银行",
+      "pinyin": "kuerleshishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/kuerleshishangyeyinhanglogo.png"
+    },
+    {
+      "name": "leshanshishangye银行",
+      "shortName": "leshanshishangye银行",
+      "pinyin": "leshanshishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/leshanshishangyeyinhanglogo.png"
+    },
+    {
+      "name": "liangshanshangye银行",
+      "shortName": "liangshanshangye银行",
+      "pinyin": "liangshanshangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/liangshanshangyeyinhanglogo.png"
+    },
+    {
+      "name": "mianyangshangye银行",
+      "shortName": "mianyangshangye银行",
+      "pinyin": "mianyangshangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/mianyangshangyeyinhanglogo.png"
+    },
+    {
+      "name": "nanyangshangye银行",
+      "shortName": "nanyangshangye银行",
+      "pinyin": "nanyangshangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/nanyangshangyeyinhanglogo.png"
+    },
+    {
+      "name": "panzhihuashishangye银行",
+      "shortName": "panzhihuashishangye银行",
+      "pinyin": "panzhihuashishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/panzhihuashishangyeyinhanglogo.png"
+    },
+    {
+      "name": "qujingshishangye银行",
+      "shortName": "qujingshishangye银行",
+      "pinyin": "qujingshishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/qujingshishangyeyinhanglogo.png"
+    },
+    {
+      "name": "shenzhengshangye银行",
+      "shortName": "shenzhengshangye银行",
+      "pinyin": "shenzhengshangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/shenzhengshangyeyinhang.png"
+    },
+    {
+      "name": "weihaishangye银行",
+      "shortName": "weihaishangye银行",
+      "pinyin": "weihaishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/weihaishangyeyinhanglogo.png"
+    },
+    {
+      "name": "wulumuqishangye银行",
+      "shortName": "wulumuqishangye银行",
+      "pinyin": "wulumuqishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/wulumuqishangyeyinhanglogo.png"
+    },
+    {
+      "name": "yaanshishangye银行",
+      "shortName": "yaanshishangye银行",
+      "pinyin": "yaanshishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/yaanshishangyeyinhanglogo.png"
+    },
+    {
+      "name": "yangquanshishangye银行",
+      "shortName": "yangquanshishangye银行",
+      "pinyin": "yangquanshishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/yangquanshishangyeyinhanglogo.png"
+    },
+    {
+      "name": "yibinshangye银行",
+      "shortName": "yibinshangye银行",
+      "pinyin": "yibinshangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/yibinshangyeyinhanglogo.png"
+    },
+    {
+      "name": "zhaofengguojishangye银行",
+      "shortName": "zhaofengguojishangye银行",
+      "pinyin": "zhaofengguojishangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/zhaofengguojishangyeyinhanglogo.png"
+    },
+    {
+      "name": "zhejiangchouzhoushangye银行",
+      "shortName": "zhejiangchouzhoushangye银行",
+      "pinyin": "zhejiangchouzhoushangyeyinhang",
+      "category": "city-commercial",
+      "isHot": false,
+      "icon": "/images/banks/zhejiangchouzhoushangyeyinhanglogo.png"
+    },
+    {
+      "name": "anhuishuchengnongcunshangye银行",
+      "shortName": "anhuishuchengnongcunshangye银行",
+      "pinyin": "anhuishuchengnongcunshangyeyinhang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/anhuishuchengnongcunshangyeyinhanglogo.png"
+    },
+    {
+      "name": "beijingnongshang银行",
+      "shortName": "beijingnongshang银行",
+      "pinyin": "beijingnongshangyinhang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/beijingnongshangyinhanglogo.png"
+    },
+    {
+      "name": "cangzhourongxin农商银行",
+      "shortName": "cangzhourongxin农商银行",
+      "pinyin": "cangzhourongxinnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/cangzhourongxinnongshanglogo.png"
+    },
+    {
+      "name": "changchun农商银行",
+      "shortName": "changchun农商银行",
+      "pinyin": "changchunnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/changchunnongshanglogo.png"
+    },
+    {
+      "name": "changshu农商银行",
+      "shortName": "changshu农商银行",
+      "pinyin": "changshunongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/changshunongshanglogo.png"
+    },
+    {
+      "name": "chizhoujiuhua农商银行",
+      "shortName": "chizhoujiuhua农商银行",
+      "pinyin": "chizhoujiuhuanongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/chizhoujiuhuanongshanglogo.png"
+    },
+    {
+      "name": "dongguan农商银行",
+      "shortName": "dongguan农商银行",
+      "pinyin": "dongguannongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/dongguannongshanglogo.png"
+    },
+    {
+      "name": "foshan农商银行",
+      "shortName": "foshan农商银行",
+      "pinyin": "foshannongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/foshannongshanglogo.png"
+    },
+    {
+      "name": "gaoming农商银行",
+      "shortName": "gaoming农商银行",
+      "pinyin": "gaomingnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/gaomingnongshanglogo.png"
+    },
+    {
+      "name": "guangdong农商银行",
+      "shortName": "guangdong农商银行",
+      "pinyin": "guangdongnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/guangdongnongshanglogo.png"
+    },
+    {
+      "name": "guangdongjieyang农商银行",
+      "shortName": "guangdongjieyang农商银行",
+      "pinyin": "guangdongjieyangnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/guangdongjieyangnongshanglogo.png"
+    },
+    {
+      "name": "guangxinongcunxinyongshe银行",
+      "shortName": "guangxinongcunxinyongshe银行",
+      "pinyin": "guangxinongcunxinyongshe",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/guangxinongcunxinyongshelogo.png"
+    },
+    {
+      "name": "hefeikeji农商银行",
+      "shortName": "hefeikeji农商银行",
+      "pinyin": "hefeikejinongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/hefeikejinongshanglogo.png"
+    },
+    {
+      "name": "hongdu农商银行",
+      "shortName": "hongdu农商银行",
+      "pinyin": "hongdunongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/hongdunongshanglogo.png"
+    },
+    {
+      "name": "huanghe农商银行",
+      "shortName": "huanghe农商银行",
+      "pinyin": "huanghenongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/huanghenongshanglogo.png"
+    },
+    {
+      "name": "hubin农商银行",
+      "shortName": "hubin农商银行",
+      "pinyin": "hubinnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/hubinnongshanglogo.png"
+    },
+    {
+      "name": "huizhou农商银行",
+      "shortName": "huizhou农商银行",
+      "pinyin": "huizhounongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/huizhounongshanglogo.png"
+    },
+    {
+      "name": "hunanhuarong农商银行",
+      "shortName": "hunanhuarong农商银行",
+      "pinyin": "hunanhuarongnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/hunanhuarongnongshanglogo.png"
+    },
+    {
+      "name": "hunanshengnongcunxinyongshe银行",
+      "shortName": "hunanshengnongcunxinyongshe银行",
+      "pinyin": "hunanshengnongcunxinyongshe",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/hunanshengnongcunxinyongshelogo.png"
+    },
+    {
+      "name": "jiangmen农商银行",
+      "shortName": "jiangmen农商银行",
+      "pinyin": "jiangmennongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jiangmennongshanglogo.png"
+    },
+    {
+      "name": "jiangmenronghe农商银行",
+      "shortName": "jiangmenronghe农商银行",
+      "pinyin": "jiangmenronghenongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jiangmenronghenongshanglogo.png"
+    },
+    {
+      "name": "jiangnannongcunshangye银行",
+      "shortName": "jiangnannongcunshangye银行",
+      "pinyin": "jiangnannongcunshangyeyinhang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jiangnannongcunshangyeyinhanglogo.png"
+    },
+    {
+      "name": "jiangsujingjiang农商银行",
+      "shortName": "jiangsujingjiang农商银行",
+      "pinyin": "jiangsujingjiangnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jiangsujingjiangnongshanglogo.png"
+    },
+    {
+      "name": "jiangsujurong农商银行",
+      "shortName": "jiangsujurong农商银行",
+      "pinyin": "jiangsujurongnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jiangsujurongnongshanglogo.png"
+    },
+    {
+      "name": "jiangsurugao农商银行",
+      "shortName": "jiangsurugao农商银行",
+      "pinyin": "jiangsurugaonongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jiangsurugaonongshanglogo.png"
+    },
+    {
+      "name": "jiangsusheyangnongshang银行",
+      "shortName": "jiangsusheyangnongshang银行",
+      "pinyin": "jiangsusheyangnongshangyinhang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jiangsusheyangnongshangyinhanglogo.png"
+    },
+    {
+      "name": "jiangsuxinghua农商银行",
+      "shortName": "jiangsuxinghua农商银行",
+      "pinyin": "jiangsuxinghuanongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jiangsuxinghuanongshanglogo.png"
+    },
+    {
+      "name": "jiangsuyangzhou农商银行",
+      "shortName": "jiangsuyangzhou农商银行",
+      "pinyin": "jiangsuyangzhounongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jiangsuyangzhounongshanglogo.png"
+    },
+    {
+      "name": "jiangsuyixing农商银行",
+      "shortName": "jiangsuyixing农商银行",
+      "pinyin": "jiangsuyixingnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jiangsuyixingnongshanglogo.png"
+    },
+    {
+      "name": "jiangyin农商银行",
+      "shortName": "jiangyin农商银行",
+      "pinyin": "jiangyinnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jiangyinnongshanglogo.png"
+    },
+    {
+      "name": "jianhu农商银行",
+      "shortName": "jianhu农商银行",
+      "pinyin": "jianhunongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jianhunongshanglogo.png"
+    },
+    {
+      "name": "jiutai农商银行",
+      "shortName": "jiutai农商银行",
+      "pinyin": "jiutainongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/jiutainongshanglogo.png"
+    },
+    {
+      "name": "kunshan农商银行",
+      "shortName": "kunshan农商银行",
+      "pinyin": "kunshannongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/kunshannongshanglogo.png"
+    },
+    {
+      "name": "lianyungangdongfang农商银行",
+      "shortName": "lianyungangdongfang农商银行",
+      "pinyin": "lianyungangdongfangnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/lianyungangdongfangnongshanglogo.png"
+    },
+    {
+      "name": "luanchuan农商银行",
+      "shortName": "luanchuan农商银行",
+      "pinyin": "luanchuannongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/luanchuannongshanglogo.png"
+    },
+    {
+      "name": "luchengnongcunhezuo银行",
+      "shortName": "luchengnongcunhezuo银行",
+      "pinyin": "luchengnongcunhezuoyinhang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/luchengnongcunhezuoyinhanglogo.png"
+    },
+    {
+      "name": "lufengnongcunxinyongshe银行",
+      "shortName": "lufengnongcunxinyongshe银行",
+      "pinyin": "lufengnongcunxinyongshe",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/lufengnongcunxinyongshelogo.png"
+    },
+    {
+      "name": "luqiaonongcunhezuo银行",
+      "shortName": "luqiaonongcunhezuo银行",
+      "pinyin": "luqiaonongcunhezuoyinhang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/luqiaonongcunhezuoyinhanglogo.png"
+    },
+    {
+      "name": "maanshan农商银行",
+      "shortName": "maanshan农商银行",
+      "pinyin": "maanshannongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/maanshannongshanglogo.png"
+    },
+    {
+      "name": "nanhai农商银行",
+      "shortName": "nanhai农商银行",
+      "pinyin": "nanhainongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/nanhainongshanglogo.png"
+    },
+    {
+      "name": "nantongnongshang银行",
+      "shortName": "nantongnongshang银行",
+      "pinyin": "nantongnongshangyinhang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/nantongnongshangyinhanglogo.png"
+    },
+    {
+      "name": "qingyuan农商银行",
+      "shortName": "qingyuan农商银行",
+      "pinyin": "qingyuannongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/qingyuannongshanglogo.png"
+    },
+    {
+      "name": "shandongshengnongcunxinyongshe银行",
+      "shortName": "shandongshengnongcunxinyongshe银行",
+      "pinyin": "shandongshengnongcunxinyongshe",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/shandongshengnongcunxinyongshelogo.png"
+    },
+    {
+      "name": "shanghai农商银行",
+      "shortName": "shanghai农商银行",
+      "pinyin": "shanghainongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/shanghainongshanglogo.png"
+    },
+    {
+      "name": "shenzhen农商银行",
+      "shortName": "shenzhen农商银行",
+      "pinyin": "shenzhennongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/shenzhennongshanglogo.png"
+    },
+    {
+      "name": "shunde农商银行",
+      "shortName": "shunde农商银行",
+      "pinyin": "shundenongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/shundenongshanglogo.png"
+    },
+    {
+      "name": "taicang农商银行",
+      "shortName": "taicang农商银行",
+      "pinyin": "taicangnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/taicangnongshanglogo.png"
+    },
+    {
+      "name": "taizhounongcunhezuo银行",
+      "shortName": "taizhounongcunhezuo银行",
+      "pinyin": "taizhounongcunhezuoyinhang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/taizhounongcunhezuoyinhanglogo.png"
+    },
+    {
+      "name": "taizhounongcunshangye银行",
+      "shortName": "taizhounongcunshangye银行",
+      "pinyin": "taizhounongcunshangyeyinhang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/taizhounongcunshangyeyinhanglogo.png"
+    },
+    {
+      "name": "tianjin农商银行",
+      "shortName": "tianjin农商银行",
+      "pinyin": "tianjinnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/tianjinnongshanglogo.png"
+    },
+    {
+      "name": "tianjinbinhai农商银行",
+      "shortName": "tianjinbinhai农商银行",
+      "pinyin": "tianjinbinhainongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/tianjinbinhainongshanglogo.png"
+    },
+    {
+      "name": "wuhan农商银行",
+      "shortName": "wuhan农商银行",
+      "pinyin": "wuhannongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/wuhannongshanglogo.png"
+    },
+    {
+      "name": "wuhuyangzi农商银行",
+      "shortName": "wuhuyangzi农商银行",
+      "pinyin": "wuhuyangzinongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/wuhuyangzinongshanglogo.png"
+    },
+    {
+      "name": "wujiang农商银行",
+      "shortName": "wujiang农商银行",
+      "pinyin": "wujiangnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/wujiangnongshanglogo.png"
+    },
+    {
+      "name": "wuxi农商银行",
+      "shortName": "wuxi农商银行",
+      "pinyin": "wuxinongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/wuxinongshanglogo.png"
+    },
+    {
+      "name": "xinhui农商银行",
+      "shortName": "xinhui农商银行",
+      "pinyin": "xinhuinongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/xinhuinongshanglogo.png"
+    },
+    {
+      "name": "xinyi农商银行",
+      "shortName": "xinyi农商银行",
+      "pinyin": "xinyinongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/xinyinongshanglogo.png"
+    },
+    {
+      "name": "xuchangweidu农商银行",
+      "shortName": "xuchangweidu农商银行",
+      "pinyin": "xuchangweidunongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/xuchangweidunongshanglogo.png"
+    },
+    {
+      "name": "zhangjiagang农商银行",
+      "shortName": "zhangjiagang农商银行",
+      "pinyin": "zhangjiagangnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/zhangjiagangnongshanglogo.png"
+    },
+    {
+      "name": "zhejiangnongcunxinyongshelianheshe银行",
+      "shortName": "zhejiangnongcunxinyongshelianheshe银行",
+      "pinyin": "zhejiangnongcunxinyongshelianheshe",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/zhejiangnongcunxinyongshelianheshelogo.png"
+    },
+    {
+      "name": "zhongqing农商银行",
+      "shortName": "zhongqing农商银行",
+      "pinyin": "zhongqingnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/zhongqingnongshanglogo.png"
+    },
+    {
+      "name": "zhongshan农商银行",
+      "shortName": "zhongshan农商银行",
+      "pinyin": "zhongshannongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/zhongshannongshanglogo.png"
+    },
+    {
+      "name": "zhuhai农商银行",
+      "shortName": "zhuhai农商银行",
+      "pinyin": "zhuhainongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/zhuhainongshanglogo.png"
+    },
+    {
+      "name": "zijin农商银行",
+      "shortName": "zijin农商银行",
+      "pinyin": "zijinnongshang",
+      "category": "rural-commercial",
+      "isHot": false,
+      "icon": "/images/banks/zijinnongshanglogo.png"
+    },
+    {
+      "name": "anshan银行",
+      "shortName": "anshan银行",
+      "pinyin": "anshanyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/anshanyinhanglogo.png"
+    },
+    {
+      "name": "anyang银行",
+      "shortName": "anyang银行",
+      "pinyin": "anyangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/anyangyinhanglogo.png"
+    },
+    {
+      "name": "aoxin银行",
+      "shortName": "aoxin银行",
+      "pinyin": "aoxinyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/aoxinyinhanglogo.png"
+    },
+    {
+      "name": "bakelai银行",
+      "shortName": "bakelai银行",
+      "pinyin": "bakelaiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/bakelaiyinhanglogo.png"
+    },
+    {
+      "name": "baoding银行",
+      "shortName": "baoding银行",
+      "pinyin": "baodingyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/baodingyinhanglogo.png"
+    },
+    {
+      "name": "baoshang银行",
+      "shortName": "baoshang银行",
+      "pinyin": "baoshangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/baoshangyinhanglogo.png"
+    },
+    {
+      "name": "beijing银行",
+      "shortName": "beijing银行",
+      "pinyin": "beijingyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/beijingyinhanglogo.png"
+    },
+    {
+      "name": "beijingshunyiyinzuocunzhen银行",
+      "shortName": "beijingshunyiyinzuocunzhen银行",
+      "pinyin": "beijingshunyiyinzuocunzhenyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/beijingshunyiyinzuocunzhenyinhanglogo.png"
+    },
+    {
+      "name": "beiousian银行",
+      "shortName": "beiousian银行",
+      "pinyin": "beiousianyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/beiousianyinhanglogo.png"
+    },
+    {
+      "name": "bilishi银行",
+      "shortName": "bilishi银行",
+      "pinyin": "bilishiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/bilishiyinhanglogo.png"
+    },
+    {
+      "name": "bohai银行",
+      "shortName": "bohai银行",
+      "pinyin": "bohaiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/bohaiyinhanglogo.png"
+    },
+    {
+      "name": "boshidun银行",
+      "shortName": "boshidun银行",
+      "pinyin": "boshidunyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/boshidunyinhanglogo.png"
+    },
+    {
+      "name": "cangzhou银行",
+      "shortName": "cangzhou银行",
+      "pinyin": "cangzhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/cangzhouyinhanglogo.png"
+    },
+    {
+      "name": "changan银行",
+      "shortName": "changan银行",
+      "pinyin": "changanyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/changanyinhanglogo.png"
+    },
+    {
+      "name": "changchenghuaxi银行",
+      "shortName": "changchenghuaxi银行",
+      "pinyin": "changchenghuaxi",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/changchenghuaxilogo.png"
+    },
+    {
+      "name": "changsha银行",
+      "shortName": "changsha银行",
+      "pinyin": "changshayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/changshayinhang.png"
+    },
+    {
+      "name": "changzhi银行",
+      "shortName": "changzhi银行",
+      "pinyin": "changzhiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/changzhiyinhanglogo.png"
+    },
+    {
+      "name": "chengde银行",
+      "shortName": "chengde银行",
+      "pinyin": "chengdeyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/chengdeyinhanglogo.png"
+    },
+    {
+      "name": "chengdu银行",
+      "shortName": "chengdu银行",
+      "pinyin": "chengduyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/chengduyinhanglogo.png"
+    },
+    {
+      "name": "dahua银行",
+      "shortName": "dahua银行",
+      "pinyin": "dahuayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/dahuayinhanglogo.png"
+    },
+    {
+      "name": "dalian银行",
+      "shortName": "dalian银行",
+      "pinyin": "dalianyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/dalianyinhanglogo.png"
+    },
+    {
+      "name": "dandong银行",
+      "shortName": "dandong银行",
+      "pinyin": "dandongyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/dandongyinhanglogo.png"
+    },
+    {
+      "name": "datong银行",
+      "shortName": "datong银行",
+      "pinyin": "datongyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/datongyinhanglogo.png"
+    },
+    {
+      "name": "daxin银行",
+      "shortName": "daxin银行",
+      "pinyin": "daxinyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/daxinyinhanglogo.png"
+    },
+    {
+      "name": "dazhou银行",
+      "shortName": "dazhou银行",
+      "pinyin": "dazhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/dazhouyinhanglogo.png"
+    },
+    {
+      "name": "deleisidun银行",
+      "shortName": "deleisidun银行",
+      "pinyin": "deleisidunyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/deleisidunyinhanglogo.png"
+    },
+    {
+      "name": "deyizhi银行",
+      "shortName": "deyizhi银行",
+      "pinyin": "deyizhiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/deyizhiyinhanglogo.png"
+    },
+    {
+      "name": "dezhou银行",
+      "shortName": "dezhou银行",
+      "pinyin": "dezhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/dezhouyinhanglogo.png"
+    },
+    {
+      "name": "diyi银行",
+      "shortName": "diyi银行",
+      "pinyin": "diyiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/diyiyinhanglogo.png"
+    },
+    {
+      "name": "dongguan银行",
+      "shortName": "dongguan银行",
+      "pinyin": "dongguanyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/dongguanyinhanglogo.png"
+    },
+    {
+      "name": "dongjingsanling银行",
+      "shortName": "dongjingsanling银行",
+      "pinyin": "dongjingsanlingyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/dongjingsanlingyinhanglogo.png"
+    },
+    {
+      "name": "dongya银行",
+      "shortName": "dongya银行",
+      "pinyin": "dongyayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/dongyayinhanglogo.png"
+    },
+    {
+      "name": "dongying银行",
+      "shortName": "dongying银行",
+      "pinyin": "dongyingyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/dongyingyinhanglogo.png"
+    },
+    {
+      "name": "eerduosi银行",
+      "shortName": "eerduosi银行",
+      "pinyin": "eerduosiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/eerduosiyinhanglogo.png"
+    },
+    {
+      "name": "faguobali银行",
+      "shortName": "faguobali银行",
+      "pinyin": "faguobaliyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/faguobaliyinhanglogo.png"
+    },
+    {
+      "name": "faguohuili银行",
+      "shortName": "faguohuili银行",
+      "pinyin": "faguohuiliyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/faguohuiliyinhanglogo.png"
+    },
+    {
+      "name": "faguoliangxindaiyinhangzuhe银行",
+      "shortName": "faguoliangxindaiyinhangzuhe银行",
+      "pinyin": "faguoliangxindaiyinhangzuhe",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/faguoliangxindaiyinhangzuhe.png"
+    },
+    {
+      "name": "faxing银行",
+      "shortName": "faxing银行",
+      "pinyin": "faxingyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/faxingyinhanglogo.png"
+    },
+    {
+      "name": "fubanghuayi银行",
+      "shortName": "fubanghuayi银行",
+      "pinyin": "fubanghuayiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/fubanghuayiyinhanglogo.png"
+    },
+    {
+      "name": "fudian银行",
+      "shortName": "fudian银行",
+      "pinyin": "fudianyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/fudianyinhanglogo.png"
+    },
+    {
+      "name": "fujianhaixia银行",
+      "shortName": "fujianhaixia银行",
+      "pinyin": "fujianhaixiayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/fujianhaixiayinhanglogo.png"
+    },
+    {
+      "name": "fushun银行",
+      "shortName": "fushun银行",
+      "pinyin": "fushunyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/fushunyinhanglogo.png"
+    },
+    {
+      "name": "fuxin银行",
+      "shortName": "fuxin银行",
+      "pinyin": "fuxinyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/fuxinyinhanglogo.png"
+    },
+    {
+      "name": "ganzhou银行",
+      "shortName": "ganzhou银行",
+      "pinyin": "ganzhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/ganzhouyinhanglogo.png"
+    },
+    {
+      "name": "guangdonghuaxing银行",
+      "shortName": "guangdonghuaxing银行",
+      "pinyin": "guangdonghuaxingyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/guangdonghuaxingyinhanglogo.png"
+    },
+    {
+      "name": "guangdongnanyue银行",
+      "shortName": "guangdongnanyue银行",
+      "pinyin": "guangdongnanyueyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/guangdongnanyueyinhanglogo.png"
+    },
+    {
+      "name": "guangfa银行",
+      "shortName": "guangfa银行",
+      "pinyin": "guangfayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/guangfayinhanglogo.png"
+    },
+    {
+      "name": "guangxibeibuwan银行",
+      "shortName": "guangxibeibuwan银行",
+      "pinyin": "guangxibeibuwanyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/guangxibeibuwanyinhang.png"
+    },
+    {
+      "name": "guangzhou银行",
+      "shortName": "guangzhou银行",
+      "pinyin": "guangzhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/guangzhouyinhanglogo.png"
+    },
+    {
+      "name": "guilin银行",
+      "shortName": "guilin银行",
+      "pinyin": "guilinyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/guilinyinhanglogo.png"
+    },
+    {
+      "name": "guiyang银行",
+      "shortName": "guiyang银行",
+      "pinyin": "guiyangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/guiyangyinhanglogo.png"
+    },
+    {
+      "name": "guizhou银行",
+      "shortName": "guizhou银行",
+      "pinyin": "guizhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/guizhouyinhanglogo.png"
+    },
+    {
+      "name": "guotaishihua银行",
+      "shortName": "guotaishihua银行",
+      "pinyin": "guotaishihuayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/guotaishihuayinhanglogo.png"
+    },
+    {
+      "name": "haerbin银行",
+      "shortName": "haerbin银行",
+      "pinyin": "haerbinyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/haerbinyinhanglogo.png"
+    },
+    {
+      "name": "hanguoguomin银行",
+      "shortName": "hanguoguomin银行",
+      "pinyin": "hanguoguominyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/hanguoguominyinhanglogo.png"
+    },
+    {
+      "name": "hanguoqiye银行",
+      "shortName": "hanguoqiye银行",
+      "pinyin": "hanguoqiyeyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/hanguoqiyeyinhanglogo.png"
+    },
+    {
+      "name": "hanguowaihuan银行",
+      "shortName": "hanguowaihuan银行",
+      "pinyin": "hanguowaihuanyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/hanguowaihuanyinhanglogo.png"
+    },
+    {
+      "name": "hanguoyouli银行",
+      "shortName": "hanguoyouli银行",
+      "pinyin": "hanguoyouliyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/hanguoyouliyinhanglogo.png"
+    },
+    {
+      "name": "hangzhou银行",
+      "shortName": "hangzhou银行",
+      "pinyin": "hangzhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/hangzhouyinhanglogo.png"
+    },
+    {
+      "name": "hangzhoulianhe银行",
+      "shortName": "hangzhoulianhe银行",
+      "pinyin": "hangzhoulianheyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/hangzhoulianheyinhanglogo.png"
+    },
+    {
+      "name": "hankou银行",
+      "shortName": "hankou银行",
+      "pinyin": "hankouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/hankouyinhanglogo.png"
+    },
+    {
+      "name": "hanya银行",
+      "shortName": "hanya银行",
+      "pinyin": "hanyayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/hanyayinhanglogo.png"
+    },
+    {
+      "name": "hebei银行",
+      "shortName": "hebei银行",
+      "pinyin": "hebeiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/hebeiyinhanglogo.png"
+    },
+    {
+      "name": "hebi银行",
+      "shortName": "hebi银行",
+      "pinyin": "hebiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/hebiyinhanglogo.png"
+    },
+    {
+      "name": "helan银行",
+      "shortName": "helan银行",
+      "pinyin": "helanyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/helanyinhanglogo.png"
+    },
+    {
+      "name": "hengbin银行",
+      "shortName": "hengbin银行",
+      "pinyin": "hengbinyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/hengbinyinhanglogo.png"
+    },
+    {
+      "name": "hengfeng银行",
+      "shortName": "hengfeng银行",
+      "pinyin": "hengfengyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/hengfengyinhanglogo.png"
+    },
+    {
+      "name": "hengsheng银行",
+      "shortName": "hengsheng银行",
+      "pinyin": "hengshengyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/hengshengyinhanglogo.png"
+    },
+    {
+      "name": "hezuojinku银行",
+      "shortName": "hezuojinku银行",
+      "pinyin": "hezuojinkuyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/hezuojinkuyinhanglogo.png"
+    },
+    {
+      "name": "huamei银行",
+      "shortName": "huamei银行",
+      "pinyin": "huameiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/huameiyinhanglogo.png"
+    },
+    {
+      "name": "huaqi银行",
+      "shortName": "huaqi银行",
+      "pinyin": "huaqiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/huaqiyinhanglogo.png"
+    },
+    {
+      "name": "huaqiao银行",
+      "shortName": "huaqiao银行",
+      "pinyin": "huaqiaoyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/huaqiaoyinhanglogo.png"
+    },
+    {
+      "name": "huaqiaoyongheng银行",
+      "shortName": "huaqiaoyongheng银行",
+      "pinyin": "huaqiaoyonghengyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/huaqiaoyonghengyinhanglogo.png"
+    },
+    {
+      "name": "huarongxiangjiang银行",
+      "shortName": "huarongxiangjiang银行",
+      "pinyin": "huarongxiangjiangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/huarongxiangjiangyinhanglogo.png"
+    },
+    {
+      "name": "huarun银行",
+      "shortName": "huarun银行",
+      "pinyin": "huarunyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/huarunyinhanglogo.png"
+    },
+    {
+      "name": "huashang银行",
+      "shortName": "huashang银行",
+      "pinyin": "huashangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/huashangyinhanglogo.png"
+    },
+    {
+      "name": "huaxia银行",
+      "shortName": "huaxia银行",
+      "pinyin": "huaxiayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/huaxiayinhanglogo.png"
+    },
+    {
+      "name": "hubei银行",
+      "shortName": "hubei银行",
+      "pinyin": "hubeiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/hubeiyinhanglogo.png"
+    },
+    {
+      "name": "huifeng银行",
+      "shortName": "huifeng银行",
+      "pinyin": "huifengyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/huifengyinhanglogo.png"
+    },
+    {
+      "name": "huihe银行",
+      "shortName": "huihe银行",
+      "pinyin": "huiheyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/huiheyinhanglogo.png"
+    },
+    {
+      "name": "huishang银行",
+      "shortName": "huishang银行",
+      "pinyin": "huishangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/huishangyinhanglogo.png"
+    },
+    {
+      "name": "huludao银行",
+      "shortName": "huludao银行",
+      "pinyin": "huludaoyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/huludaoyinhanglogo.png"
+    },
+    {
+      "name": "huzhou银行",
+      "shortName": "huzhou银行",
+      "pinyin": "huzhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/huzhouyinhanglogo.png"
+    },
+    {
+      "name": "jianadafengye银行",
+      "shortName": "jianadafengye银行",
+      "pinyin": "jianadafengyeyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/jianadafengyeyinhanglogo.png"
+    },
+    {
+      "name": "jianadahuangjia银行",
+      "shortName": "jianadahuangjia银行",
+      "pinyin": "jianadahuangjiayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/jianadahuangjiayinhanglogo.png"
+    },
+    {
+      "name": "jiangsu银行",
+      "shortName": "jiangsu银行",
+      "pinyin": "jiangsuyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/jiangsuyinhanglogo.png"
+    },
+    {
+      "name": "jiangxi银行",
+      "shortName": "jiangxi银行",
+      "pinyin": "jiangxiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/jiangxiyinhanglogo.png"
+    },
+    {
+      "name": "jianshe银行",
+      "shortName": "jianshe银行",
+      "pinyin": "jiansheyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/jiansheyinhanglogo.png"
+    },
+    {
+      "name": "jiaotong银行",
+      "shortName": "jiaotong银行",
+      "pinyin": "jiaotongyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/jiaotongyinhanglogo.png"
+    },
+    {
+      "name": "jilin银行",
+      "shortName": "jilin银行",
+      "pinyin": "jilinyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/jilinyinhanglogo.png"
+    },
+    {
+      "name": "jincheng银行",
+      "shortName": "jincheng银行",
+      "pinyin": "jinchengyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/jinchengyinhanglogo.png"
+    },
+    {
+      "name": "jinhua银行",
+      "shortName": "jinhua银行",
+      "pinyin": "jinhuayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/jinhuayinhanglogo.png"
+    },
+    {
+      "name": "jining银行",
+      "shortName": "jining银行",
+      "pinyin": "jiningyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/jiningyinhanglogo.png"
+    },
+    {
+      "name": "jinshang银行",
+      "shortName": "jinshang银行",
+      "pinyin": "jinshangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/jinshangyinhanglogo.png"
+    },
+    {
+      "name": "jinzhou银行",
+      "shortName": "jinzhou银行",
+      "pinyin": "jinzhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/jinzhouyinhanglogo.png"
+    },
+    {
+      "name": "jiujiang银行",
+      "shortName": "jiujiang银行",
+      "pinyin": "jiujiangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/jiujiangyinhanglogo.png"
+    },
+    {
+      "name": "kunlun银行",
+      "shortName": "kunlun银行",
+      "pinyin": "kunlunyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/kunlunyinhanglogo.png"
+    },
+    {
+      "name": "laishang银行",
+      "shortName": "laishang银行",
+      "pinyin": "laishangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/laishangyinhanglogo.png"
+    },
+    {
+      "name": "langfang银行",
+      "shortName": "langfang银行",
+      "pinyin": "langfangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/langfangyinhanglogo.png"
+    },
+    {
+      "name": "lanzhou银行",
+      "shortName": "lanzhou银行",
+      "pinyin": "lanzhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/lanzhouyinhanglogo.png"
+    },
+    {
+      "name": "liaoyang银行",
+      "shortName": "liaoyang银行",
+      "pinyin": "liaoyangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/liaoyangyinhanglogo.png"
+    },
+    {
+      "name": "linshang银行",
+      "shortName": "linshang银行",
+      "pinyin": "linshangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/linshangyinhanglogo.png"
+    },
+    {
+      "name": "liuzhou银行",
+      "shortName": "liuzhou银行",
+      "pinyin": "liuzhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/liuzhouyinhanglogo.png"
+    },
+    {
+      "name": "longjiang银行",
+      "shortName": "longjiang银行",
+      "pinyin": "longjiangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/longjiangyinhanglogo.png"
+    },
+    {
+      "name": "luoyang银行",
+      "shortName": "luoyang银行",
+      "pinyin": "luoyangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/luoyangyinhanglogo.png"
+    },
+    {
+      "name": "luzhou银行",
+      "shortName": "luzhou银行",
+      "pinyin": "luzhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/luzhouyinhanglogo.png"
+    },
+    {
+      "name": "malaiya银行",
+      "shortName": "malaiya银行",
+      "pinyin": "malaiyayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/malaiyayinhanglogo.png"
+    },
+    {
+      "name": "meiguo银行",
+      "shortName": "meiguo银行",
+      "pinyin": "meiguoyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/meiguoyinhanglogo.png"
+    },
+    {
+      "name": "mengtelier银行",
+      "shortName": "mengtelier银行",
+      "pinyin": "mengtelieryinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/mengtelieryinhanglogo.png"
+    },
+    {
+      "name": "mingguwu银行",
+      "shortName": "mingguwu银行",
+      "pinyin": "mingguwuyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/mingguwuyinhanglogo.png"
+    },
+    {
+      "name": "mogendatong银行",
+      "shortName": "mogendatong银行",
+      "pinyin": "mogendatongyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/mogendatongyinhanglogo.png"
+    },
+    {
+      "name": "nanjing银行",
+      "shortName": "nanjing银行",
+      "pinyin": "nanjingyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/nanjingyinhanglogo.png"
+    },
+    {
+      "name": "nanyang银行",
+      "shortName": "nanyang银行",
+      "pinyin": "nanyangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/nanyangyinhanglogo.png"
+    },
+    {
+      "name": "ningbo银行",
+      "shortName": "ningbo银行",
+      "pinyin": "ningboyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/ningboyinhanglogo.png"
+    },
+    {
+      "name": "ningbotongshang银行",
+      "shortName": "ningbotongshang银行",
+      "pinyin": "ningbotongshangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/ningbotongshangyinhanglogo.png"
+    },
+    {
+      "name": "ningxia银行",
+      "shortName": "ningxia银行",
+      "pinyin": "ningxiayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/ningxiayinhanglogo.png"
+    },
+    {
+      "name": "pangu银行",
+      "shortName": "pangu银行",
+      "pinyin": "panguyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/panguyinhanglogo.png"
+    },
+    {
+      "name": "panjin银行",
+      "shortName": "panjin银行",
+      "pinyin": "panjinyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/panjinyinhanglogo.png"
+    },
+    {
+      "name": "pingan银行",
+      "shortName": "pingan银行",
+      "pinyin": "pinganyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/pinganyinhanglogo.png"
+    },
+    {
+      "name": "pingdingshan银行",
+      "shortName": "pingdingshan银行",
+      "pinyin": "pingdingshanyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/pingdingshanyinhanglogo.png"
+    },
+    {
+      "name": "qilu银行",
+      "shortName": "qilu银行",
+      "pinyin": "qiluyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/qiluyinhanglogo.png"
+    },
+    {
+      "name": "qingdao银行",
+      "shortName": "qingdao银行",
+      "pinyin": "qingdaoyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/qingdaoyinhanglogo.png"
+    },
+    {
+      "name": "qinghai银行",
+      "shortName": "qinghai银行",
+      "pinyin": "qinghaiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/qinghaiyinhanglogo.png"
+    },
+    {
+      "name": "qinhuangdao银行",
+      "shortName": "qinhuangdao银行",
+      "pinyin": "qinhuangdaoyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/qinhuangdaoyinhanglogo.png"
+    },
+    {
+      "name": "qishang银行",
+      "shortName": "qishang银行",
+      "pinyin": "qishangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/qishangyinhanglogo.png"
+    },
+    {
+      "name": "quanzhou银行",
+      "shortName": "quanzhou银行",
+      "pinyin": "quanzhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/quanzhouyinhanglogo.png"
+    },
+    {
+      "name": "rizhao银行",
+      "shortName": "rizhao银行",
+      "pinyin": "rizhaoyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/rizhaoyinhanglogo.png"
+    },
+    {
+      "name": "ruidian银行",
+      "shortName": "ruidian银行",
+      "pinyin": "ruidianyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/ruidianyinhanglogo.png"
+    },
+    {
+      "name": "ruishi银行",
+      "shortName": "ruishi银行",
+      "pinyin": "ruishiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/ruishiyinhanglogo.png"
+    },
+    {
+      "name": "ruisuishiye银行",
+      "shortName": "ruisuishiye银行",
+      "pinyin": "ruisuishiyeyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/ruisuishiyeyinhanglogo.png"
+    },
+    {
+      "name": "sanhe银行",
+      "shortName": "sanhe银行",
+      "pinyin": "sanheyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/sanheyinhanglogo.png"
+    },
+    {
+      "name": "sanjingzhuyou银行",
+      "shortName": "sanjingzhuyou银行",
+      "pinyin": "sanjingzhuyouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/sanjingzhuyouyinhanglogo.png"
+    },
+    {
+      "name": "sanxiang银行",
+      "shortName": "sanxiang银行",
+      "pinyin": "sanxiangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/sanxiangyinhanglogo.png"
+    },
+    {
+      "name": "shamen银行",
+      "shortName": "shamen银行",
+      "pinyin": "shamenyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/shamenyinhanglogo.png"
+    },
+    {
+      "name": "shamenguoji银行",
+      "shortName": "shamenguoji银行",
+      "pinyin": "shamenguojiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/shamenguojiyinhanglogo.png"
+    },
+    {
+      "name": "shanghai银行",
+      "shortName": "shanghai银行",
+      "pinyin": "shanghaiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/shanghaiyinhanglogo.png"
+    },
+    {
+      "name": "shangrao银行",
+      "shortName": "shangrao银行",
+      "pinyin": "shangraoyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/shangraoyinhanglogo.png"
+    },
+    {
+      "name": "shankou银行",
+      "shortName": "shankou银行",
+      "pinyin": "shankouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/shankouyinhanglogo.png"
+    },
+    {
+      "name": "shengjing银行",
+      "shortName": "shengjing银行",
+      "pinyin": "shengjingyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/shengjingyinhanglogo.png"
+    },
+    {
+      "name": "shizuishan银行",
+      "shortName": "shizuishan银行",
+      "pinyin": "shizuishanyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/shizuishanyinhanglogo.png"
+    },
+    {
+      "name": "sichuantianfu银行",
+      "shortName": "sichuantianfu银行",
+      "pinyin": "sichuantianfuyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/sichuantianfuyinhanglogo.png"
+    },
+    {
+      "name": "sugelanhuangjia银行",
+      "shortName": "sugelanhuangjia银行",
+      "pinyin": "sugelanhuangjiayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/sugelanhuangjiayinhanglogo.png"
+    },
+    {
+      "name": "suining银行",
+      "shortName": "suining银行",
+      "pinyin": "suiningyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/suiningyinhanglogo.png"
+    },
+    {
+      "name": "suzhou银行",
+      "shortName": "suzhou银行",
+      "pinyin": "suzhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/suzhouyinhanglogo.png"
+    },
+    {
+      "name": "taian银行",
+      "shortName": "taian银行",
+      "pinyin": "taianyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/taianyinhanglogo.png"
+    },
+    {
+      "name": "tailong银行",
+      "shortName": "tailong银行",
+      "pinyin": "tailongyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/tailongyinhanglogo.png"
+    },
+    {
+      "name": "taiwan银行",
+      "shortName": "taiwan银行",
+      "pinyin": "taiwanyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/taiwanyinhanglogo.png"
+    },
+    {
+      "name": "taiwantudi银行",
+      "shortName": "taiwantudi银行",
+      "pinyin": "taiwantudiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/taiwantudiyinhanglogo.png"
+    },
+    {
+      "name": "taiwanyushan银行",
+      "shortName": "taiwanyushan银行",
+      "pinyin": "taiwanyushanyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/taiwanyushanyinhanglogo.png"
+    },
+    {
+      "name": "taizhou银行",
+      "shortName": "taizhou银行",
+      "pinyin": "taizhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/taizhouyinhanglogo.png"
+    },
+    {
+      "name": "tangshan银行",
+      "shortName": "tangshan银行",
+      "pinyin": "tangshanyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/tangshanyinhanglogo.png"
+    },
+    {
+      "name": "tianjin银行",
+      "shortName": "tianjin银行",
+      "pinyin": "tianjinyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/tianjinyinhanglogo.png"
+    },
+    {
+      "name": "tieling银行",
+      "shortName": "tieling银行",
+      "pinyin": "tielingyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/tielingyinhanglogo.png"
+    },
+    {
+      "name": "wangdao银行",
+      "shortName": "wangdao银行",
+      "pinyin": "wangdaoyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/wangdaoyinhanglogo.png"
+    },
+    {
+      "name": "weifang银行",
+      "shortName": "weifang银行",
+      "pinyin": "weifangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/weifangyinhanglogo.png"
+    },
+    {
+      "name": "wenzhou银行",
+      "shortName": "wenzhou银行",
+      "pinyin": "wenzhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/wenzhouyinhanglogo.png"
+    },
+    {
+      "name": "wuhai银行",
+      "shortName": "wuhai银行",
+      "pinyin": "wuhaiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/wuhaiyinhanglogo.png"
+    },
+    {
+      "name": "wuhanzhongbang银行",
+      "shortName": "wuhanzhongbang银行",
+      "pinyin": "wuhanzhongbangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/wuhanzhongbangyinhanglogo.png"
+    },
+    {
+      "name": "xian银行",
+      "shortName": "xian银行",
+      "pinyin": "xianyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/xianyinhanglogo.png"
+    },
+    {
+      "name": "xianggangjiaoyisuo银行",
+      "shortName": "xianggangjiaoyisuo银行",
+      "pinyin": "xianggangjiaoyisuo",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/xianggangjiaoyisuologo.png"
+    },
+    {
+      "name": "xicang银行",
+      "shortName": "xicang银行",
+      "pinyin": "xicangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/xicangyinhanglogo.png"
+    },
+    {
+      "name": "xingtai银行",
+      "shortName": "xingtai银行",
+      "pinyin": "xingtaiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/xingtaiyinhanglogo.png"
+    },
+    {
+      "name": "xingye银行",
+      "shortName": "xingye银行",
+      "pinyin": "xingyeyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/xingyeyinhanglogo.png"
+    },
+    {
+      "name": "xingzhan银行",
+      "shortName": "xingzhan银行",
+      "pinyin": "xingzhanyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/xingzhanyinhanglogo.png"
+    },
+    {
+      "name": "xinhan银行",
+      "shortName": "xinhan银行",
+      "pinyin": "xinhanyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/xinhanyinhanglogo.png"
+    },
+    {
+      "name": "xinxiang银行",
+      "shortName": "xinxiang银行",
+      "pinyin": "xinxiangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/xinxiangyinhanglogo.png"
+    },
+    {
+      "name": "xinyang银行",
+      "shortName": "xinyang银行",
+      "pinyin": "xinyangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/xinyangyinhanglogo.png"
+    },
+    {
+      "name": "xuchang银行",
+      "shortName": "xuchang银行",
+      "pinyin": "xuchangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/xuchangyinhanglogo.png"
+    },
+    {
+      "name": "yantai银行",
+      "shortName": "yantai银行",
+      "pinyin": "yantaiyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/yantaiyinhanglogo.png"
+    },
+    {
+      "name": "yingkou银行",
+      "shortName": "yingkou银行",
+      "pinyin": "yingkouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/yingkouyinhanglogo.png"
+    },
+    {
+      "name": "yinzhou银行",
+      "shortName": "yinzhou银行",
+      "pinyin": "yinzhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/yinzhouyinhanglogo.png"
+    },
+    {
+      "name": "yongfeng银行",
+      "shortName": "yongfeng银行",
+      "pinyin": "yongfengyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/yongfengyinhanglogo.png"
+    },
+    {
+      "name": "yunnanhongta银行",
+      "shortName": "yunnanhongta银行",
+      "pinyin": "yunnanhongtayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/yunnanhongtayinhanglogo.png"
+    },
+    {
+      "name": "zaozhuang银行",
+      "shortName": "zaozhuang银行",
+      "pinyin": "zaozhuangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zaozhuangyinhanglogo.png"
+    },
+    {
+      "name": "zhada银行",
+      "shortName": "zhada银行",
+      "pinyin": "zhadayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhadayinhanglogo.png"
+    },
+    {
+      "name": "zhangjiakou银行",
+      "shortName": "zhangjiakou银行",
+      "pinyin": "zhangjiakouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhangjiakouyinhanglogo.png"
+    },
+    {
+      "name": "zhaoshang银行",
+      "shortName": "zhaoshang银行",
+      "pinyin": "zhaoshangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhaoshangyinhanglogo.png"
+    },
+    {
+      "name": "zhaoyang银行",
+      "shortName": "zhaoyang银行",
+      "pinyin": "zhaoyangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhaoyangyinhanglogo.png"
+    },
+    {
+      "name": "zhejiangmintaishanghang银行",
+      "shortName": "zhejiangmintaishanghang银行",
+      "pinyin": "zhejiangmintaishanghang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhejiangmintaishanghanglogo.png"
+    },
+    {
+      "name": "zhengjianhui银行",
+      "shortName": "zhengjianhui银行",
+      "pinyin": "zhengjianhui",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhengjianhuilogo.png"
+    },
+    {
+      "name": "zhengxin银行",
+      "shortName": "zhengxin银行",
+      "pinyin": "zhengxinyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhengxinyinhanglogo.png"
+    },
+    {
+      "name": "zhengzhou银行",
+      "shortName": "zhengzhou银行",
+      "pinyin": "zhengzhouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhengzhouyinhanglogo.png"
+    },
+    {
+      "name": "zheshang银行",
+      "shortName": "zheshang银行",
+      "pinyin": "zheshangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zheshangyinhanglogo.png"
+    },
+    {
+      "name": "zhongdezhufangchuxu银行",
+      "shortName": "zhongdezhufangchuxu银行",
+      "pinyin": "zhongdezhufangchuxuyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongdezhufangchuxuyinhanglogo.png"
+    },
+    {
+      "name": "zhongguo银行",
+      "shortName": "zhongguo银行",
+      "pinyin": "zhongguoyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongguoyinhanglogo.png"
+    },
+    {
+      "name": "zhongguogongshang银行",
+      "shortName": "zhongguogongshang银行",
+      "pinyin": "zhongguogongshangyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongguogongshangyinhanglogo.png"
+    },
+    {
+      "name": "zhongguoguangda银行",
+      "shortName": "zhongguoguangda银行",
+      "pinyin": "zhongguoguangdayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongguoguangdayinhanglogo.png"
+    },
+    {
+      "name": "zhongguojinchukou银行",
+      "shortName": "zhongguojinchukou银行",
+      "pinyin": "zhongguojinchukouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongguojinchukouyinhanglogo.png"
+    },
+    {
+      "name": "zhongguominsheng银行",
+      "shortName": "zhongguominsheng银行",
+      "pinyin": "zhongguominshengyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongguominshengyinhanglogo.png"
+    },
+    {
+      "name": "zhongguonongye银行",
+      "shortName": "zhongguonongye银行",
+      "pinyin": "zhongguonongyeyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongguonongyeyinhanglogo.png"
+    },
+    {
+      "name": "zhongguorenmin银行",
+      "shortName": "zhongguorenmin银行",
+      "pinyin": "zhongguorenminyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongguorenminyinhanglogo.png"
+    },
+    {
+      "name": "zhongguoxintuo银行",
+      "shortName": "zhongguoxintuo银行",
+      "pinyin": "zhongguoxintuo",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongguoxintuologo.png"
+    },
+    {
+      "name": "zhongguoyinhangyejiandu银行",
+      "shortName": "zhongguoyinhangyejiandu银行",
+      "pinyin": "zhongguoyinhangyejiandu",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongguoyinhangyejiandulogo.png"
+    },
+    {
+      "name": "zhongguoyinhangyexiehui银行",
+      "shortName": "zhongguoyinhangyexiehui银行",
+      "pinyin": "zhongguoyinhangyexiehui",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongguoyinhangyexiehuilogo.png"
+    },
+    {
+      "name": "zhongguoyouzhengchuxu银行",
+      "shortName": "zhongguoyouzhengchuxu银行",
+      "pinyin": "zhongguoyouzhengchuxuyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongguoyouzhengchuxuyinhanglogo.png"
+    },
+    {
+      "name": "zhongqing银行",
+      "shortName": "zhongqing银行",
+      "pinyin": "zhongqingyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongqingyinhanglogo.png"
+    },
+    {
+      "name": "zhongqingsanxia银行",
+      "shortName": "zhongqingsanxia银行",
+      "pinyin": "zhongqingsanxiayinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongqingsanxiayinhanglogo.png"
+    },
+    {
+      "name": "zhongxin银行",
+      "shortName": "zhongxin银行",
+      "pinyin": "zhongxinyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongxinyinhanglogo.png"
+    },
+    {
+      "name": "zhongxinjiahuayinhanglogo_银行",
+      "shortName": "zhongxinjiahuayinhanglogo_银行",
+      "pinyin": "zhongxinjiahuayinhanglogo_",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongxinjiahuayinhanglogo_.png"
+    },
+    {
+      "name": "zhongxinjiahuayinhangzuhe银行",
+      "shortName": "zhongxinjiahuayinhangzuhe银行",
+      "pinyin": "zhongxinjiahuayinhangzuhe",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongxinjiahuayinhangzuhe.png"
+    },
+    {
+      "name": "zhongyuan银行",
+      "shortName": "zhongyuan银行",
+      "pinyin": "zhongyuanyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhongyuanyinhanglogo.png"
+    },
+    {
+      "name": "zhoukou银行",
+      "shortName": "zhoukou银行",
+      "pinyin": "zhoukouyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zhoukouyinhanglogo.png"
+    },
+    {
+      "name": "zigong银行",
+      "shortName": "zigong银行",
+      "pinyin": "zigongyinhang",
+      "category": "other",
+      "isHot": false,
+      "icon": "/images/banks/zigongyinhanglogo.png"
+    }
+  ],
+  "stats": {
+    "total": 292,
+    "hot": 0,
+    "categories": {
+      "state-owned": 0,
+      "joint-stock": 0,
+      "city-commercial": 25,
+      "rural-commercial": 64,
+      "foreign": 0,
+      "other": 203
+    }
+  }
+}

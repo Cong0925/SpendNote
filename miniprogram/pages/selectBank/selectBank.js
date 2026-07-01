@@ -1,8 +1,18 @@
 /**
- * 选择银行页面
- * 从银行列表中选择银行，跳转到账户详情页面
+ * 选择银行页面（重构版）
+ * 优化布局、折叠功能、搜索体验
  */
 const app = getApp()
+
+// 分类配置
+const CATEGORIES = [
+  { key: 'state-owned', name: '国有银行', icon: '🏦', color: '#E3F2FD' },
+  { key: 'joint-stock', name: '股份制银行', icon: '🏬', color: '#E8F5E9' },
+  { key: 'city-commercial', name: '城市商业银行', icon: '🏙️', color: '#FFF3E0' },
+  { key: 'rural-commercial', name: '农村商业银行', icon: '🌾', color: '#F3E5F5' },
+  { key: 'foreign', name: '外资银行', icon: '🌍', color: '#E0F7FA' },
+  { key: 'other', name: '其他银行', icon: '📁', color: '#F5F5F5' }
+]
 
 Page({
   /**
@@ -14,12 +24,24 @@ Page({
     accountName: '',
     accountIcon: '',
     isDebt: false,
-    // 银行列表
-    bankList: [],
-    // 搜索关键词
+
+    // 热门银行
+    hotBanks: [],
+
+    // 分类银行（按分类分组）
+    categoryBanks: {},
+
+    // 分类配置
+    categories: CATEGORIES,
+
+    // 展开的分类（记录哪些分类是展开的）
+    expandedCategories: {},
+
+    // 搜索
     searchText: '',
-    // 筛选后的银行列表
-    filteredList: [],
+    searchResults: [],
+    isSearching: false,
+
     // 加载状态
     loading: true
   },
@@ -37,82 +59,188 @@ Page({
       isDebt: isDebt === 'true'
     })
 
-    this.loadBanks()
+    this.loadData()
   },
 
   /**
-   * 加载银行列表
+   * 加载数据
    */
-  async loadBanks() {
+  async loadData() {
     this.setData({ loading: true })
 
     try {
-      // 先尝试初始化银行数据
-      await wx.cloud.callFunction({
-        name: 'bankFunctions',
-        data: { action: 'init' }
-      })
-
-      // 获取银行列表
-      const res = await wx.cloud.callFunction({
-        name: 'bankFunctions',
-        data: { action: 'list' }
-      })
-
-      if (res.result.success) {
-        this.setData({
-          bankList: res.result.data,
-          filteredList: res.result.data,
-          loading: false
-        })
-      }
+      // 并行加载热门银行和分类银行
+      await Promise.all([
+        this.loadHotBanks(),
+        this.loadAllCategories()
+      ])
     } catch (err) {
-      console.error('加载银行列表失败：', err)
+      console.error('加载银行数据失败：', err)
       wx.showToast({
         title: '加载失败',
         icon: 'none'
       })
+    } finally {
       this.setData({ loading: false })
     }
+  },
+
+  /**
+   * 加载热门银行
+   */
+  async loadHotBanks() {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'bankFunctions',
+        data: {
+          action: 'getHot'
+        }
+      })
+
+      if (res.result.success) {
+        this.setData({
+          hotBanks: res.result.data || []
+        })
+      }
+    } catch (err) {
+      console.error('加载热门银行失败：', err)
+    }
+  },
+
+  /**
+   * 加载所有分类银行（每分类前8个）
+   */
+  async loadAllCategories() {
+    const categoryBanks = {}
+
+    for (const category of CATEGORIES) {
+      try {
+        const res = await wx.cloud.callFunction({
+          name: 'bankFunctions',
+          data: {
+            action: 'listByCategory',
+            data: {
+              category: category.key,
+              page: 1,
+              pageSize: 8
+            }
+          }
+        })
+
+        if (res.result.success) {
+          categoryBanks[category.key] = {
+            banks: res.result.data || [],
+            total: res.result.total || 0,
+            hasMore: res.result.hasMore || false
+          }
+        }
+      } catch (err) {
+        console.error(`加载${category.name}失败：`, err)
+        categoryBanks[category.key] = {
+          banks: [],
+          total: 0,
+          hasMore: false
+        }
+      }
+    }
+
+    this.setData({ categoryBanks })
   },
 
   /**
    * 搜索银行
    */
   onSearchInput(e) {
-    const searchText = e.detail.value.trim()
+    const searchText = (e.detail.value || '').trim()
     this.setData({ searchText })
 
-    this.filterBanks(searchText)
+    if (!searchText) {
+      this.setData({
+        isSearching: false,
+        searchResults: []
+      })
+      return
+    }
+
+    this.setData({ isSearching: true })
+
+    wx.cloud.callFunction({
+      name: 'bankFunctions',
+      data: {
+        action: 'search',
+        data: {
+          keyword: searchText,
+          limit: 30
+        }
+      }
+    }).then(res => {
+      if (res.result.success) {
+        this.setData({
+          searchResults: res.result.data || []
+        })
+      }
+    }).catch(err => {
+      console.error('搜索银行失败：', err)
+    })
   },
 
   /**
    * 清空搜索
    */
   clearSearch() {
-    this.setData({ searchText: '' })
-    this.filterBanks('')
+    this.setData({
+      searchText: '',
+      isSearching: false,
+      searchResults: []
+    })
   },
 
   /**
-   * 筛选银行列表
+   * 展开/折叠分类
    */
-  filterBanks(keyword) {
-    if (!keyword) {
-      this.setData({
-        filteredList: this.data.bankList
-      })
-      return
+  async toggleCategory(e) {
+    const { category } = e.currentTarget.dataset
+    const expandedCategories = { ...this.data.expandedCategories }
+    const categoryBanks = { ...this.data.categoryBanks }
+
+    // 切换展开状态
+    const isExpanding = !expandedCategories[category]
+    expandedCategories[category] = isExpanding
+
+    // 展开时加载该分类的所有银行
+    if (isExpanding && categoryBanks[category]) {
+      const currentBanks = categoryBanks[category].banks || []
+      const total = categoryBanks[category].total || 0
+
+      // 如果当前加载的数量小于总数，需要加载更多
+      if (currentBanks.length < total) {
+        try {
+          const res = await wx.cloud.callFunction({
+            name: 'bankFunctions',
+            data: {
+              action: 'listByCategory',
+              data: {
+                category: category,
+                page: 1,
+                pageSize: total  // 加载该分类所有银行
+              }
+            }
+          })
+
+          if (res.result.success) {
+            categoryBanks[category] = {
+              banks: res.result.data || [],
+              total: res.result.total || 0,
+              hasMore: false  // 已加载全部，不再显示"查看更多"
+            }
+          }
+        } catch (err) {
+          console.error(`加载${category}银行失败：`, err)
+        }
+      }
     }
 
-    const filtered = this.data.bankList.filter(bank => {
-      return bank.name.includes(keyword) ||
-             bank.shortName.includes(keyword)
-    })
-
-    this.setData({
-      filteredList: filtered
-    })
+    this.setData({ expandedCategories, categoryBanks })
   },
 
   /**
@@ -121,11 +249,10 @@ Page({
   selectBank(e) {
     const { id, name, icon } = e.currentTarget.dataset
 
-    // 跳转到账户详情页面，带上银行信息
     const url = `/pages/accountDetail/accountDetail` +
       `?type=${this.data.accountType}` +
       `&name=${encodeURIComponent(name)}` +
-      `&icon=${encodeURIComponent(icon || '/images/account/savings.png')}` +
+      `&icon=${encodeURIComponent(icon || '')}` +
       `&isDebt=${this.data.isDebt}` +
       `&bankId=${id}` +
       `&bankName=${encodeURIComponent(name)}`
