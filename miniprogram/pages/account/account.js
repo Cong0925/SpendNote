@@ -4,6 +4,20 @@
  */
 const app = getApp()
 
+// 账户类型映射（英文 -> 中文）
+const ACCOUNT_TYPE_MAP = {
+  cash: '现金',
+  wechat: '微信',
+  alipay: '支付宝',
+  qq: 'QQ钱包',
+  savings: '储蓄卡',
+  credit: '信用卡',
+  huabei: '花呗',
+  jd: '京东白条',
+  mt: '美团月付',
+  other: '其他'
+}
+
 Page({
   /**
    * 页面的初始数据
@@ -104,7 +118,11 @@ Page({
       })
 
       if (res.result.success) {
-        const accounts = res.result.data || []
+        const accounts = (res.result.data || []).map(item => ({
+          ...item,
+          // 将英文类型转换为中文类型
+          type: ACCOUNT_TYPE_MAP[item.type] || item.type
+        }))
         const assetAccounts = accounts.filter(item => !item.isDebt)
         const debtAccounts = accounts.filter(item => item.isDebt)
 
