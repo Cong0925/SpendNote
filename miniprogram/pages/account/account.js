@@ -202,7 +202,7 @@ Page({
   goToAccountDetail(e) {
     const { id } = e.currentTarget.dataset
     wx.navigateTo({
-      url: `/pages/accountDetail/accountDetail?id=${id}`
+      url: `/pages/accountInfo/accountInfo?id=${id}`
     })
   },
 

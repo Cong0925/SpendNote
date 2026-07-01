@@ -1,0 +1,77 @@
+<!--
+  转账页面 - 账户间转账功能
+-->
+<view class="container">
+  <!-- 转账表单 -->
+  <view class="form-section">
+    <!-- 转出账户 -->
+    <view class="form-item">
+      <text class="form-label">转出账户</text>
+      <view class="form-account-row" bindtap="selectFromAccount">
+        <text class="form-account-name">{{form.fromAccountName || '请选择账户'}}</text>
+        <view class="form-amount-input">
+          <text class="input-prefix">￥</text>
+          <input
+            class="form-input"
+            type="digit"
+            placeholder="0.00"
+            value="{{form.fromAmount}}"
+            bindinput="onFromAmountInput"
+          />
+        </view>
+        <text class="picker-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 转入账户 -->
+    <view class="form-item">
+      <text class="form-label">转入账户</text>
+      <view class="form-account-row" bindtap="selectToAccount">
+        <text class="form-account-name">{{form.toAccountName || '请选择账户'}}</text>
+        <view class="form-amount-input">
+          <text class="input-prefix">￥</text>
+          <input
+            class="form-input"
+            type="digit"
+            placeholder="0.00"
+            value="{{form.toAmount}}"
+            bindinput="onToAmountInput"
+          />
+        </view>
+        <text class="picker-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 日期 -->
+    <view class="form-item">
+      <text class="form-label">日期</text>
+      <picker mode="date" value="{{form.date}}" bindchange="onDateChange">
+        <view class="form-picker">
+          <text class="picker-value">{{form.date || '请选择日期'}}</text>
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 备注 -->
+    <view class="form-item">
+      <text class="form-label">备注</text>
+      <input
+        class="form-input"
+        placeholder="点击输入备注"
+        value="{{form.remark}}"
+        bindinput="onRemarkInput"
+      />
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="save-btn" bindtap="saveTransfer">
+    <text>保存</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-mask" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+  </view>
+</view>

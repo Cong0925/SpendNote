@@ -9,8 +9,12 @@ Page({
     icon: '',
     note: '',
     date: '',
+    accountId: '', // 关联账户ID
+    accountName: '', // 关联账户名称
     categories: [],
-    loading: false
+    accountList: [], // 账户列表
+    loading: false,
+    showAccountPicker: false // 显示账户选择弹窗
   },
 
   onLoad(options) {
@@ -24,12 +28,22 @@ Page({
         category: options.category || '',
         icon: options.icon || '',
         note: options.note || '',
-        date: options.date || ''
+        date: options.date || '',
+        accountId: options.accountId || '',
+        accountName: options.accountName || ''
       })
     } else {
       this.setCurrentDate()
+      // 如果从账户详情页面传入accountId，自动关联
+      if (options.accountId) {
+        this.setData({
+          accountId: options.accountId
+        })
+        this.loadAccountInfo(options.accountId)
+      }
     }
     this.loadCategories()
+    this.loadAccountList()
   },
 
   // 设置当前日期
@@ -146,9 +160,75 @@ Page({
     })
   },
 
+  // 加载账户列表
+  async loadAccountList() {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'accountFunctions',
+        data: {
+          action: 'list'
+        }
+      })
+
+      if (res.result.success) {
+        this.setData({
+          accountList: res.result.data || []
+        })
+      }
+    } catch (err) {
+      console.error('加载账户列表失败：', err)
+    }
+  },
+
+  // 加载账户信息
+  async loadAccountInfo(accountId) {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'accountFunctions',
+        data: {
+          action: 'get',
+          data: { id: accountId }
+        }
+      })
+
+      if (res.result.success) {
+        const account = res.result.data
+        this.setData({
+          accountName: account.name
+        })
+      }
+    } catch (err) {
+      console.error('加载账户信息失败：', err)
+    }
+  },
+
+  // 选择账户
+  selectAccount() {
+    this.setData({
+      showAccountPicker: true
+    })
+  },
+
+  // 关闭账户选择弹窗
+  onAccountPickerClose() {
+    this.setData({
+      showAccountPicker: false
+    })
+  },
+
+  // 账户选择结果
+  onAccountSelect(e) {
+    const { id, name } = e.detail
+    this.setData({
+      accountId: id,
+      accountName: name,
+      showAccountPicker: false
+    })
+  },
+
   // 提交账单
   async submitBill() {
-    const { isEdit, billId, type, amount, category, icon, note, date } = this.data
+    const { isEdit, billId, type, amount, category, icon, note, date, accountId } = this.data
 
     // 验证
     if (!amount || parseFloat(amount) <= 0) {
@@ -185,15 +265,16 @@ Page({
         res = await wx.cloud.callFunction({
           name: 'billFunctions',
           data: {
-            action: 'updateBill',
+            action: 'update',
             data: {
-              billId: billId,
+              id: billId,
               type: type,
               amount: parseFloat(amount),
               category: category,
               icon: icon,
               note: note,
-              date: date
+              date: date,
+              accountId: accountId
             }
           }
         })
@@ -202,14 +283,15 @@ Page({
         res = await wx.cloud.callFunction({
           name: 'billFunctions',
           data: {
-            action: 'addBill',
+            action: 'add',
             data: {
               type: type,
               amount: parseFloat(amount),
               category: category,
               icon: icon,
               note: note,
-              date: date
+              date: date,
+              accountId: accountId
             }
           }
         })

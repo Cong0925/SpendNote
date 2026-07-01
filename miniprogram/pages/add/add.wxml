@@ -47,6 +47,17 @@
     </view>
   </view>
 
+  <!-- 账户选择 -->
+  <view class="detail-card animate-slideUp" style="animation-delay: 0.12s">
+    <view class="detail-row">
+      <text class="detail-label">💳 账户</text>
+      <view class="detail-value" bindtap="selectAccount">
+        <text>{{accountName || '不关联账户'}}</text>
+        <text class="detail-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
   <!-- 日期 & 备注 -->
   <view class="detail-card animate-slideUp" style="animation-delay: 0.15s">
     <view class="detail-row">
@@ -84,3 +95,12 @@
     </button>
   </view>
 </view>
+
+<!-- 账户选择弹窗 -->
+<account-picker
+  show="{{showAccountPicker}}"
+  accountList="{{accountList}}"
+  selectedId="{{accountId}}"
+  bind:close="onAccountPickerClose"
+  bind:select="onAccountSelect"
+/>

@@ -1,0 +1,79 @@
+<!--
+  账户详情页面 - 显示账户信息、账单列表和操作按钮
+-->
+<view class="container">
+  <!-- 顶部余额/应还区域 -->
+  <view class="balance-card {{account.isDebt ? 'debt-card' : 'asset-card'}}">
+    <view class="balance-label">{{account.isDebt ? '应还' : '余额'}}</view>
+    <view class="balance-value" bindtap="goToAccountDetail">
+      <text class="balance-amount">￥{{account.balance || 0}}</text>
+      <text class="edit-icon">✎</text>
+    </view>
+  </view>
+
+  <!-- 入账/出账统计 -->
+  <view class="stats-row">
+    <view class="stat-item">
+      <text class="stat-label">入账</text>
+      <text class="stat-value income">￥{{stats.income || 0}}</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-label">出账</text>
+      <text class="stat-value expense">￥{{stats.expense || 0}}</text>
+    </view>
+  </view>
+
+  <!-- 账单列表 -->
+  <view class="bill-list">
+    <view class="bill-header">
+      <text class="bill-title">账单记录</text>
+      <text class="bill-count">共{{billList.length}}笔</text>
+    </view>
+
+    <view class="bill-empty" wx:if="{{billList.length === 0}}">
+      <text class="empty-text">暂无账单记录</text>
+    </view>
+
+    <view
+      class="bill-item"
+      wx:for="{{billList}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bindtap="goToBillDetail"
+    >
+      <view class="bill-left">
+        <view class="bill-icon {{item.type === 'income' ? 'income-icon' : 'expense-icon'}}">
+          <text>{{item.icon || (item.type === 'income' ? '💰' : '💸')}}</text>
+        </view>
+        <view class="bill-info">
+          <text class="bill-category">{{item.category}}</text>
+          <text class="bill-note">{{item.note || '无备注'}}</text>
+        </view>
+      </view>
+      <view class="bill-right">
+        <text class="bill-amount {{item.type === 'income' ? 'income-amount' : 'expense-amount'}}">
+          {{item.type === 'income' ? '+' : '-'}}￥{{item.amount}}
+        </text>
+        <text class="bill-date">{{item.date}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作按钮 -->
+  <view class="action-buttons">
+    <view class="action-btn delete-btn" bindtap="deleteAccount">
+      <text class="btn-text">删除</text>
+    </view>
+    <view class="action-btn bill-btn" bindtap="goToAddBill">
+      <text class="btn-text">收支</text>
+    </view>
+    <view class="action-btn transfer-btn" bindtap="goToTransfer">
+      <text class="btn-text">还款</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-mask" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+  </view>
+</view>

@@ -1,0 +1,150 @@
+/* components/account-picker/index.wxss */
+
+/* 遮罩层 */
+.account-picker-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.account-picker-mask.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 弹窗容器 */
+.account-picker-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  max-height: 70vh;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  z-index: 1001;
+}
+
+.account-picker-container.show {
+  transform: translateY(0);
+}
+
+/* 标题栏 */
+.picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.picker-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1d26;
+}
+
+.picker-close {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  color: #999;
+}
+
+/* 账户选项 */
+.account-option {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+  transition: background-color 0.2s;
+}
+
+.account-option:active {
+  background-color: #f5f5f5;
+}
+
+.account-option.selected {
+  background-color: #f0f7ff;
+}
+
+.none-option {
+  border-bottom: 2rpx solid #e8e8e8;
+}
+
+/* 账户图标 */
+.account-icon-wrap {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 16rpx;
+  background-color: #f5f7fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.account-icon-text {
+  font-size: 36rpx;
+  color: #999;
+}
+
+.account-icon-img {
+  width: 56rpx;
+  height: 56rpx;
+}
+
+/* 账户信息 */
+.account-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.account-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #1a1d26;
+  margin-bottom: 4rpx;
+}
+
+.account-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 选中状态 */
+.account-check {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background-color: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}
+
+.account-check text {
+  font-size: 24rpx;
+  color: #fff;
+}
+
+/* 账户列表 */
+.account-list {
+  max-height: calc(70vh - 120rpx);
+  overflow-y: auto;
+}

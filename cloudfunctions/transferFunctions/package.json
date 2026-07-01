@@ -1,7 +1,7 @@
 {
-  "name": "billFunctions",
+  "name": "transferFunctions",
   "version": "1.0.0",
-  "description": "账单管理云函数",
+  "description": "转账管理云函数",
   "main": "index.js",
   "dependencies": {
     "wx-server-sdk": "~2.6.3"

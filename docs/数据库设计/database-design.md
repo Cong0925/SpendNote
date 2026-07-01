@@ -12,7 +12,20 @@
 | icon | string | 分类图标 |
 | note | string | 备注（可选） |
 | date | string | 日期：YYYY-MM-DD |
+| accountId | string | 关联账户ID（可选） |
 | created_at | date | 创建时间 |
+
+**权限设置：**
+```json
+{
+  "read": "doc._openid == auth.openid",
+  "write": "doc._openid == auth.openid"
+}
+```
+
+**索引：**
+- _openid + date
+- _openid + accountId
 
 ## categories 表（分类管理）
 

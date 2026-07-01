@@ -11,7 +11,9 @@
     "pages/selectBank/selectBank",
     "pages/accountDetail/accountDetail",
     "pages/loan/loan",
-    "pages/addLoan/addLoan"
+    "pages/addLoan/addLoan",
+    "pages/accountInfo/accountInfo",
+    "pages/transfer/transfer"
   ],
   "usingComponents": {
     "van-datetime-picker": "@vant/weapp/datetime-picker/index",

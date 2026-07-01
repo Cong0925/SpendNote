@@ -1,443 +1,257 @@
-// 云函数入口文件 - billFunctions
+// 云函数：账单管理
 const cloud = require('wx-server-sdk')
-
-cloud.init({
-  env: cloud.DYNAMIC_CURRENT_ENV
-})
-
+cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
-const billsCollection = db.collection('bills')
-const categoriesCollection = db.collection('categories')
+const _ = db.command
 
-// 云函数入口函数
+// 账单集合名
+const BILLS_COLLECTION = 'bills'
+
+/**
+ * 云函数入口
+ * @param {Object} event - 事件参数
+ * @param {string} event.action - 操作类型
+ * @param {Object} event.data - 操作数据
+ */
 exports.main = async (event, context) => {
-  const wxContext = cloud.getWXContext()
-  const { OPENID } = wxContext
+  const { OPENID } = cloud.getWXContext()
+  const { action, data } = event
 
-  switch (event.action) {
-    case 'addBill':
-      return await addBill(OPENID, event.data)
-    case 'getBills':
-      return await getBills(OPENID, event.data)
-    case 'getBillsByDateRange':
-      return await getBillsByDateRange(OPENID, event.data)
-    case 'getBillById':
-      return await getBillById(OPENID, event.data)
-    case 'updateBill':
-      return await updateBill(OPENID, event.data)
-    case 'deleteBill':
-      return await deleteBill(OPENID, event.billId)
-    case 'getStats':
-      return await getStats(OPENID, event.data)
-    case 'getStatsByDateRange':
-      return await getStatsByDateRange(OPENID, event.data)
-    case 'initCategories':
-      return await initCategories(OPENID)
-    case 'getCategories':
-      return await getCategories(OPENID, event.data)
-    default:
-      return { success: false, error: 'Unknown action' }
+  try {
+    switch (action) {
+      case 'add':
+        return await addBill(OPENID, data)
+      case 'update':
+        return await updateBill(OPENID, data)
+      case 'delete':
+        return await deleteBill(OPENID, data.id)
+      case 'get':
+        return await getBill(OPENID, data.id)
+      case 'list':
+        return await listBills(OPENID, data)
+      case 'listByAccount':
+        return await listBillsByAccount(OPENID, data.accountId)
+      case 'getStats':
+        return await getBillStats(OPENID, data)
+      default:
+        return { success: false, error: '未知操作类型' }
+    }
+  } catch (err) {
+    console.error('账单操作失败：', err)
+    return { success: false, error: err.message || '操作失败' }
   }
 }
 
-// 添加账单
+/**
+ * 添加账单
+ */
 async function addBill(openid, data) {
-  try {
-    const { type, amount, category, icon, note, date } = data
+  const { type, amount, category, icon, note, date, accountId } = data
 
-    if (!type || !amount || !category || !date) {
-      return { success: false, error: '缺少必要参数' }
-    }
+  // 参数校验
+  if (!type || !amount || !category || !date) {
+    return { success: false, error: '缺少必填参数' }
+  }
 
-    const result = await billsCollection.add({
-      data: {
-        _openid: openid,
-        type: type,
-        amount: parseFloat(amount),
-        category: category,
-        icon: icon || '',
-        note: note || '',
-        date: date,
-        created_at: db.serverDate()
-      }
-    })
+  const now = db.serverDate()
+  const bill = {
+    _openid: openid,
+    type,
+    amount: Math.abs(Number(amount)),
+    category,
+    icon: icon || '',
+    note: note || '',
+    date,
+    accountId: accountId || '',
+    created_at: now
+  }
 
-    return { success: true, id: result._id }
-  } catch (error) {
-    console.error('添加账单失败:', error)
-    return { success: false, error: error.message }
+  const result = await db.collection(BILLS_COLLECTION).add({ data: bill })
+
+  // 如果有关联账户，更新账户余额
+  if (accountId) {
+    await updateAccountBalance(accountId, type, amount)
+  }
+
+  return {
+    success: true,
+    data: { _id: result._id }
   }
 }
 
-// 获取账单列表
-async function getBills(openid, data = {}) {
-  try {
-    const { page = 1, pageSize = 20, month } = data
+/**
+ * 更新账单
+ */
+async function updateBill(openid, data) {
+  const { id, ...updateData } = data
 
-    let query = billsCollection.where({
-      _openid: openid
-    })
+  if (!id) {
+    return { success: false, error: '缺少账单ID' }
+  }
 
-    // 按月筛选
-    if (month) {
-      const startDate = `${month}-01`
-      const endDate = `${month}-31`
-      query = billsCollection.where({
-        _openid: openid,
-        date: db.command.gte(startDate).and(db.command.lte(endDate))
-      })
-    }
+  // 移除不允许更新的字段
+  delete updateData._id
+  delete updateData._openid
+  delete updateData.created_at
 
-    // 获取总数
-    const countResult = await query.count()
-    const total = countResult.total
+  const result = await db.collection(BILLS_COLLECTION)
+    .where({ _id: id, _openid: openid })
+    .update({ data: updateData })
 
-    // 分页查询
-    const skip = (page - 1) * pageSize
-    const result = await query
-      .orderBy('date', 'desc')
-      .orderBy('created_at', 'desc')
-      .skip(skip)
-      .limit(pageSize)
-      .get()
-
-    return {
-      success: true,
-      data: result.data,
-      total: total,
-      page: page,
-      pageSize: pageSize
-    }
-  } catch (error) {
-    console.error('获取账单失败:', error)
-    return { success: false, error: error.message }
+  return {
+    success: true,
+    data: { updated: result.stats.updated }
   }
 }
 
-// 删除账单
-async function deleteBill(openid, billId) {
-  try {
-    if (!billId) {
-      return { success: false, error: '缺少账单ID' }
-    }
+/**
+ * 删除账单
+ */
+async function deleteBill(openid, id) {
+  if (!id) {
+    return { success: false, error: '缺少账单ID' }
+  }
 
-    const result = await billsCollection.doc(billId).remove()
+  const result = await db.collection(BILLS_COLLECTION)
+    .where({ _id: id, _openid: openid })
+    .remove()
 
-    return { success: true, deleted: result.stats.removed }
-  } catch (error) {
-    console.error('删除账单失败:', error)
-    return { success: false, error: error.message }
+  return {
+    success: true,
+    data: { removed: result.stats.removed }
   }
 }
 
-// 根据ID获取账单
-async function getBillById(openid, data = {}) {
-  try {
-    const { billId } = data
+/**
+ * 获取单个账单
+ */
+async function getBill(openid, id) {
+  if (!id) {
+    return { success: false, error: '缺少账单ID' }
+  }
 
-    if (!billId) {
-      return { success: false, error: '缺少账单ID' }
-    }
+  const result = await db.collection(BILLS_COLLECTION)
+    .where({ _id: id, _openid: openid })
+    .get()
 
-    const result = await billsCollection.doc(billId).get()
+  if (result.data.length === 0) {
+    return { success: false, error: '账单不存在' }
+  }
 
-    if (result.data) {
-      return { success: true, data: result.data }
+  return {
+    success: true,
+    data: result.data[0]
+  }
+}
+
+/**
+ * 获取账单列表
+ */
+async function listBills(openid, params = {}) {
+  const { startDate, endDate, type, page = 1, pageSize = 50 } = params
+
+  let whereCondition = { _openid: openid }
+
+  if (startDate && endDate) {
+    whereCondition.date = _.gte(startDate).and(_.lte(endDate))
+  }
+
+  if (type) {
+    whereCondition.type = type
+  }
+
+  const result = await db.collection(BILLS_COLLECTION)
+    .where(whereCondition)
+    .orderBy('date', 'desc')
+    .orderBy('created_at', 'desc')
+    .skip((page - 1) * pageSize)
+    .limit(pageSize)
+    .get()
+
+  return {
+    success: true,
+    data: result.data
+  }
+}
+
+/**
+ * 根据账户ID获取账单列表
+ */
+async function listBillsByAccount(openid, accountId) {
+  if (!accountId) {
+    return { success: false, error: '缺少账户ID' }
+  }
+
+  const result = await db.collection(BILLS_COLLECTION)
+    .where({ _openid: openid, accountId })
+    .orderBy('date', 'desc')
+    .orderBy('created_at', 'desc')
+    .limit(100)
+    .get()
+
+  return {
+    success: true,
+    data: result.data
+  }
+}
+
+/**
+ * 获取账单统计
+ */
+async function getBillStats(openid, params = {}) {
+  const { startDate, endDate } = params
+
+  let whereCondition = { _openid: openid }
+
+  if (startDate && endDate) {
+    whereCondition.date = _.gte(startDate).and(_.lte(endDate))
+  }
+
+  // 获取所有账单
+  const result = await db.collection(BILLS_COLLECTION)
+    .where(whereCondition)
+    .field({ type: true, amount: true })
+    .get()
+
+  // 计算统计
+  let income = 0
+  let expense = 0
+
+  result.data.forEach(bill => {
+    if (bill.type === 'income') {
+      income += bill.amount
     } else {
-      return { success: false, error: '账单不存在' }
+      expense += bill.amount
     }
-  } catch (error) {
-    console.error('获取账单详情失败:', error)
-    return { success: false, error: error.message }
+  })
+
+  return {
+    success: true,
+    data: {
+      income,
+      expense,
+      total: income - expense
+    }
   }
 }
 
-// 更新账单
-async function updateBill(openid, data = {}) {
+/**
+ * 更新账户余额
+ */
+async function updateAccountBalance(accountId, billType, amount) {
   try {
-    const { billId, type, amount, category, icon, note, date } = data
+    const amountNum = Math.abs(Number(amount))
+    const balanceChange = billType === 'income' ? amountNum : -amountNum
 
-    if (!billId) {
-      return { success: false, error: '缺少账单ID' }
-    }
-
-    if (!type || !amount || !category || !date) {
-      return { success: false, error: '缺少必要参数' }
-    }
-
-    const result = await billsCollection.doc(billId).update({
-      data: {
-        type: type,
-        amount: parseFloat(amount),
-        category: category,
-        icon: icon || '',
-        note: note || '',
-        date: date
-      }
-    })
-
-    return { success: true, updated: result.stats.updated }
-  } catch (error) {
-    console.error('更新账单失败:', error)
-    return { success: false, error: error.message }
-  }
-}
-
-// 按日期范围获取账单
-async function getBillsByDateRange(openid, data = {}) {
-  try {
-    const { startDate, endDate, page = 1, pageSize = 50 } = data
-
-    if (!startDate || !endDate) {
-      return { success: false, error: '缺少日期参数' }
-    }
-
-    let query = billsCollection.where({
-      _openid: openid,
-      date: db.command.gte(startDate).and(db.command.lte(endDate))
-    })
-
-    // 获取总数
-    const countResult = await query.count()
-    const total = countResult.total
-
-    // 分页查询
-    const skip = (page - 1) * pageSize
-    const result = await query
-      .orderBy('date', 'desc')
-      .orderBy('created_at', 'desc')
-      .skip(skip)
-      .limit(pageSize)
-      .get()
-
-    return {
-      success: true,
-      data: result.data,
-      total: total,
-      page: page,
-      pageSize: pageSize
-    }
-  } catch (error) {
-    console.error('获取账单失败:', error)
-    return { success: false, error: error.message }
-  }
-}
-
-// 获取统计数据
-async function getStats(openid, data = {}) {
-  try {
-    const { month } = data
-
-    let query = billsCollection.where({
-      _openid: openid
-    })
-
-    // 按月筛选
-    if (month) {
-      const startDate = `${month}-01`
-      const endDate = `${month}-31`
-      query = billsCollection.where({
-        _openid: openid,
-        date: db.command.gte(startDate).and(db.command.lte(endDate))
-      })
-    }
-
-    const result = await query.get()
-    const bills = result.data
-
-    // 计算总支出和总收入
-    let totalExpense = 0
-    let totalIncome = 0
-
-    // 按分类统计
-    const categoryStats = {}
-
-    bills.forEach(bill => {
-      if (bill.type === 'expense') {
-        totalExpense += bill.amount
-      } else {
-        totalIncome += bill.amount
-      }
-
-      const key = `${bill.type}_${bill.category}`
-      if (!categoryStats[key]) {
-        categoryStats[key] = {
-          type: bill.type,
-          category: bill.category,
-          icon: bill.icon,
-          amount: 0,
-          count: 0
-        }
-      }
-      categoryStats[key].amount += bill.amount
-      categoryStats[key].count++
-    })
-
-    // 转换为数组并排序
-    const categoryArray = Object.values(categoryStats).sort((a, b) => b.amount - a.amount)
-
-    return {
-      success: true,
-      data: {
-        totalExpense: totalExpense,
-        totalIncome: totalIncome,
-        balance: totalIncome - totalExpense,
-        categoryStats: categoryArray,
-        billCount: bills.length
-      }
-    }
-  } catch (error) {
-    console.error('获取统计失败:', error)
-    return { success: false, error: error.message }
-  }
-}
-
-// 按日期范围获取统计数据
-async function getStatsByDateRange(openid, data = {}) {
-  try {
-    const { startDate, endDate } = data
-
-    if (!startDate || !endDate) {
-      return { success: false, error: '缺少日期参数' }
-    }
-
-    let query = billsCollection.where({
-      _openid: openid,
-      date: db.command.gte(startDate).and(db.command.lte(endDate))
-    })
-
-    const result = await query.get()
-    const bills = result.data
-
-    // 计算总支出和总收入
-    let totalExpense = 0
-    let totalIncome = 0
-
-    // 按分类统计
-    const categoryStats = {}
-
-    bills.forEach(bill => {
-      const amount = parseFloat(bill.amount) || 0
-      if (bill.type === 'expense') {
-        totalExpense += amount
-      } else {
-        totalIncome += amount
-      }
-
-      const key = `${bill.type}_${bill.category}`
-      if (!categoryStats[key]) {
-        categoryStats[key] = {
-          type: bill.type,
-          category: bill.category,
-          icon: bill.icon,
-          amount: 0,
-          count: 0
-        }
-      }
-      categoryStats[key].amount += amount
-      categoryStats[key].count++
-    })
-
-    // 转换为数组并排序
-    const categoryArray = Object.values(categoryStats).sort((a, b) => b.amount - a.amount)
-
-    return {
-      success: true,
-      data: {
-        totalExpense: totalExpense,
-        totalIncome: totalIncome,
-        balance: totalIncome - totalExpense,
-        categoryStats: categoryArray,
-        billCount: bills.length
-      }
-    }
-  } catch (error) {
-    console.error('获取统计失败:', error)
-    return { success: false, error: error.message }
-  }
-}
-
-// 初始化默认分类
-async function initCategories(openid) {
-  try {
-    // 检查是否已初始化
-    const existing = await categoriesCollection.where({
-      _openid: openid
-    }).count()
-
-    if (existing.total > 0) {
-      return { success: true, message: '分类已存在' }
-    }
-
-    // 默认支出分类
-    const expenseCategories = [
-      { name: '餐饮', icon: '🍜', type: 'expense', sort: 1 },
-      { name: '交通', icon: '🚗', type: 'expense', sort: 2 },
-      { name: '购物', icon: '🛒', type: 'expense', sort: 3 },
-      { name: '娱乐', icon: '🎬', type: 'expense', sort: 4 },
-      { name: '居住', icon: '💡', type: 'expense', sort: 5 },
-      { name: '通讯', icon: '📱', type: 'expense', sort: 6 },
-      { name: '医疗', icon: '🏥', type: 'expense', sort: 7 },
-      { name: '教育', icon: '📚', type: 'expense', sort: 8 },
-      { name: '服饰', icon: '👕', type: 'expense', sort: 9 },
-      { name: '其他', icon: '💰', type: 'expense', sort: 10 }
-    ]
-
-    // 默认收入分类
-    const incomeCategories = [
-      { name: '工资', icon: '💵', type: 'income', sort: 1 },
-      { name: '奖金', icon: '💰', type: 'income', sort: 2 },
-      { name: '红包', icon: '🎁', type: 'income', sort: 3 },
-      { name: '投资', icon: '💹', type: 'income', sort: 4 },
-      { name: '兼职', icon: '💼', type: 'income', sort: 5 },
-      { name: '其他', icon: '📝', type: 'income', sort: 6 }
-    ]
-
-    const allCategories = [...expenseCategories, ...incomeCategories]
-
-    // 批量添加
-    const addPromises = allCategories.map(cat => {
-      return categoriesCollection.add({
+    await db.collection('accounts')
+      .doc(accountId)
+      .update({
         data: {
-          _openid: openid,
-          ...cat
+          balance: _.inc(balanceChange),
+          updatedAt: db.serverDate()
         }
       })
-    })
-
-    await Promise.all(addPromises)
-
-    return { success: true, message: '初始化分类成功' }
-  } catch (error) {
-    console.error('初始化分类失败:', error)
-    return { success: false, error: error.message }
-  }
-}
-
-// 获取分类列表
-async function getCategories(openid, data = {}) {
-  try {
-    const { type } = data
-
-    let query = categoriesCollection.where({
-      _openid: openid
-    })
-
-    if (type) {
-      query = categoriesCollection.where({
-        _openid: openid,
-        type: type
-      })
-    }
-
-    const result = await query.orderBy('sort', 'asc').get()
-
-    return {
-      success: true,
-      data: result.data
-    }
-  } catch (error) {
-    console.error('获取分类失败:', error)
-    return { success: false, error: error.message }
+  } catch (err) {
+    console.error('更新账户余额失败：', err)
   }
 }
