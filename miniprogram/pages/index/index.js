@@ -142,7 +142,18 @@ Page({
     const { startDate, endDate } = e.detail
     const viewMode = this.data.viewMode
 
+    // 根据 viewMode 计算 dateDisplay（左上角显示文本）
+    let dateDisplay = ''
+    if (viewMode === 'quarter') {
+      const [y, m] = startDate.split('-')
+      const quarter = Math.ceil(parseInt(m) / 3)
+      dateDisplay = `${y} Q${quarter}`
+    } else {
+      dateDisplay = this.getDisplayDate(startDate, viewMode)
+    }
+
     this.setData({
+      dateDisplay: dateDisplay,
       rangeStartDate: startDate,
       rangeEndDate: endDate,
       rangeStartText: this.getDisplayDate(startDate, viewMode),
@@ -161,12 +172,12 @@ Page({
     const { currentDate, viewMode, isRange, rangeStartDate, rangeEndDate } = this.data
 
     let start, end
-    if (isRange && viewMode !== 'quarter') {
+    if (isRange) {
       // 使用时间范围
       start = rangeStartDate
       end = rangeEndDate
     } else {
-      // 使用单一日期（季度保持原逻辑）
+      // 使用单一日期
       const range = this.getDateRange(currentDate, viewMode)
       start = range.start
       end = range.end
@@ -439,9 +450,14 @@ Page({
       rangeStartDate = `${y}-01-01`
       rangeEndDate = `${y}-12-31`
     } else if (value === 'quarter') {
-      // 季度模式：保持原逻辑
-      rangeStartDate = newDate
-      rangeEndDate = newDate
+      // 季度模式：根据当前日期计算季度范围
+      const [y, m] = newDate.split('-')
+      const currentQuarter = Math.ceil(parseInt(m) / 3) - 1
+      const startMonth = currentQuarter * 3 + 1
+      const endMonth = (currentQuarter + 1) * 3
+      rangeStartDate = `${y}-${String(startMonth).padStart(2, '0')}-01`
+      const lastDay = new Date(y, endMonth, 0).getDate()
+      rangeEndDate = `${y}-${String(endMonth).padStart(2, '0')}-${lastDay}`
     }
 
     this.setData({
@@ -472,15 +488,30 @@ Page({
   },
 
   selectQuarter(e) {
-    const value = e.currentTarget.dataset.value
+    const value = parseInt(e.currentTarget.dataset.value)
     const [y] = this.data.currentDate.split('-')
     const startMonth = value * 3 + 1
+    const endMonth = (value + 1) * 3
     const newDate = `${y}-${String(startMonth).padStart(2, '0')}-01`
+
+    // 计算季度的开始和结束日期
+    const rangeStartDate = `${y}-${String(startMonth).padStart(2, '0')}-01`
+    const lastDay = new Date(y, endMonth, 0).getDate()
+    const rangeEndDate = `${y}-${String(endMonth).padStart(2, '0')}-${lastDay}`
+
+    // 计算季度显示文本
+    const quarter = value + 1
+    const quarterText = `${y} Q${quarter}`
+
     this.setData({
       showQuarter: false,
       quarterIndex: value,
       currentDate: newDate,
-      dateDisplay: this.getDisplayDate(newDate, 'quarter')
+      dateDisplay: quarterText,
+      rangeStartDate: rangeStartDate,
+      rangeEndDate: rangeEndDate,
+      rangeStartText: this.getDisplayDate(rangeStartDate, 'quarter'),
+      rangeEndText: this.getDisplayDate(rangeEndDate, 'quarter')
     })
     this.loadBills()
   },

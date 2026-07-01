@@ -42,7 +42,8 @@ Component({
         monthValue: parts.length >= 2 ? `${parts[0]}-${parts[1]}` : `${parts[0]}-01`
       }
       if (viewMode === 'quarter' && parts.length >= 2) {
-        update.quarterIndex = Math.ceil(parseInt(parts[1]) / 3) - 1
+        const month = parseInt(parts[1])
+        update.quarterIndex = Math.ceil(month / 3) - 1
       }
       this.setData(update)
     },
@@ -135,11 +136,22 @@ Component({
     showQuarterPicker() { this.setData({ showQuarter: true }) },
     hideQuarterPicker() { this.setData({ showQuarter: false }) },
     selectQuarter(e) {
-      const value = e.currentTarget.dataset.value
+      const value = parseInt(e.currentTarget.dataset.value)
       const [y] = this.data.date.split('-')
       const startMonth = value * 3 + 1
+      const endMonth = (value + 1) * 3
+
+      // 计算季度的开始和结束日期
+      const rangeStartDate = `${y}-${String(startMonth).padStart(2, '0')}-01`
+      const lastDay = new Date(y, endMonth, 0).getDate()
+      const rangeEndDate = `${y}-${String(endMonth).padStart(2, '0')}-${lastDay}`
+
       this.setData({ showQuarter: false, quarterIndex: value })
-      this.triggerEvent('dateChange', { value: `${y}-${String(startMonth).padStart(2, '0')}-01` })
+      this.triggerEvent('dateChange', { value: rangeStartDate })
+      this.triggerEvent('rangeDateChange', {
+        startDate: rangeStartDate,
+        endDate: rangeEndDate
+      })
     }
   }
 })
