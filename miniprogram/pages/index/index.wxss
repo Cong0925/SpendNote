@@ -231,11 +231,67 @@ page {
   min-width: 0;
 }
 
+.group-header.collapsible {
+  cursor: pointer;
+}
+
+.group-header.collapsible:active {
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+}
+
+.group-date-wrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.collapse-icon {
+  font-size: 20rpx;
+  color: var(--color-text-tertiary);
+  margin-right: 8rpx;
+  transition: transform 0.25s ease;
+  transform: rotate(90deg);
+}
+
+.collapse-icon.collapsed {
+  transform: rotate(0deg);
+}
+
+/* 一级标题（月份/季度/年） */
+.group-header.level-1 {
+  margin-top: 16rpx;
+}
+
+/* 二级标题（日期/月份） */
+.group-header.level-2 {
+  margin-top: 12rpx;
+  padding-left: 24rpx;
+  border-left: 4rpx solid var(--color-primary);
+}
+
+/* 三级标题（日期） */
+.group-header.level-3 {
+  margin-top: 8rpx;
+  padding-left: 48rpx;
+  border-left: 4rpx solid var(--color-border);
+}
+
 .group-date {
   font-size: 28rpx;
   font-weight: 600;
   color: var(--color-text);
   flex-shrink: 0;
+}
+
+.level-2 .group-date {
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+}
+
+.level-3 .group-date {
+  font-size: 24rpx;
+  color: var(--color-text-tertiary);
 }
 
 .group-summary {
@@ -251,6 +307,16 @@ page {
 .group-balance {
   font-size: 24rpx;
   color: var(--color-text-secondary);
+}
+
+.level-2 .group-income,
+.level-2 .group-expense {
+  font-size: 22rpx;
+}
+
+.level-3 .group-income,
+.level-3 .group-expense {
+  font-size: 22rpx;
 }
 
 .group-balance {

@@ -3,6 +3,7 @@ Page({
   data: {
     bills: [],
     groupedBills: [],
+    collapsed: {}, // 折叠状态：{ '2026': false, '2026-05': false, ... }
     // 类型选择
     viewMode: 'day',
     viewModes: [
@@ -230,37 +231,82 @@ Page({
     }
   },
 
-  // 按日期分组账单
+  // 按日期分组账单（支持多级嵌套）
   groupBillsByDate(bills, viewMode) {
+    let groups = []
+    if (viewMode === 'day') {
+      // 日模式：单级分组
+      groups = this.groupBillsByDay(bills)
+    } else if (viewMode === 'month') {
+      // 月模式：两级分组（月份 -> 日期）
+      groups = this.groupBillsByMonth(bills)
+    } else if (viewMode === 'quarter') {
+      // 季度模式：三级分组（季度 -> 月份 -> 日期）
+      groups = this.groupBillsByQuarter(bills)
+    } else if (viewMode === 'year') {
+      // 年模式：三级分组（年份 -> 月份 -> 日期）
+      groups = this.groupBillsByYear(bills)
+    }
+
+    // 初始化折叠状态（默认全部展开）
+    const collapsed = this.initCollapseState(groups, viewMode)
+    this.setData({ collapsed })
+
+    return groups
+  },
+
+  // 初始化折叠状态
+  initCollapseState(groups, viewMode) {
+    const collapsed = {}
+
+    const traverse = (items, level = 1) => {
+      items.forEach(item => {
+        // 日模式不需要折叠
+        if (viewMode === 'day') return
+
+        collapsed[item.date] = false // 默认展开
+
+        if (item.children && level < this.getMaxLevel(viewMode)) {
+          traverse(item.children, level + 1)
+        }
+      })
+    }
+
+    traverse(groups)
+    return collapsed
+  },
+
+  // 获取最大层级
+  getMaxLevel(viewMode) {
+    const levelMap = {
+      'day': 1,
+      'month': 2,
+      'quarter': 3,
+      'year': 3
+    }
+    return levelMap[viewMode] || 1
+  },
+
+  // 切换折叠状态
+  toggleCollapse(e) {
+    const key = e.currentTarget.dataset.key
+    const { collapsed } = this.data
+
+    this.setData({
+      [`collapsed.${key}`]: !collapsed[key]
+    })
+  },
+
+  // 日模式：按日期分组
+  groupBillsByDay(bills) {
     const groupMap = {}
 
     bills.forEach(bill => {
-      let dateKey = bill.date
-      let dateText = ''
-
-      if (viewMode === 'day') {
-        // 日模式：按具体日期分组
-        dateKey = bill.date.substring(0, 10) // YYYY-MM-DD
-        const [y, m, d] = dateKey.split('-')
-        const date = new Date(parseInt(y), parseInt(m) - 1, parseInt(d))
-        const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-        dateText = `${parseInt(m)}月${parseInt(d)}日 ${weekDays[date.getDay()]}`
-      } else if (viewMode === 'month') {
-        // 月模式：按月份分组
-        dateKey = bill.date.substring(0, 7) // YYYY-MM
-        const [y, m] = dateKey.split('-')
-        dateText = `${y}年${parseInt(m)}月`
-      } else if (viewMode === 'quarter') {
-        // 季度模式：按季度分组
-        const [y, m] = bill.date.split('-')
-        const quarter = Math.ceil(parseInt(m) / 3)
-        dateKey = `${y}-Q${quarter}`
-        dateText = `${y}年Q${quarter}`
-      } else if (viewMode === 'year') {
-        // 年模式：按年份分组
-        dateKey = bill.date.substring(0, 4) // YYYY
-        dateText = `${dateKey}年`
-      }
+      const dateKey = bill.date.substring(0, 10) // YYYY-MM-DD
+      const [y, m, d] = dateKey.split('-')
+      const date = new Date(parseInt(y), parseInt(m) - 1, parseInt(d))
+      const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+      const dateText = `${parseInt(m)}月${parseInt(d)}日 ${weekDays[date.getDay()]}`
 
       if (!groupMap[dateKey]) {
         groupMap[dateKey] = {
@@ -280,7 +326,6 @@ Page({
       }
     })
 
-    // 转换为数组并按日期倒序排列
     const groups = Object.values(groupMap).map(group => ({
       ...group,
       incomeStr: this.formatAmount(group.income),
@@ -288,9 +333,215 @@ Page({
       balanceStr: this.formatAmount(Math.abs(group.income - group.expense))
     }))
 
-    // 倒序排列（最新的在最上面）
     groups.sort((a, b) => b.date.localeCompare(a.date))
+    return groups
+  },
 
+  // 月模式：按月份分组，内部按日期二级分组
+  groupBillsByMonth(bills) {
+    const monthMap = {}
+
+    bills.forEach(bill => {
+      const monthKey = bill.date.substring(0, 7) // YYYY-MM
+      const dateKey = bill.date.substring(0, 10) // YYYY-MM-DD
+      const [y, m, d] = dateKey.split('-')
+      const date = new Date(parseInt(y), parseInt(m) - 1, parseInt(d))
+      const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+      const dayText = `${parseInt(m)}月${parseInt(d)}日 ${weekDays[date.getDay()]}`
+
+      if (!monthMap[monthKey]) {
+        monthMap[monthKey] = {
+          date: monthKey,
+          dateText: `${y}年${parseInt(m)}月`,
+          children: {},
+          income: 0,
+          expense: 0
+        }
+      }
+
+      if (!monthMap[monthKey].children[dateKey]) {
+        monthMap[monthKey].children[dateKey] = {
+          date: dateKey,
+          dateText: dayText,
+          bills: [],
+          income: 0,
+          expense: 0
+        }
+      }
+
+      monthMap[monthKey].children[dateKey].bills.push(bill)
+      monthMap[monthKey].children[dateKey].income += bill.type === 'income' ? bill.amount : 0
+      monthMap[monthKey].children[dateKey].expense += bill.type === 'expense' ? bill.amount : 0
+      monthMap[monthKey].income += bill.type === 'income' ? bill.amount : 0
+      monthMap[monthKey].expense += bill.type === 'expense' ? bill.amount : 0
+    })
+
+    const groups = Object.values(monthMap).map(month => ({
+      ...month,
+      incomeStr: this.formatAmount(month.income),
+      expenseStr: this.formatAmount(month.expense),
+      balanceStr: this.formatAmount(Math.abs(month.income - month.expense)),
+      children: Object.values(month.children).map(day => ({
+        ...day,
+        incomeStr: this.formatAmount(day.income),
+        expenseStr: this.formatAmount(day.expense),
+        balanceStr: this.formatAmount(Math.abs(day.income - day.expense))
+      })).sort((a, b) => b.date.localeCompare(a.date))
+    }))
+
+    groups.sort((a, b) => b.date.localeCompare(a.date))
+    return groups
+  },
+
+  // 季度模式：按季度分组，内部按月份二级分组，再按日期三级分组
+  groupBillsByQuarter(bills) {
+    const quarterMap = {}
+
+    bills.forEach(bill => {
+      const [y, m] = bill.date.split('-')
+      const monthNum = parseInt(m)
+      const quarterNum = Math.ceil(monthNum / 3)
+      const quarterKey = `${y}-Q${quarterNum}`
+      const monthKey = bill.date.substring(0, 7) // YYYY-MM
+      const dateKey = bill.date.substring(0, 10) // YYYY-MM-DD
+      const [d] = bill.date.split('-').slice(2)
+      const date = new Date(parseInt(y), monthNum - 1, parseInt(d))
+      const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+      const dayText = `${monthNum}月${parseInt(d)}日 ${weekDays[date.getDay()]}`
+
+      if (!quarterMap[quarterKey]) {
+        quarterMap[quarterKey] = {
+          date: quarterKey,
+          dateText: `${y}年Q${quarterNum}`,
+          children: {},
+          income: 0,
+          expense: 0
+        }
+      }
+
+      if (!quarterMap[quarterKey].children[monthKey]) {
+        quarterMap[quarterKey].children[monthKey] = {
+          date: monthKey,
+          dateText: `${parseInt(m)}月`,
+          children: {},
+          income: 0,
+          expense: 0
+        }
+      }
+
+      if (!quarterMap[quarterKey].children[monthKey].children[dateKey]) {
+        quarterMap[quarterKey].children[monthKey].children[dateKey] = {
+          date: dateKey,
+          dateText: dayText,
+          bills: [],
+          income: 0,
+          expense: 0
+        }
+      }
+
+      quarterMap[quarterKey].children[monthKey].children[dateKey].bills.push(bill)
+      quarterMap[quarterKey].children[monthKey].children[dateKey].income += bill.type === 'income' ? bill.amount : 0
+      quarterMap[quarterKey].children[monthKey].children[dateKey].expense += bill.type === 'expense' ? bill.amount : 0
+      quarterMap[quarterKey].children[monthKey].income += bill.type === 'income' ? bill.amount : 0
+      quarterMap[quarterKey].children[monthKey].expense += bill.type === 'expense' ? bill.amount : 0
+      quarterMap[quarterKey].income += bill.type === 'income' ? bill.amount : 0
+      quarterMap[quarterKey].expense += bill.type === 'expense' ? bill.amount : 0
+    })
+
+    const formatChildren = (children) => {
+      return Object.values(children).map(child => ({
+        ...child,
+        incomeStr: this.formatAmount(child.income),
+        expenseStr: this.formatAmount(child.expense),
+        balanceStr: this.formatAmount(Math.abs(child.income - child.expense)),
+        children: child.children ? formatChildren(child.children) : undefined
+      })).sort((a, b) => b.date.localeCompare(a.date))
+    }
+
+    const groups = Object.values(quarterMap).map(quarter => ({
+      ...quarter,
+      incomeStr: this.formatAmount(quarter.income),
+      expenseStr: this.formatAmount(quarter.expense),
+      balanceStr: this.formatAmount(Math.abs(quarter.income - quarter.expense)),
+      children: formatChildren(quarter.children)
+    }))
+
+    groups.sort((a, b) => b.date.localeCompare(a.date))
+    return groups
+  },
+
+  // 年模式：按年份分组，内部按月份二级分组，再按日期三级分组
+  groupBillsByYear(bills) {
+    const yearMap = {}
+
+    bills.forEach(bill => {
+      const [y, m, d] = bill.date.split('-')
+      const yearKey = y
+      const monthKey = bill.date.substring(0, 7) // YYYY-MM
+      const dateKey = bill.date.substring(0, 10) // YYYY-MM-DD
+      const monthNum = parseInt(m)
+      const date = new Date(parseInt(y), monthNum - 1, parseInt(d))
+      const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+      const dayText = `${monthNum}月${parseInt(d)}日 ${weekDays[date.getDay()]}`
+
+      if (!yearMap[yearKey]) {
+        yearMap[yearKey] = {
+          date: yearKey,
+          dateText: `${y}年`,
+          children: {},
+          income: 0,
+          expense: 0
+        }
+      }
+
+      if (!yearMap[yearKey].children[monthKey]) {
+        yearMap[yearKey].children[monthKey] = {
+          date: monthKey,
+          dateText: `${monthNum}月`,
+          children: {},
+          income: 0,
+          expense: 0
+        }
+      }
+
+      if (!yearMap[yearKey].children[monthKey].children[dateKey]) {
+        yearMap[yearKey].children[monthKey].children[dateKey] = {
+          date: dateKey,
+          dateText: dayText,
+          bills: [],
+          income: 0,
+          expense: 0
+        }
+      }
+
+      yearMap[yearKey].children[monthKey].children[dateKey].bills.push(bill)
+      yearMap[yearKey].children[monthKey].children[dateKey].income += bill.type === 'income' ? bill.amount : 0
+      yearMap[yearKey].children[monthKey].children[dateKey].expense += bill.type === 'expense' ? bill.amount : 0
+      yearMap[yearKey].children[monthKey].income += bill.type === 'income' ? bill.amount : 0
+      yearMap[yearKey].children[monthKey].expense += bill.type === 'expense' ? bill.amount : 0
+      yearMap[yearKey].income += bill.type === 'income' ? bill.amount : 0
+      yearMap[yearKey].expense += bill.type === 'expense' ? bill.amount : 0
+    })
+
+    const formatChildren = (children) => {
+      return Object.values(children).map(child => ({
+        ...child,
+        incomeStr: this.formatAmount(child.income),
+        expenseStr: this.formatAmount(child.expense),
+        balanceStr: this.formatAmount(Math.abs(child.income - child.expense)),
+        children: child.children ? formatChildren(child.children) : undefined
+      })).sort((a, b) => b.date.localeCompare(a.date))
+    }
+
+    const groups = Object.values(yearMap).map(year => ({
+      ...year,
+      incomeStr: this.formatAmount(year.income),
+      expenseStr: this.formatAmount(year.expense),
+      balanceStr: this.formatAmount(Math.abs(year.income - year.expense)),
+      children: formatChildren(year.children)
+    }))
+
+    groups.sort((a, b) => b.date.localeCompare(a.date))
     return groups
   },
 
@@ -423,6 +674,15 @@ Page({
     if (currentDate.length >= 7) {
       // 保存完整的 YYYY-MM-DD 格式日期
       newSavedDate = currentDate.length === 10 ? currentDate : `${currentDate}-01`
+    }
+
+    // 确保 savedDate 是完整的 YYYY-MM-DD 格式（如果为空则使用当前日期）
+    if (!newSavedDate || newSavedDate.split('-').length < 3) {
+      const now = new Date()
+      const y = now.getFullYear()
+      const m = String(now.getMonth() + 1).padStart(2, '0')
+      const d = String(now.getDate()).padStart(2, '0')
+      newSavedDate = newSavedDate ? `${newSavedDate}-${m}-${d}` : `${y}-${m}-${d}`
     }
 
     if (value === 'day') {

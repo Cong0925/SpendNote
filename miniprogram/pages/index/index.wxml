@@ -73,47 +73,159 @@
 
     <!-- 按日期分组的账单列表 -->
     <block wx:for="{{groupedBills}}" wx:key="date">
-      <!-- 日期分组标题 -->
-      <view class="group-header">
-        <view class="group-date">{{item.dateText}}</view>
+      <!-- 一级分组标题（日/月/季/年） -->
+      <view class="group-header level-1 {{viewMode !== 'day' ? 'collapsible' : ''}}"
+            data-key="{{item.date}}"
+            bindtap="{{viewMode !== 'day' ? 'toggleCollapse' : ''}}">
+        <view class="group-date-wrap">
+          <view class="collapse-icon {{collapsed[item.date] ? 'collapsed' : ''}}" wx:if="{{viewMode !== 'day'}}">▶</view>
+          <view class="group-date">{{item.dateText}}</view>
+        </view>
         <view class="group-summary">
           <text class="group-income">收入 {{item.incomeStr}}</text>
           <text class="group-expense">支出 {{item.expenseStr}}</text>
-          <text class="group-balance">结余 {{item.balanceStr}}</text>
+          <text class="group-balance" wx:if="{{viewMode === 'day'}}">结余 {{item.balanceStr}}</text>
         </view>
       </view>
-      <!-- 该日期下的账单 -->
-      <view class="swipe-wrap" wx:for="{{item.bills}}" wx:for-item="bill" wx:key="_id">
-        <view class="swipe-bg">
-          <view class="swipe-btn swipe-btn-edit" catchtap="editBill" data-id="{{bill._id}}">
-            <text>修改</text>
-          </view>
-          <view class="swipe-btn swipe-btn-delete" catchtap="confirmDelete" data-id="{{bill._id}}">
-            <text>删除</text>
-          </view>
-        </view>
-        <view class="swipe-card {{bill.swiped ? 'open' : ''}}"
-          catchtouchstart="onTouchStart"
-          catchtouchmove="onTouchMove"
-          catchtouchend="onTouchEnd"
-          data-date="{{item.date}}"
-          data-index="{{index}}">
-          <view class="bill-row">
-            <view class="bill-left">
-              <view class="bill-icon-wrap">
-                <text class="bill-icon">{{bill.icon}}</text>
-              </view>
-              <view class="bill-info">
-                <text class="bill-name">{{bill.category}}</text>
-                <text class="bill-note" wx:if="{{bill.note}}">{{bill.note}}</text>
-              </view>
+
+      <!-- 日模式：直接显示账单 -->
+      <block wx:if="{{viewMode === 'day'}}">
+        <view class="swipe-wrap" wx:for="{{item.bills}}" wx:for-item="bill" wx:key="_id">
+          <view class="swipe-bg">
+            <view class="swipe-btn swipe-btn-edit" catchtap="editBill" data-id="{{bill._id}}">
+              <text>修改</text>
             </view>
-            <view class="bill-right">
-              <text class="bill-amount {{bill.type === 'expense' ? 'red' : 'green'}}">{{bill.amountStr}}</text>
+            <view class="swipe-btn swipe-btn-delete" catchtap="confirmDelete" data-id="{{bill._id}}">
+              <text>删除</text>
             </view>
           </view>
+          <view class="swipe-card {{bill.swiped ? 'open' : ''}}"
+            catchtouchstart="onTouchStart"
+            catchtouchmove="onTouchMove"
+            catchtouchend="onTouchEnd"
+            data-date="{{item.date}}"
+            data-index="{{index}}">
+            <view class="bill-row">
+              <view class="bill-left">
+                <view class="bill-icon-wrap">
+                  <text class="bill-icon">{{bill.icon}}</text>
+                </view>
+                <view class="bill-info">
+                  <text class="bill-name">{{bill.category}}</text>
+                  <text class="bill-note" wx:if="{{bill.note}}">{{bill.note}}</text>
+                </view>
+              </view>
+              <view class="bill-right">
+                <text class="bill-amount {{bill.type === 'expense' ? 'red' : 'green'}}">{{bill.amountStr}}</text>
+              </view>
+            </view>
+          </view>
         </view>
-      </view>
+      </block>
+
+      <!-- 月模式：二级分组（日期） -->
+      <block wx:if="{{viewMode === 'month' && item.children && !collapsed[item.date]}}">
+        <block wx:for="{{item.children}}" wx:for-item="dayGroup" wx:key="date">
+          <view class="group-header level-2">
+            <view class="group-date">{{dayGroup.dateText}}</view>
+            <view class="group-summary">
+              <text class="group-income">收入 {{dayGroup.incomeStr}}</text>
+              <text class="group-expense">支出 {{dayGroup.expenseStr}}</text>
+            </view>
+          </view>
+          <view class="swipe-wrap" wx:for="{{dayGroup.bills}}" wx:for-item="bill" wx:key="_id">
+            <view class="swipe-bg">
+              <view class="swipe-btn swipe-btn-edit" catchtap="editBill" data-id="{{bill._id}}">
+                <text>修改</text>
+              </view>
+              <view class="swipe-btn swipe-btn-delete" catchtap="confirmDelete" data-id="{{bill._id}}">
+                <text>删除</text>
+              </view>
+            </view>
+            <view class="swipe-card {{bill.swiped ? 'open' : ''}}"
+              catchtouchstart="onTouchStart"
+              catchtouchmove="onTouchMove"
+              catchtouchend="onTouchEnd"
+              data-date="{{dayGroup.date}}"
+              data-index="{{index}}">
+              <view class="bill-row">
+                <view class="bill-left">
+                  <view class="bill-icon-wrap">
+                    <text class="bill-icon">{{bill.icon}}</text>
+                  </view>
+                  <view class="bill-info">
+                    <text class="bill-name">{{bill.category}}</text>
+                    <text class="bill-note" wx:if="{{bill.note}}">{{bill.note}}</text>
+                  </view>
+                </view>
+                <view class="bill-right">
+                  <text class="bill-amount {{bill.type === 'expense' ? 'red' : 'green'}}">{{bill.amountStr}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+      </block>
+
+      <!-- 季度/年模式：三级分组（月份 -> 日期） -->
+      <block wx:if="{{(viewMode === 'quarter' || viewMode === 'year') && item.children && !collapsed[item.date]}}">
+        <block wx:for="{{item.children}}" wx:for-item="monthGroup" wx:key="date">
+          <view class="group-header level-2 collapsible"
+                data-key="{{monthGroup.date}}"
+                bindtap="toggleCollapse">
+            <view class="group-date-wrap">
+              <view class="collapse-icon {{collapsed[monthGroup.date] ? 'collapsed' : ''}}">▶</view>
+              <view class="group-date">{{monthGroup.dateText}}</view>
+            </view>
+            <view class="group-summary">
+              <text class="group-income">收入 {{monthGroup.incomeStr}}</text>
+              <text class="group-expense">支出 {{monthGroup.expenseStr}}</text>
+            </view>
+          </view>
+          <block wx:if="{{monthGroup.children && !collapsed[monthGroup.date]}}">
+            <block wx:for="{{monthGroup.children}}" wx:for-item="dayGroup" wx:key="date">
+              <view class="group-header level-3">
+                <view class="group-date">{{dayGroup.dateText}}</view>
+                <view class="group-summary">
+                  <text class="group-income">收入 {{dayGroup.incomeStr}}</text>
+                  <text class="group-expense">支出 {{dayGroup.expenseStr}}</text>
+                </view>
+              </view>
+              <view class="swipe-wrap" wx:for="{{dayGroup.bills}}" wx:for-item="bill" wx:key="_id">
+                <view class="swipe-bg">
+                  <view class="swipe-btn swipe-btn-edit" catchtap="editBill" data-id="{{bill._id}}">
+                    <text>修改</text>
+                  </view>
+                  <view class="swipe-btn swipe-btn-delete" catchtap="confirmDelete" data-id="{{bill._id}}">
+                    <text>删除</text>
+                  </view>
+                </view>
+                <view class="swipe-card {{bill.swiped ? 'open' : ''}}"
+                  catchtouchstart="onTouchStart"
+                  catchtouchmove="onTouchMove"
+                  catchtouchend="onTouchEnd"
+                  data-date="{{dayGroup.date}}"
+                  data-index="{{index}}">
+                  <view class="bill-row">
+                    <view class="bill-left">
+                      <view class="bill-icon-wrap">
+                        <text class="bill-icon">{{bill.icon}}</text>
+                      </view>
+                      <view class="bill-info">
+                        <text class="bill-name">{{bill.category}}</text>
+                        <text class="bill-note" wx:if="{{bill.note}}">{{bill.note}}</text>
+                      </view>
+                    </view>
+                    <view class="bill-right">
+                      <text class="bill-amount {{bill.type === 'expense' ? 'red' : 'green'}}">{{bill.amountStr}}</text>
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </block>
+          </block>
+        </block>
+      </block>
     </block>
 
     <!-- 加载状态 -->
