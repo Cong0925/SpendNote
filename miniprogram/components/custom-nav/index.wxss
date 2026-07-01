@@ -57,24 +57,6 @@
   border-top: 6rpx solid #9CA3AF;
 }
 
-.nav-title {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.nav-title text {
-  font-size: 34rpx;
-  font-weight: 700;
-  color: #1A1D26;
-  letter-spacing: -0.5rpx;
-}
-
-.nav-title.hidden {
-  display: none;
-}
-
 /* 季度弹窗 */
 .quarter-mask {
   position: fixed;
