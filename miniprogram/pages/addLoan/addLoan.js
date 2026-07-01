@@ -292,11 +292,9 @@ Page({
           icon: 'success'
         })
 
-        // 跳转到借款记账主页
+        // 返回上一页
         setTimeout(() => {
-          wx.redirectTo({
-            url: '/pages/loan/loan'
-          })
+          wx.navigateBack()
         }, 1500)
       } else {
         wx.hideLoading()
