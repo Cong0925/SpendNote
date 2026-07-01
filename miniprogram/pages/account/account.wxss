@@ -138,8 +138,6 @@ page {
 .add-btn .add-icon-img {
   width: 32rpx;
   height: 32rpx;
-  /* 将黑色图标转换为 #57c5f8 颜色 */
-  filter: invert(73%) sepia(43%) saturate(600%) hue-rotate(155deg) brightness(100%) contrast(95%);
 }
 
 /* ============ 账户项 ============ */
