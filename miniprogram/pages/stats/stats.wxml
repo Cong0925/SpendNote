@@ -1,0 +1,129 @@
+<!--pages/stats/stats.wxml-->
+<view class="container">
+  <!-- 使用自定义导航组件 -->
+  <custom-nav
+    title="统计"
+    date="{{currentDate}}"
+    dateText="{{dateDisplay}}"
+    viewMode="{{viewMode}}"
+    isRange="{{isRange}}"
+    rangeStartDate="{{rangeStartDate}}"
+    rangeEndDate="{{rangeEndDate}}"
+    rangeStartText="{{rangeStartText}}"
+    rangeEndText="{{rangeEndText}}"
+    bind:rangeDateChange="handleRangeDateChange"
+  />
+
+
+  <!-- 快捷日期切换 -->
+  <view class="quick-tabs animate-slideUp" style="animation-delay: 0.05s">
+    <view
+      class="quick-tab {{viewMode === item.value ? 'active' : ''}}"
+      wx:for="{{viewModes}}"
+      wx:key="value"
+      bindtap="selectQuickTab"
+      data-value="{{item.value}}"
+    >
+      <text>{{item.label}}</text>
+    </view>
+  </view>
+
+  <!-- 收支概览卡片 -->
+  <view class="overview-card animate-slideUp" style="animation-delay: 0.1s">
+    <view class="overview-grid">
+      <view class="overview-cell">
+        <view class="overview-dot expense"></view>
+        <view class="overview-info">
+          <text class="overview-label">支出</text>
+          <text class="overview-amount">¥{{totalExpenseStr}}</text>
+        </view>
+      </view>
+      <view class="overview-cell">
+        <view class="overview-dot income"></view>
+        <view class="overview-info">
+          <text class="overview-label">收入</text>
+          <text class="overview-amount">¥{{totalIncomeStr}}</text>
+        </view>
+      </view>
+      <view class="overview-cell">
+        <view class="overview-dot {{balance >= 0 ? 'income' : 'expense'}}"></view>
+        <view class="overview-info">
+          <text class="overview-label">结余</text>
+          <text class="overview-amount {{balance >= 0 ? 'positive' : 'negative'}}">¥{{balanceStr}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类切换 -->
+  <view class="tab-section animate-slideUp" style="animation-delay: 0.15s">
+    <view class="tab-bar">
+      <view class="tab-item {{activeTab === 'expense' ? 'active' : ''}}" bindtap="switchTab" data-tab="expense">支出</view>
+      <view class="tab-item {{activeTab === 'income' ? 'active' : ''}}" bindtap="switchTab" data-tab="income">收入</view>
+    </view>
+  </view>
+
+  <!-- 甜甜圈图表 + 分类明细 -->
+  <view class="chart-section animate-slideUp" style="animation-delay: 0.2s">
+    <view class="empty-state" wx:if="{{categoryStats.length === 0 && !loading}}">
+      <view class="empty-icon">📊</view>
+      <text class="empty-title">暂无数据</text>
+      <text class="empty-desc">记录一笔账单后这里会出现统计</text>
+    </view>
+
+    <block wx:if="{{categoryStats.length > 0}}">
+      <view class="donut-wrapper">
+        <view class="donut-chart">
+          <view class="donut-ring" style="background: conic-gradient({{donutGradient}})"></view>
+          <view class="donut-center">
+            <text class="donut-center-amount">¥{{activeTab === 'expense' ? totalExpenseStr : totalIncomeStr}}</text>
+            <text class="donut-center-label">{{activeTab === 'expense' ? '总支出' : '总收入'}}</text>
+          </view>
+        </view>
+        <view class="donut-legend">
+          <view class="legend-item" wx:for="{{displayStats}}" wx:key="category" wx:if="{{index < 5}}">
+            <view class="legend-dot" style="background: {{item.color}}"></view>
+            <text class="legend-name">{{item.category}}</text>
+            <text class="legend-percent">{{item.percentStr}}%</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="stats-list">
+        <view class="stats-list-title">分类明细</view>
+        <view class="stats-item" wx:for="{{displayStats}}" wx:key="category">
+          <view class="stats-rank" style="background: {{item.color}}20; color: {{item.color}}">
+            <text>{{index + 1}}</text>
+          </view>
+          <view class="stats-left">
+            <view class="stats-icon-wrap">
+              <text class="stats-icon">{{item.icon}}</text>
+            </view>
+            <view class="stats-info">
+              <text class="stats-name">{{item.category}}</text>
+              <view class="stats-bar">
+                <view class="stats-bar-fill" style="width: {{item.percent || 0}}%; background: {{item.color}}"></view>
+              </view>
+            </view>
+          </view>
+          <view class="stats-right">
+            <text class="stats-amount">¥{{item.amountStr}}</text>
+            <text class="stats-count">{{item.count}}笔</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">加载中...</view>
+
+  <!-- 季度弹窗 -->
+  <view class="quarter-mask" wx:if="{{showQuarter}}" bindtap="hideQuarterPicker"></view>
+  <view class="quarter-sheet {{showQuarter ? 'show' : ''}}">
+    <view class="quarter-handle"></view>
+    <view class="quarter-item {{quarterIndex === item.value ? 'active' : ''}}" wx:for="{{quarters}}" wx:key="value" bindtap="selectQuarter" data-value="{{item.value}}">
+      <text>{{item.label}}</text>
+      <view class="quarter-check" wx:if="{{quarterIndex === item.value}}">✓</view>
+    </view>
+  </view>
+</view>

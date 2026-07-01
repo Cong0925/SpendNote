@@ -1,0 +1,283 @@
+/* SpendNote - Premium Clean Design System */
+
+/* ========== CSS Variables ========== */
+page {
+  --color-primary: #2563EB;
+  --color-primary-light: #3B82F6;
+  --color-primary-dark: #1D4ED8;
+  --color-expense: #EF4444;
+  --color-expense-light: #FEE2E2;
+  --color-income: #22C55E;
+  --color-income-light: #DCFCE7;
+  --color-bg: #F5F7FA;
+  --color-card: #FFFFFF;
+  --color-text: #1A1D26;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+  --color-text-light: #D1D5DB;
+  --color-border: #F0F2F5;
+  --color-divider: #F5F5F5;
+  --color-danger: #EF4444;
+
+  --shadow-sm: 0 1rpx 2rpx rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8rpx 24rpx rgba(0, 0, 0, 0.08);
+  --shadow-card: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+
+  --radius-sm: 8rpx;
+  --radius-md: 16rpx;
+  --radius-lg: 24rpx;
+  --radius-xl: 32rpx;
+  --radius-full: 999rpx;
+
+  background-color: var(--color-bg);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', 'Helvetica Neue', sans-serif;
+  font-size: 28rpx;
+  color: var(--color-text);
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 隐藏滚动条 */
+page::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  color: transparent;
+}
+
+/* ========== 通用容器 ========== */
+.container {
+  padding: 24rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ========== 卡片样式 ========== */
+.card {
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: var(--shadow-card);
+}
+
+/* ========== 按钮重置 ========== */
+button {
+  background: initial;
+}
+
+button:focus {
+  outline: 0;
+}
+
+button::after {
+  border: none;
+}
+
+/* ========== 主按钮 ========== */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-full);
+  height: 96rpx;
+  line-height: 96rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  letter-spacing: 2rpx;
+  transition: all 0.3s ease;
+  box-shadow: 0 4rpx 16rpx rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* ========== 空状态 ========== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+}
+
+.empty-icon {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72rpx;
+  margin-bottom: 32rpx;
+}
+
+.empty-title {
+  font-size: 30rpx;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: var(--color-text-tertiary);
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* ========== 加载中 ========== */
+.loading {
+  text-align: center;
+  padding: 48rpx;
+  color: var(--color-text-tertiary);
+  font-size: 26rpx;
+  letter-spacing: 1rpx;
+}
+
+/* ========== 分割线 ========== */
+.divider {
+  height: 1rpx;
+  background: var(--color-border);
+  margin: 24rpx 0;
+}
+
+/* ========== 弹性布局 ========== */
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== 文字样式 ========== */
+.text-primary {
+  color: var(--color-text);
+}
+
+.text-success {
+  color: var(--color-income);
+}
+
+.text-danger {
+  color: var(--color-danger);
+}
+
+.text-gray {
+  color: var(--color-text-secondary);
+}
+
+.text-light {
+  color: var(--color-text-tertiary);
+}
+
+.text-bold {
+  font-weight: 600;
+}
+
+/* ========== 金额样式 ========== */
+.amount {
+  font-weight: 600;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+  letter-spacing: -1rpx;
+}
+
+.amount-large {
+  font-size: 56rpx;
+  letter-spacing: -2rpx;
+}
+
+.amount-medium {
+  font-size: 40rpx;
+}
+
+.amount-small {
+  font-size: 28rpx;
+}
+
+/* ========== Section标题 ========== */
+.section-header {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1.5rpx;
+  margin-bottom: 20rpx;
+}
+
+/* ========== 动画效果 ========== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(32rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20rpx); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(8rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.5s ease-out both;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.4s ease-out both;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease-out both;
+}
+
+/* 骨架屏 */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}

@@ -1,0 +1,526 @@
+/* pages/index/index.wxss - Premium Bills Page */
+page {
+  background: var(--color-bg);
+}
+
+.container {
+  padding: 0 32rpx 180rpx;
+  min-height: 100vh;
+}
+
+/* ============ 日期选择器 ============ */
+.date-selector {
+  display: inline-flex;
+  align-items: center;
+  padding: 12rpx 24rpx;
+  background: var(--color-card);
+  border-radius: 999rpx;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24rpx;
+  margin-top: 20rpx;
+}
+
+.date-selector:active {
+  transform: scale(0.96);
+  background: var(--color-bg);
+}
+
+.date-text {
+  font-size: 28rpx;
+  color: var(--color-text-secondary);
+  margin-right: 8rpx;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.date-arrow {
+  width: 0;
+  height: 0;
+  border-left: 6rpx solid transparent;
+  border-right: 6rpx solid transparent;
+  border-top: 7rpx solid var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+/* ============ 快捷标签 ============ */
+.quick-tabs {
+  display: flex;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+}
+
+.quick-tab {
+  flex: 1;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-card);
+  border-radius: var(--radius-md);
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  transition: all 0.25s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.quick-tab:active {
+  transform: scale(0.96);
+}
+
+.quick-tab.active {
+  background: var(--color-text);
+  color: #ffffff;
+  box-shadow: 0 4rpx 12rpx rgba(26, 26, 26, 0.2);
+}
+
+/* ============ 收支概览卡片 ============ */
+.hero-card {
+  background: linear-gradient(135deg, #2563EB 0%, #1E40AF 50%, #1E3A8A 100%);
+  border-radius: var(--radius-xl);
+  padding: 40rpx;
+  margin-bottom: 28rpx;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8rpx 32rpx rgba(37, 99, 235, 0.3);
+}
+
+.hero-card::before {
+  content: '';
+  position: absolute;
+  top: -60rpx;
+  right: -40rpx;
+  width: 200rpx;
+  height: 200rpx;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+}
+
+.hero-card::after {
+  content: '';
+  position: absolute;
+  bottom: -30rpx;
+  left: 30%;
+  width: 160rpx;
+  height: 160rpx;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+}
+
+.hero-amounts {
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-amount-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-amount-label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 10rpx;
+  font-weight: 400;
+}
+
+.hero-amount-value {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -1.5rpx;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+}
+
+.hero-amount-value.expense {
+  color: #FCA5A5;
+}
+
+.hero-amount-value.income {
+  color: #86EFAC;
+}
+
+.hero-divider {
+  width: 1rpx;
+  height: 68rpx;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 24rpx;
+}
+
+/* ============ 列表标题 ============ */
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+  padding: 0 4rpx;
+}
+
+.list-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.list-count {
+  font-size: 24rpx;
+  color: var(--color-text-tertiary);
+}
+
+/* ============ 账单列表 ============ */
+.bill-list {
+  margin-top: 4rpx;
+}
+
+.swipe-wrap {
+  position: relative;
+  margin-bottom: 12rpx;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+}
+
+.swipe-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 140rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #EF4444, #DC2626);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
+.swipe-bg text {
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.swipe-card {
+  position: relative;
+  background: var(--color-card);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 1;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.swipe-card.open {
+  transform: translateX(-140rpx);
+}
+
+.bill-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 28rpx;
+}
+
+.bill-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.bill-icon-wrap {
+  width: 80rpx;
+  height: 80rpx;
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.bill-icon {
+  font-size: 36rpx;
+}
+
+.bill-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.bill-name {
+  font-size: 30rpx;
+  color: var(--color-text);
+  font-weight: 500;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.bill-note {
+  font-size: 24rpx;
+  color: var(--color-text-tertiary);
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bill-right {
+  text-align: right;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.bill-amount {
+  font-size: 32rpx;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4rpx;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+  letter-spacing: -0.5rpx;
+}
+
+.bill-amount.red { color: var(--color-expense); }
+.bill-amount.green { color: var(--color-income); }
+
+.bill-date {
+  font-size: 22rpx;
+  color: var(--color-text-light);
+}
+
+/* ============ 空状态 ============ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  background: var(--color-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72rpx;
+  margin-bottom: 32rpx;
+  box-shadow: var(--shadow-md);
+}
+
+.empty-title {
+  font-size: 32rpx;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: var(--color-text-tertiary);
+}
+
+/* ============ 加载 ============ */
+.load-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+  color: var(--color-text-tertiary);
+  font-size: 24rpx;
+  gap: 12rpx;
+}
+
+.loading-spinner {
+  width: 28rpx;
+  height: 28rpx;
+  border: 3rpx solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.load-end-line {
+  width: 60rpx;
+  height: 1rpx;
+  background: var(--color-border);
+}
+
+.load-end-text {
+  color: var(--color-text-light);
+  font-size: 24rpx;
+  margin: 0 16rpx;
+}
+
+/* ============ 浮动按钮 ============ */
+.fab-btn {
+  position: fixed;
+  right: 36rpx;
+  bottom: 160rpx;
+  width: 104rpx;
+  height: 104rpx;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6rpx 24rpx rgba(37, 99, 235, 0.4);
+  z-index: 100;
+}
+
+.fab-btn:active {
+  transform: scale(0.92);
+}
+
+.fab-icon {
+  font-size: 48rpx;
+  color: #ffffff;
+  font-weight: 300;
+  line-height: 1;
+}
+
+/* ============ 导航栏 ============ */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  height: calc(88rpx + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
+  padding-left: 20rpx;
+  padding-right: 20rpx;
+  background: #F5F7FA;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-left {
+  position: relative;
+}
+
+.nav-date {
+  display: inline-flex;
+  align-items: center;
+  padding: 10rpx 20rpx;
+  background: #ffffff;
+  border-radius: 999rpx;
+  box-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.03);
+}
+
+.nav-date:active {
+  transform: scale(0.96);
+  background: #f0f0f0;
+}
+
+.nav-date-text {
+  font-size: 26rpx;
+  color: #6B7280;
+  margin-right: 8rpx;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.nav-date-arrow {
+  width: 0;
+  height: 0;
+  border-left: 5rpx solid transparent;
+  border-right: 5rpx solid transparent;
+  border-top: 6rpx solid #9CA3AF;
+  flex-shrink: 0;
+}
+
+.nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #1A1D26;
+}
+
+/* ============ 季度弹窗 ============ */
+.quarter-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+}
+
+.quarter-sheet {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #ffffff;
+  z-index: 1000;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: 32rpx 32rpx 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.quarter-sheet.show {
+  transform: translateY(0);
+}
+
+.quarter-handle {
+  width: 48rpx;
+  height: 6rpx;
+  background: #E5E7EB;
+  border-radius: 3rpx;
+  margin: 16rpx auto 0;
+}
+
+.quarter-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 40rpx;
+  font-size: 32rpx;
+  color: #1A1D26;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.quarter-item:active {
+  background: #F5F7FA;
+}
+
+.quarter-item.active {
+  font-weight: 600;
+  color: #2563EB;
+}
+
+/* ============ 时间范围选择器 ============ */
+.range-picker {
+  margin-right: 10rpx;
+}
+
+.range-date {
+  min-width: 120rpx;
+  text-align: center;
+}
+
+.range-date.active {
+  background: #EBF5FF;
+  border: 1rpx solid #2563EB;
+}
+
+.range-date.active .date-text {
+  color: #2563EB;
+  font-weight: 600;
+}
+
+.range-separator {
+  font-size: 26rpx;
+  color: #6B7280;
+  margin: 0 10rpx;
+  font-weight: 500;
+}
+
+.quarter-check {
+  color: #2563EB;
+  font-size: 32rpx;
+  font-weight: 600;
+}

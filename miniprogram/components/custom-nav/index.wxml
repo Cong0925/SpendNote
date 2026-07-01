@@ -1,0 +1,108 @@
+<view class="nav">
+  <view class="nav-content">
+    <view class="nav-left {{isRange && viewMode !== 'quarter' ? 'range-mode' : ''}}">
+      <!-- 非范围选择模式 -->
+      <block wx:if="{{!isRange}}">
+        <!-- 日 -->
+        <picker wx:if="{{viewMode === 'day'}}" mode="date" value="{{date}}" bindchange="onDateChange" class="date-picker">
+          <view class="nav-date">
+            <text class="nav-date-text">{{dateText}}</text>
+            <view class="nav-date-arrow"></view>
+          </view>
+        </picker>
+
+        <!-- 月 -->
+        <picker wx:if="{{viewMode === 'month'}}" mode="date" fields="month" value="{{monthValue}}" bindchange="onMonthChange" class="date-picker">
+          <view class="nav-date">
+            <text class="nav-date-text">{{dateText}}</text>
+            <view class="nav-date-arrow"></view>
+          </view>
+        </picker>
+
+        <!-- 年 -->
+        <picker wx:if="{{viewMode === 'year'}}" mode="date" fields="year" value="{{yearValue}}" bindchange="onYearChange" class="date-picker">
+          <view class="nav-date">
+            <text class="nav-date-text">{{dateText}}</text>
+            <view class="nav-date-arrow"></view>
+          </view>
+        </picker>
+
+        <!-- 季度 -->
+        <view class="nav-date quarter-btn" wx:if="{{viewMode === 'quarter'}}" catchtap="showQuarterPicker">
+          <text class="nav-date-text">{{dateText}}</text>
+          <view class="nav-date-arrow"></view>
+        </view>
+      </block>
+
+      <!-- 范围选择模式 -->
+      <block wx:if="{{isRange}}">
+        <!-- 日范围 -->
+        <block wx:if="{{viewMode === 'day'}}">
+          <picker mode="date" value="{{tempStartDate}}" bindchange="onStartDateChange" class="date-picker range-picker">
+            <view class="nav-date range-date">
+              <text class="nav-date-text">{{rangeStartText || '开始日期'}}</text>
+              <view class="nav-date-arrow"></view>
+            </view>
+          </picker>
+          <text class="range-separator">至</text>
+          <picker mode="date" value="{{tempEndDate}}" bindchange="onEndDateChange" class="date-picker range-picker">
+            <view class="nav-date range-date">
+              <text class="nav-date-text">{{rangeEndText || '结束日期'}}</text>
+              <view class="nav-date-arrow"></view>
+            </view>
+          </picker>
+        </block>
+
+        <!-- 月范围 -->
+        <block wx:if="{{viewMode === 'month'}}">
+          <picker mode="date" fields="month" value="{{tempStartDate}}" bindchange="onStartDateChange" class="date-picker range-picker">
+            <view class="nav-date range-date">
+              <text class="nav-date-text">{{rangeStartText || '开始月份'}}</text>
+              <view class="nav-date-arrow"></view>
+            </view>
+          </picker>
+          <text class="range-separator">至</text>
+          <picker mode="date" fields="month" value="{{tempEndDate}}" bindchange="onEndDateChange" class="date-picker range-picker">
+            <view class="nav-date range-date">
+              <text class="nav-date-text">{{rangeEndText || '结束月份'}}</text>
+              <view class="nav-date-arrow"></view>
+            </view>
+          </picker>
+        </block>
+
+        <!-- 年范围 -->
+        <block wx:if="{{viewMode === 'year'}}">
+          <picker mode="date" fields="year" value="{{tempStartDate}}" bindchange="onStartDateChange" class="date-picker range-picker">
+            <view class="nav-date range-date">
+              <text class="nav-date-text">{{rangeStartText || '开始年份'}}</text>
+              <view class="nav-date-arrow"></view>
+            </view>
+          </picker>
+          <text class="range-separator">至</text>
+          <picker mode="date" fields="year" value="{{tempEndDate}}" bindchange="onEndDateChange" class="date-picker range-picker">
+            <view class="nav-date range-date">
+              <text class="nav-date-text">{{rangeEndText || '结束年份'}}</text>
+              <view class="nav-date-arrow"></view>
+            </view>
+          </picker>
+        </block>
+
+        <!-- 季度保持原逻辑 -->
+        <view class="nav-date quarter-btn" wx:if="{{viewMode === 'quarter'}}" catchtap="showQuarterPicker">
+          <text class="nav-date-text">{{dateText}}</text>
+          <view class="nav-date-arrow"></view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 季度弹窗 -->
+  <view class="quarter-mask" wx:if="{{showQuarter}}" bindtap="hideQuarterPicker"></view>
+  <view class="quarter-sheet {{showQuarter ? 'show' : ''}}">
+    <view class="quarter-handle"></view>
+    <view class="quarter-item {{quarterIndex === item.value ? 'active' : ''}}" wx:for="{{quarters}}" wx:key="value" bindtap="selectQuarter" data-value="{{item.value}}">
+      <text>{{item.label}}</text>
+      <view class="quarter-check" wx:if="{{quarterIndex === item.value}}">✓</view>
+    </view>
+  </view>
+</view>

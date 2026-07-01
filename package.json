@@ -1,0 +1,26 @@
+{
+  "name": "spendnote",
+  "version": "1.0.0",
+  "description": "一款基于微信小程序云开发的记账应用，主打轻量、纯净、数据自主。",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cong0925/SpendNote.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cong0925/SpendNote/issues"
+  },
+  "homepage": "https://github.com/Cong0925/SpendNote#readme",
+  "dependencies": {
+    "@vant/weapp": "^1.11.7"
+  }
+}
