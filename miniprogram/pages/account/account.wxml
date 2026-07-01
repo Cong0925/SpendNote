@@ -76,7 +76,7 @@
     <view class="loan-item" bindtap="goToLoan">
       <view class="loan-left">
         <view class="loan-icon lend-icon">
-          <text class="iconfont icon-up"></text>
+          <image class="loan-icon-img" src="/images/loan/lend.png" mode="aspectFit" />
         </view>
         <view class="loan-info">
           <text class="loan-name">借出</text>
@@ -91,7 +91,7 @@
     <view class="loan-item" bindtap="goToLoan">
       <view class="loan-left">
         <view class="loan-icon borrow-icon">
-          <text class="iconfont icon-down"></text>
+          <image class="loan-icon-img" src="/images/loan/borrow.png" mode="aspectFit" />
         </view>
         <view class="loan-info">
           <text class="loan-name">借入</text>

@@ -246,6 +246,11 @@ page {
   margin-right: 24rpx;
 }
 
+.loan-icon-img {
+  width: 48rpx;
+  height: 48rpx;
+}
+
 .lend-icon {
   background: var(--color-expense-light);
   color: var(--color-expense);

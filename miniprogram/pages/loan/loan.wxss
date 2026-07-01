@@ -135,10 +135,12 @@ page {
   justify-content: center;
   align-items: center;
   margin-right: 24rpx;
-  font-size: 32rpx;
-  font-weight: 700;
-  color: #ffffff;
   flex-shrink: 0;
+}
+
+.loan-icon-img {
+  width: 48rpx;
+  height: 48rpx;
 }
 
 .lend-icon {
