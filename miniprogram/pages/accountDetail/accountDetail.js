@@ -165,6 +165,32 @@ Page({
       return
     }
 
+    // 验证银行是否重复（仅储蓄卡和信用卡）
+    if (!isEdit && form.bankName) {
+      const isDuplicate = await this.checkBankDuplicate(form.type, form.bankName, form.bankId)
+      if (isDuplicate) {
+        wx.hideLoading()
+        wx.showToast({
+          title: '该银行已有账户，请勿重复添加',
+          icon: 'none'
+        })
+        return
+      }
+    }
+
+    // 验证"其他"类型名称是否重复
+    if (!isEdit && form.type === 'other') {
+      const isNameDuplicate = await this.checkNameDuplicate(form.type, form.name)
+      if (isNameDuplicate) {
+        wx.hideLoading()
+        wx.showToast({
+          title: '该账户名称已存在，请勿重复添加',
+          icon: 'none'
+        })
+        return
+      }
+    }
+
     wx.showLoading({ title: '保存中...' })
 
     try {
@@ -229,6 +255,62 @@ Page({
         title: '保存失败',
         icon: 'none'
       })
+    }
+  },
+
+  /**
+   * 检查银行是否重复
+   */
+  async checkBankDuplicate(type, bankName, bankId) {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'accountFunctions',
+        data: {
+          action: 'list',
+          data: { type }
+        }
+      })
+
+      if (res.result.success) {
+        const accounts = res.result.data || []
+        // 检查是否有相同银行的账户（排除当前编辑的账户）
+        return accounts.some(item =>
+          item.bankName === bankName &&
+          item._id !== this.data.accountId
+        )
+      }
+      return false
+    } catch (err) {
+      console.error('检查银行重复失败：', err)
+      return false
+    }
+  },
+
+  /**
+   * 检查名称是否重复（仅"其他"类型）
+   */
+  async checkNameDuplicate(type, name) {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'accountFunctions',
+        data: {
+          action: 'list',
+          data: { type }
+        }
+      })
+
+      if (res.result.success) {
+        const accounts = res.result.data || []
+        // 检查是否有相同名称的账户（排除当前编辑的账户）
+        return accounts.some(item =>
+          item.name === name &&
+          item._id !== this.data.accountId
+        )
+      }
+      return false
+    } catch (err) {
+      console.error('检查名称重复失败：', err)
+      return false
     }
   },
 

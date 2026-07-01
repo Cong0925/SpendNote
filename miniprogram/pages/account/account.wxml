@@ -17,9 +17,49 @@
     </view>
   </view>
 
+  <!-- 借款记账 -->
+  <view class="section">
+    <view class="section-title">借款记账</view>
+
+    <view class="loan-item" bindtap="goToLoan">
+      <view class="loan-left">
+        <view class="loan-icon lend-icon">
+          <image class="loan-icon-img" src="/images/loan/lend.png" mode="aspectFit" />
+        </view>
+        <view class="loan-info">
+          <text class="loan-name">借出</text>
+          <text class="loan-type">应收</text>
+        </view>
+      </view>
+      <view class="loan-right">
+        <text class="loan-amount">{{hideAmount ? '******' : '￥' + loanSummary.lendReceivable}}</text>
+      </view>
+    </view>
+
+    <view class="loan-item" bindtap="goToLoan">
+      <view class="loan-left">
+        <view class="loan-icon borrow-icon">
+          <image class="loan-icon-img" src="/images/loan/borrow.png" mode="aspectFit" />
+        </view>
+        <view class="loan-info">
+          <text class="loan-name">借入</text>
+          <text class="loan-type">应还</text>
+        </view>
+      </view>
+      <view class="loan-right">
+        <text class="loan-amount">{{hideAmount ? '******' : '￥' + loanSummary.borrowRepayable}}</text>
+      </view>
+    </view>
+  </view>
+
   <!-- 我的账户 -->
   <view class="section">
-    <view class="section-title">我的账户</view>
+    <view class="section-header">
+      <text class="section-title">我的账户</text>
+      <view class="add-btn" bindtap="goToAddAccount">
+        <image class="add-icon-img" src="/images/icons/add.png" mode="aspectFit" />
+      </view>
+    </view>
 
     <!-- 资产类账户 -->
     <view
@@ -66,41 +106,6 @@
     <view class="add-account-btn" bindtap="goToAddAccount">
       <text class="add-icon">+</text>
       <text>添加账户</text>
-    </view>
-  </view>
-
-  <!-- 借款记账 -->
-  <view class="section">
-    <view class="section-title">借款记账</view>
-
-    <view class="loan-item" bindtap="goToLoan">
-      <view class="loan-left">
-        <view class="loan-icon lend-icon">
-          <image class="loan-icon-img" src="/images/loan/lend.png" mode="aspectFit" />
-        </view>
-        <view class="loan-info">
-          <text class="loan-name">借出</text>
-          <text class="loan-type">应收</text>
-        </view>
-      </view>
-      <view class="loan-right">
-        <text class="loan-amount">{{hideAmount ? '******' : '￥' + loanSummary.lendReceivable}}</text>
-      </view>
-    </view>
-
-    <view class="loan-item" bindtap="goToLoan">
-      <view class="loan-left">
-        <view class="loan-icon borrow-icon">
-          <image class="loan-icon-img" src="/images/loan/borrow.png" mode="aspectFit" />
-        </view>
-        <view class="loan-info">
-          <text class="loan-name">借入</text>
-          <text class="loan-type">应还</text>
-        </view>
-      </view>
-      <view class="loan-right">
-        <text class="loan-amount">{{hideAmount ? '******' : '￥' + loanSummary.borrowRepayable}}</text>
-      </view>
     </view>
   </view>
 
