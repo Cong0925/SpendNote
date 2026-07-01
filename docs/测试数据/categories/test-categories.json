@@ -1,0 +1,70 @@
+{
+  "collection": "categories",
+  "description": "分类管理测试数据",
+  "data": [
+    {
+      "_id": "cat_expense_001",
+      "_openid": "test_user_001",
+      "name": "餐饮",
+      "icon": "🍜",
+      "type": "expense",
+      "sort": 1
+    },
+    {
+      "_id": "cat_expense_002",
+      "_openid": "test_user_001",
+      "name": "交通",
+      "icon": "🚗",
+      "type": "expense",
+      "sort": 2
+    },
+    {
+      "_id": "cat_expense_003",
+      "_openid": "test_user_001",
+      "name": "购物",
+      "icon": "🛒",
+      "type": "expense",
+      "sort": 3
+    },
+    {
+      "_id": "cat_expense_004",
+      "_openid": "test_user_001",
+      "name": "娱乐",
+      "icon": "🎬",
+      "type": "expense",
+      "sort": 4
+    },
+    {
+      "_id": "cat_expense_005",
+      "_openid": "test_user_001",
+      "name": "居住",
+      "icon": "💡",
+      "type": "expense",
+      "sort": 5
+    },
+    {
+      "_id": "cat_income_001",
+      "_openid": "test_user_001",
+      "name": "工资",
+      "icon": "💵",
+      "type": "income",
+      "sort": 1
+    },
+    {
+      "_id": "cat_income_002",
+      "_openid": "test_user_001",
+      "name": "奖金",
+      "icon": "💰",
+      "type": "income",
+      "sort": 2
+    },
+    {
+      "_id": "cat_income_003",
+      "_openid": "test_user_001",
+      "name": "红包",
+      "icon": "🎁",
+      "type": "income",
+      "sort": 3
+    }
+  ]
+}

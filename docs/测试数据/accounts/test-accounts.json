@@ -1,0 +1,81 @@
+{
+  "collection": "accounts",
+  "description": "账户表测试数据",
+  "data": [
+    {
+      "_id": "account_test_001",
+      "_openid": "test_user_001",
+      "name": "微信",
+      "type": "wechat",
+      "icon": "/images/account/wechat.png",
+      "balance": 5000,
+      "isDebt": false,
+      "bankName": "",
+      "bankCardLast4": "",
+      "remark": "",
+      "sortOrder": 0,
+      "createdAt": "2026-07-01T10:00:00.000Z",
+      "updatedAt": "2026-07-01T10:00:00.000Z"
+    },
+    {
+      "_id": "account_test_002",
+      "_openid": "test_user_001",
+      "name": "建设银行",
+      "type": "savings",
+      "icon": "/images/account/savings.png",
+      "balance": 50000,
+      "isDebt": false,
+      "bankName": "中国建设银行",
+      "bankCardLast4": "1234",
+      "remark": "工资卡",
+      "sortOrder": 1,
+      "createdAt": "2026-07-01T10:00:00.000Z",
+      "updatedAt": "2026-07-01T10:00:00.000Z"
+    },
+    {
+      "_id": "account_test_003",
+      "_openid": "test_user_001",
+      "name": "支付宝",
+      "type": "alipay",
+      "icon": "/images/account/alipay.png",
+      "balance": 8000,
+      "isDebt": false,
+      "bankName": "",
+      "bankCardLast4": "",
+      "remark": "",
+      "sortOrder": 2,
+      "createdAt": "2026-07-01T10:00:00.000Z",
+      "updatedAt": "2026-07-01T10:00:00.000Z"
+    },
+    {
+      "_id": "account_test_004",
+      "_openid": "test_user_001",
+      "name": "信用卡",
+      "type": "credit",
+      "icon": "/images/account/credit.png",
+      "balance": 3000,
+      "isDebt": true,
+      "bankName": "招商银行",
+      "bankCardLast4": "5678",
+      "remark": "信用卡",
+      "sortOrder": 3,
+      "createdAt": "2026-07-01T10:00:00.000Z",
+      "updatedAt": "2026-07-01T10:00:00.000Z"
+    },
+    {
+      "_id": "account_test_005",
+      "_openid": "test_user_001",
+      "name": "花呗",
+      "type": "huabei",
+      "icon": "/images/account/huabei.png",
+      "balance": 1500,
+      "isDebt": true,
+      "bankName": "",
+      "bankCardLast4": "",
+      "remark": "",
+      "sortOrder": 4,
+      "createdAt": "2026-07-01T10:00:00.000Z",
+      "updatedAt": "2026-07-01T10:00:00.000Z"
+    }
+  ]
+}

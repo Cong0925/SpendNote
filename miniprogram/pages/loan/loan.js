@@ -98,12 +98,19 @@ Page({
       })
 
       if (res.result.success) {
+        // 格式化日期为年月日
+        const loanList = (res.result.data || []).map(item => ({
+          ...item,
+          loanDate: this.formatDate(item.loanDate)
+        }))
         this.setData({
-          loanList: res.result.data || []
+          loanList,
+          loading: false
         })
       }
     } catch (err) {
       console.error('获取借款记录失败：', err)
+      this.setData({ loading: false })
     }
   },
 
@@ -114,7 +121,12 @@ Page({
     const type = e.currentTarget.dataset.type
     if (type === this.data.currentType) return
 
-    this.setData({ currentType: type })
+    // 显示loading状态，清空列表
+    this.setData({
+      currentType: type,
+      loanList: [],
+      loading: true
+    })
     this.loadLoanList()
   },
 

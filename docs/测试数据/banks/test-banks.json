@@ -1,0 +1,106 @@
+{
+  "collection": "banks",
+  "description": "银行表测试数据",
+  "data": [
+    {
+      "_id": "bank_test_001",
+      "name": "中国工商银行",
+      "shortName": "工商银行",
+      "icon": "/images/banks/icbc.png",
+      "category": "state-owned",
+      "isHot": true,
+      "pinyin": "gongshanghang",
+      "createdAt": "2026-07-01T10:00:00.000Z"
+    },
+    {
+      "_id": "bank_test_002",
+      "name": "中国农业银行",
+      "shortName": "农业银行",
+      "icon": "/images/banks/abc.png",
+      "category": "state-owned",
+      "isHot": true,
+      "pinyin": "nongyeyinhang",
+      "createdAt": "2026-07-01T10:00:00.000Z"
+    },
+    {
+      "_id": "bank_test_003",
+      "name": "中国银行",
+      "shortName": "中国银行",
+      "icon": "/images/banks/boc.png",
+      "category": "state-owned",
+      "isHot": true,
+      "pinyin": "zhongguoyinhang",
+      "createdAt": "2026-07-01T10:00:00.000Z"
+    },
+    {
+      "_id": "bank_test_004",
+      "name": "中国建设银行",
+      "shortName": "建设银行",
+      "icon": "/images/banks/ccb.png",
+      "category": "state-owned",
+      "isHot": true,
+      "pinyin": "jiansheyinhang",
+      "createdAt": "2026-07-01T10:00:00.000Z"
+    },
+    {
+      "_id": "bank_test_005",
+      "name": "招商银行",
+      "shortName": "招商银行",
+      "icon": "/images/banks/cmb.png",
+      "category": "joint-stock",
+      "isHot": true,
+      "pinyin": "zhaoshangyinhang",
+      "createdAt": "2026-07-01T10:00:00.000Z"
+    },
+    {
+      "_id": "bank_test_006",
+      "name": "中国邮政储蓄银行",
+      "shortName": "邮储银行",
+      "icon": "/images/banks/psbc.png",
+      "category": "state-owned",
+      "isHot": true,
+      "pinyin": "youzhuyinhang",
+      "createdAt": "2026-07-01T10:00:00.000Z"
+    },
+    {
+      "_id": "bank_test_007",
+      "name": "交通银行",
+      "shortName": "交通银行",
+      "icon": "/images/banks/bankcomm.png",
+      "category": "state-owned",
+      "isHot": true,
+      "pinyin": "jiaotongyinhang",
+      "createdAt": "2026-07-01T10:00:00.000Z"
+    },
+    {
+      "_id": "bank_test_008",
+      "name": "中信银行",
+      "shortName": "中信银行",
+      "icon": "/images/banks/citic.png",
+      "category": "joint-stock",
+      "isHot": true,
+      "pinyin": "zhongxinyinhang",
+      "createdAt": "2026-07-01T10:00:00.000Z"
+    },
+    {
+      "_id": "bank_test_009",
+      "name": "兴业银行",
+      "shortName": "兴业银行",
+      "icon": "/images/banks/cib.png",
+      "category": "joint-stock",
+      "isHot": true,
+      "pinyin": "xingyeyinhang",
+      "createdAt": "2026-07-01T10:00:00.000Z"
+    },
+    {
+      "_id": "bank_test_010",
+      "name": "上海浦东发展银行",
+      "shortName": "浦发银行",
+      "icon": "/images/banks/spdb.png",
+      "category": "joint-stock",
+      "isHot": true,
+      "pinyin": "pufayinhang",
+      "createdAt": "2026-07-01T10:00:00.000Z"
+    }
+  ]
+}

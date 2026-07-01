@@ -1,0 +1,61 @@
+{
+  "collection": "bills",
+  "description": "账单记录测试数据",
+  "data": [
+    {
+      "_id": "bill_test_001",
+      "_openid": "test_user_001",
+      "type": "expense",
+      "amount": 35.5,
+      "category": "餐饮",
+      "icon": "🍜",
+      "note": "午餐",
+      "date": "2026-07-01",
+      "created_at": "2026-07-01T12:30:00.000Z"
+    },
+    {
+      "_id": "bill_test_002",
+      "_openid": "test_user_001",
+      "type": "expense",
+      "amount": 15,
+      "category": "交通",
+      "icon": "🚗",
+      "note": "地铁",
+      "date": "2026-07-01",
+      "created_at": "2026-07-01T08:30:00.000Z"
+    },
+    {
+      "_id": "bill_test_003",
+      "_openid": "test_user_001",
+      "type": "income",
+      "amount": 15000,
+      "category": "工资",
+      "icon": "💵",
+      "note": "7月工资",
+      "date": "2026-07-01",
+      "created_at": "2026-07-01T10:00:00.000Z"
+    },
+    {
+      "_id": "bill_test_004",
+      "_openid": "test_user_001",
+      "type": "expense",
+      "amount": 299,
+      "category": "购物",
+      "icon": "🛒",
+      "note": "衣服",
+      "date": "2026-06-30",
+      "created_at": "2026-06-30T15:20:00.000Z"
+    },
+    {
+      "_id": "bill_test_005",
+      "_openid": "test_user_001",
+      "type": "expense",
+      "amount": 89,
+      "category": "娱乐",
+      "icon": "🎬",
+      "note": "电影票",
+      "date": "2026-06-29",
+      "created_at": "2026-06-29T19:30:00.000Z"
+    }
+  ]
+}

@@ -286,16 +286,20 @@ Page({
       }
 
       if (res.result.success) {
+        wx.hideLoading()
         wx.showToast({
           title: '保存成功',
           icon: 'success'
         })
 
-        // 返回上一页
+        // 跳转到借款记账主页
         setTimeout(() => {
-          wx.navigateBack()
+          wx.redirectTo({
+            url: '/pages/loan/loan'
+          })
         }, 1500)
       } else {
+        wx.hideLoading()
         wx.showToast({
           title: res.result.error || '保存失败',
           icon: 'none'
@@ -303,12 +307,11 @@ Page({
       }
     } catch (err) {
       console.error('保存借款失败：', err)
+      wx.hideLoading()
       wx.showToast({
         title: '保存失败',
         icon: 'none'
       })
-    } finally {
-      wx.hideLoading()
     }
   },
 
