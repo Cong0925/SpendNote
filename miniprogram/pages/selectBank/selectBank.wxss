@@ -1,0 +1,162 @@
+/**
+ * 选择银行页面样式 - 与现有页面统一
+ */
+page {
+  background: var(--color-bg);
+}
+
+.container {
+  min-height: 100vh;
+}
+
+/* ============ 顶部标题 ============ */
+.header {
+  padding: 32rpx;
+  padding-bottom: 20rpx;
+}
+
+.header-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1.5rpx;
+}
+
+/* ============ 搜索框 ============ */
+.search-bar {
+  padding: 0 32rpx 24rpx;
+}
+
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  padding: 24rpx 28rpx;
+  box-shadow: var(--shadow-card);
+}
+
+.search-icon {
+  font-size: 28rpx;
+  margin-right: 16rpx;
+  color: var(--color-text-tertiary);
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: var(--color-text);
+}
+
+.clear-btn {
+  font-size: 36rpx;
+  color: var(--color-text-tertiary);
+  padding: 0 12rpx;
+}
+
+/* ============ 银行列表 ============ */
+.bank-list {
+  background: var(--color-card);
+  margin: 0 32rpx;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  animation: slideUp 0.5s ease-out both;
+}
+
+.bank-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid var(--color-divider);
+  transition: all 0.2s ease;
+}
+
+.bank-item:last-child {
+  border-bottom: none;
+}
+
+.bank-item:active {
+  background: var(--color-bg);
+  transform: scale(0.98);
+}
+
+.bank-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.bank-icon {
+  width: 64rpx;
+  height: 64rpx;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.bank-name {
+  font-size: 30rpx;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.bank-arrow {
+  font-size: 28rpx;
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+/* ============ 空状态 ============ */
+.empty-state {
+  padding: 120rpx 0;
+  text-align: center;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: var(--color-text-tertiary);
+}
+
+/* ============ 加载状态 ============ */
+.loading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============ 动画效果 ============ */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(32rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

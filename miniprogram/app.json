@@ -3,9 +3,15 @@
     "pages/index/index",
     "pages/add/add",
     "pages/stats/stats",
+    "pages/account/account",
     "pages/mine/mine",
     "pages/search/search",
-    "pages/detail/detail"
+    "pages/detail/detail",
+    "pages/addAccount/addAccount",
+    "pages/selectBank/selectBank",
+    "pages/accountDetail/accountDetail",
+    "pages/loan/loan",
+    "pages/addLoan/addLoan"
   ],
   "usingComponents": {
     "van-datetime-picker": "@vant/weapp/datetime-picker/index",
@@ -37,6 +43,12 @@
         "text": "统计",
         "iconPath": "images/icons/stats.png",
         "selectedIconPath": "images/icons/stats-active.png"
+      },
+      {
+        "pagePath": "pages/account/account",
+        "text": "账户",
+        "iconPath": "images/icons/account.png",
+        "selectedIconPath": "images/icons/account-active.png"
       },
       {
         "pagePath": "pages/mine/mine",

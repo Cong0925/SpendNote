@@ -1,0 +1,65 @@
+<!--
+  账户详情页面
+  填写或编辑账户信息
+-->
+<view class="container">
+  <!-- 表单区域 -->
+  <view class="form-section">
+    <!-- 图标预览 -->
+    <view class="form-item icon-preview">
+      <image class="preview-icon" src="{{form.icon}}" mode="aspectFit"></image>
+    </view>
+
+    <!-- 账户名称 -->
+    <view class="form-item">
+      <text class="form-label">名称</text>
+      <input
+        class="form-input"
+        placeholder="请输入账户名称"
+        value="{{form.name}}"
+        bindinput="onNameInput"
+      />
+    </view>
+
+    <!-- 余额/应还金额 -->
+    <view class="form-item">
+      <text class="form-label">{{form.isDebt ? '应还' : '余额'}}</text>
+      <input
+        class="form-input"
+        type="digit"
+        placeholder="请输入金额"
+        value="{{form.balance}}"
+        bindinput="onBalanceInput"
+      />
+    </view>
+
+    <!-- 银行卡号后四位（仅银行卡类） -->
+    <view class="form-item" wx:if="{{form.type === 'savings' || form.type === 'credit'}}">
+      <text class="form-label">银行卡号后四位</text>
+      <input
+        class="form-input"
+        type="number"
+        placeholder="请输入后四位"
+        value="{{form.bankCardLast4}}"
+        bindinput="onCardLast4Input"
+      />
+    </view>
+
+    <!-- 备注 -->
+    <view class="form-item">
+      <text class="form-label">备注</text>
+      <input
+        class="form-input"
+        placeholder="{{form.isDebt ? '请输入备注' : (form.bankName ? '工资卡' : '请输入备注')}}"
+        value="{{form.remark}}"
+        bindinput="onRemarkInput"
+      />
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="btn-section">
+    <view class="save-btn" bindtap="saveAccount">保存</view>
+    <view class="delete-btn" wx:if="{{isEdit}}" bindtap="deleteAccount">删除账户</view>
+  </view>
+</view>

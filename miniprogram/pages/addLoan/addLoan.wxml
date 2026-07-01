@@ -1,0 +1,105 @@
+<!--
+  新建借款页面 - 与现有页面统一风格
+-->
+<view class="container">
+  <!-- 类型切换（新增模式才显示） -->
+  <view class="type-tabs" wx:if="{{!isEdit}}">
+    <view
+      class="type-tab {{currentType === 'lend' ? 'active' : ''}}"
+      data-type="lend"
+      bindtap="switchType"
+    >
+      <text>借出</text>
+    </view>
+    <view
+      class="type-tab {{currentType === 'borrow' ? 'active' : ''}}"
+      data-type="borrow"
+      bindtap="switchType"
+    >
+      <text>借入</text>
+    </view>
+  </view>
+
+  <!-- 表单区域 -->
+  <view class="form-section">
+    <!-- 金额 -->
+    <view class="form-item">
+      <text class="form-label">金额:</text>
+      <input
+        class="form-input"
+        type="digit"
+        placeholder="点击输入"
+        value="{{form.amount}}"
+        bindinput="onAmountInput"
+      />
+    </view>
+
+    <!-- 姓名 -->
+    <view class="form-item">
+      <text class="form-label">{{currentType === 'lend' ? '借给谁:' : '谁借的:'}}</text>
+      <input
+        class="form-input"
+        placeholder="点击输入"
+        value="{{form.personName}}"
+        bindinput="onPersonNameInput"
+      />
+    </view>
+
+    <!-- 时间 -->
+    <view class="form-item">
+      <text class="form-label">时间:</text>
+      <picker mode="date" value="{{form.loanDate}}" bindchange="onDateChange">
+        <view class="form-picker">
+          <text>{{form.loanDate || '请选择日期'}}</text>
+          <text class="picker-arrow">></text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 账户 -->
+    <view class="form-item">
+      <text class="form-label">账户:</text>
+      <picker range="{{accountList}}" range-key="name" bindchange="onAccountChange">
+        <view class="form-picker">
+          <text>{{form.accountName || '请选择账户'}}</text>
+          <text class="picker-arrow">></text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 备注 -->
+    <view class="form-item">
+      <text class="form-label">备注:</text>
+      <input
+        class="form-input"
+        placeholder="点击输入"
+        value="{{form.remark}}"
+        bindinput="onRemarkInput"
+      />
+    </view>
+  </view>
+
+  <!-- 添加图片 -->
+  <view class="image-section">
+    <view class="image-header">
+      <text class="image-title">添加图片</text>
+      <text class="image-count">{{form.images.length}}/{{maxImages}}</text>
+    </view>
+    <view class="image-list">
+      <view
+        class="image-item"
+        wx:for="{{form.images}}"
+        wx:key="*this"
+      >
+        <image class="preview-image" src="{{item}}" mode="aspectFill"></image>
+        <view class="remove-btn" data-index="{{index}}" bindtap="removeImage">×</view>
+      </view>
+      <view class="add-image-btn" wx:if="{{form.images.length < maxImages}}" bindtap="chooseImage">
+        <text class="add-icon">+</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="save-btn" bindtap="saveLoan">保存</view>
+</view>

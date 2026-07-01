@@ -1,0 +1,52 @@
+<!--
+  添加账户页面
+  选择账户类型，分为资产类和负债类
+-->
+<view class="container">
+  <!-- 资产类账户 -->
+  <view class="section">
+    <view class="section-title">资产类</view>
+    <view class="account-grid">
+      <view
+        class="account-type-item"
+        wx:for="{{assetTypes}}"
+        wx:key="type"
+        data-type="{{item.type}}"
+        data-name="{{item.name}}"
+        data-icon="{{item.icon}}"
+        data-isdebt="{{item.isDebt}}"
+        data-needbank="{{item.needBank}}"
+        bindtap="selectAccountType"
+      >
+        <image class="type-icon" src="{{item.icon}}" mode="aspectFit"></image>
+        <text class="type-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 负债类账户 -->
+  <view class="section">
+    <view class="section-title">负债类</view>
+    <view class="account-grid">
+      <view
+        class="account-type-item debt"
+        wx:for="{{debtTypes}}"
+        wx:key="type"
+        data-type="{{item.type}}"
+        data-name="{{item.name}}"
+        data-icon="{{item.icon}}"
+        data-isdebt="{{item.isDebt}}"
+        data-needbank="{{item.needBank}}"
+        bindtap="selectAccountType"
+      >
+        <image class="type-icon" src="{{item.icon}}" mode="aspectFit"></image>
+        <text class="type-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 说明文字 -->
+  <view class="tip">
+    <text class="tip-text">* 负债类账户包括：信用卡、花呗、京东白条、美团月付</text>
+  </view>
+</view>

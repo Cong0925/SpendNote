@@ -1,0 +1,123 @@
+/**
+ * 账户详情页面样式 - 与现有页面统一
+ */
+page {
+  background: var(--color-bg);
+}
+
+.container {
+  min-height: 100vh;
+}
+
+/* ============ 顶部标题 ============ */
+.header {
+  padding: 32rpx;
+  padding-bottom: 20rpx;
+}
+
+.header-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1.5rpx;
+}
+
+/* ============ 表单区域 ============ */
+.form-section {
+  background: var(--color-card);
+  margin: 0 32rpx 24rpx;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  animation: slideUp 0.5s ease-out both;
+}
+
+.icon-preview {
+  display: flex;
+  justify-content: center;
+  padding: 48rpx;
+  border-bottom: 1rpx solid var(--color-divider);
+}
+
+.preview-icon {
+  width: 128rpx;
+  height: 128rpx;
+}
+
+.form-item {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid var(--color-divider);
+}
+
+.form-item:last-child {
+  border-bottom: none;
+}
+
+.form-label {
+  width: 200rpx;
+  font-size: 30rpx;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.form-input {
+  flex: 1;
+  font-size: 30rpx;
+  color: var(--color-text);
+  text-align: right;
+}
+
+/* ============ 操作按钮 ============ */
+.btn-section {
+  padding: 48rpx 32rpx;
+}
+
+.save-btn {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 600;
+  text-align: center;
+  padding: 28rpx;
+  border-radius: var(--radius-full);
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(37, 99, 235, 0.3);
+  transition: all 0.2s ease;
+}
+
+.save-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.delete-btn {
+  background: var(--color-card);
+  color: var(--color-danger);
+  font-size: 32rpx;
+  font-weight: 600;
+  text-align: center;
+  padding: 28rpx;
+  border-radius: var(--radius-full);
+  border: 2rpx solid var(--color-danger);
+  transition: all 0.2s ease;
+}
+
+.delete-btn:active {
+  background: var(--color-danger);
+  color: #ffffff;
+}
+
+/* ============ 动画效果 ============ */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(32rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

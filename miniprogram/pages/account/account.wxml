@@ -1,0 +1,111 @@
+<!--
+  账户主页 - 与现有页面统一风格
+-->
+<view class="container">
+  <!-- 顶部净资产区域 -->
+  <view class="hero-card">
+    <view class="header-title">净资产</view>
+    <view class="net-asset">
+      <text class="net-asset-value">{{hideAmount ? '******' : summary.netAsset}}</text>
+      <view class="hide-btn" bindtap="toggleHideAmount">
+        <text class="iconfont {{hideAmount ? 'icon-eye-close' : 'icon-eye'}}"></text>
+      </view>
+    </view>
+    <view class="summary-row">
+      <text class="summary-item">负债: {{hideAmount ? '******' : summary.totalDebt}}</text>
+      <text class="summary-item">总资产: {{hideAmount ? '******' : summary.totalAsset}}</text>
+    </view>
+  </view>
+
+  <!-- 我的账户 -->
+  <view class="section">
+    <view class="section-title">我的账户</view>
+
+    <!-- 资产类账户 -->
+    <view
+      class="account-item"
+      wx:for="{{assetAccounts}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bindtap="goToAccountDetail"
+    >
+      <view class="account-left">
+        <image class="account-icon" src="{{item.icon}}" mode="aspectFit"></image>
+        <view class="account-info">
+          <text class="account-name">{{item.name}}</text>
+          <text class="account-type">{{item.type}}</text>
+        </view>
+      </view>
+      <view class="account-right">
+        <text class="account-amount">{{hideAmount ? '******' : item.balance}}</text>
+      </view>
+    </view>
+
+    <!-- 负债类账户 -->
+    <view
+      class="account-item"
+      wx:for="{{debtAccounts}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bindtap="goToAccountDetail"
+    >
+      <view class="account-left">
+        <image class="account-icon" src="{{item.icon}}" mode="aspectFit"></image>
+        <view class="account-info">
+          <text class="account-name">{{item.name}}</text>
+          <text class="account-type">{{item.type}}</text>
+        </view>
+      </view>
+      <view class="account-right">
+        <text class="account-debt-label">应还</text>
+        <text class="account-amount debt-amount">{{hideAmount ? '******' : item.balance}}</text>
+      </view>
+    </view>
+
+    <!-- 添加账户按钮 -->
+    <view class="add-account-btn" bindtap="goToAddAccount">
+      <text class="add-icon">+</text>
+      <text>添加账户</text>
+    </view>
+  </view>
+
+  <!-- 借款记账 -->
+  <view class="section">
+    <view class="section-title">借款记账</view>
+
+    <view class="loan-item" bindtap="goToLoan">
+      <view class="loan-left">
+        <view class="loan-icon lend-icon">
+          <text class="iconfont icon-up"></text>
+        </view>
+        <view class="loan-info">
+          <text class="loan-name">借出</text>
+          <text class="loan-type">应收</text>
+        </view>
+      </view>
+      <view class="loan-right">
+        <text class="loan-amount">{{hideAmount ? '******' : loanSummary.lendReceivable}}</text>
+      </view>
+    </view>
+
+    <view class="loan-item" bindtap="goToLoan">
+      <view class="loan-left">
+        <view class="loan-icon borrow-icon">
+          <text class="iconfont icon-down"></text>
+        </view>
+        <view class="loan-info">
+          <text class="loan-name">借入</text>
+          <text class="loan-type">应还</text>
+        </view>
+      </view>
+      <view class="loan-right">
+        <text class="loan-amount">{{hideAmount ? '******' : loanSummary.borrowRepayable}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-mask" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+  </view>
+</view>
