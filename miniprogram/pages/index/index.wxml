@@ -1,5 +1,5 @@
 <!--pages/index/index.wxml-->
-<view class="container">
+<view class="page">
   <!-- 使用自定义导航组件 -->
   <custom-nav
     title="我的账本"
@@ -14,76 +14,109 @@
     bind:rangeDateChange="handleRangeDateChange"
   />
 
+  <!-- 固定区域 -->
+  <view class="fixed-area">
+    <!-- 快捷日期切换 -->
+    <view class="quick-tabs">
+      <view
+        class="quick-tab {{viewMode === item.value ? 'active' : ''}}"
+        wx:for="{{viewModes}}"
+        wx:key="value"
+        bindtap="selectQuickTab"
+        data-value="{{item.value}}"
+      >
+        <text>{{item.label}}</text>
+      </view>
+    </view>
 
-  <!-- 快捷日期切换 -->
-  <view class="quick-tabs animate-slideUp" style="animation-delay: 0.05s">
-    <view
-      class="quick-tab {{viewMode === item.value ? 'active' : ''}}"
-      wx:for="{{viewModes}}"
-      wx:key="value"
-      bindtap="selectQuickTab"
-      data-value="{{item.value}}"
-    >
-      <text>{{item.label}}</text>
+    <!-- 收支概览卡片 -->
+    <view class="hero-card">
+      <view class="hero-amounts">
+        <view class="hero-amount-item">
+          <text class="hero-amount-label">支出</text>
+          <text class="hero-amount-value expense">¥{{totalExpenseStr}}</text>
+        </view>
+        <view class="hero-divider"></view>
+        <view class="hero-amount-item">
+          <text class="hero-amount-label">收入</text>
+          <text class="hero-amount-value income">¥{{totalIncomeStr}}</text>
+        </view>
+        <view class="hero-divider"></view>
+        <view class="hero-amount-item">
+          <text class="hero-amount-label">结余</text>
+          <text class="hero-amount-value {{balance >= 0 ? 'income' : 'expense'}}">¥{{balanceStr}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 搜索框 -->
+    <view class="search-box" bindtap="goToSearch">
+      <view class="search-icon">🔍</view>
+      <text class="search-placeholder">输入金额、类别名或备注</text>
+    </view>
+
+    <!-- 账单列表标题 -->
+    <view class="list-header" wx:if="{{totalBills > 0}}">
+      <text class="list-title">账单明细</text>
+      <text class="list-count">共{{totalBills}}笔</text>
     </view>
   </view>
 
-  <!-- 收支概览卡片 -->
-  <view class="hero-card animate-slideUp" style="animation-delay: 0.1s">
-    <view class="hero-amounts">
-      <view class="hero-amount-item">
-        <text class="hero-amount-label">支出</text>
-        <text class="hero-amount-value expense">¥{{totalExpenseStr}}</text>
-      </view>
-      <view class="hero-divider"></view>
-      <view class="hero-amount-item">
-        <text class="hero-amount-label">收入</text>
-        <text class="hero-amount-value income">¥{{totalIncomeStr}}</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 账单列表标题 -->
-  <view class="list-header animate-slideUp" style="animation-delay: 0.15s" wx:if="{{bills.length > 0}}">
-    <text class="list-title">账单明细</text>
-    <text class="list-count">共{{bills.length}}笔</text>
-  </view>
-
-  <!-- 账单列表 -->
-  <view class="bill-list">
-    <view class="empty-state animate-fadeIn" wx:if="{{bills.length === 0 && !loading}}">
+  <!-- 滚动区域 -->
+  <scroll-view class="scroll-area" scroll-y enhanced show-scrollbar="{{false}}">
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{bills.length === 0 && !loading}}">
       <view class="empty-icon">📝</view>
       <text class="empty-title">还没有记账哦</text>
       <text class="empty-desc">点击下方按钮开始记录第一笔</text>
     </view>
 
-    <view class="swipe-wrap animate-slideUp" style="animation-delay: {{0.2 + index * 0.05}}s" wx:for="{{bills}}" wx:key="_id">
-      <view class="swipe-bg" catchtap="confirmDelete" data-id="{{item._id}}">
-        <text>删除</text>
+    <!-- 按日期分组的账单列表 -->
+    <block wx:for="{{groupedBills}}" wx:key="date">
+      <!-- 日期分组标题 -->
+      <view class="group-header">
+        <view class="group-date">{{item.dateText}}</view>
+        <view class="group-summary">
+          <text class="group-income">收入 {{item.incomeStr}}</text>
+          <text class="group-expense">支出 {{item.expenseStr}}</text>
+          <text class="group-balance">结余 {{item.balanceStr}}</text>
+        </view>
       </view>
-      <view class="swipe-card {{item.swiped ? 'open' : ''}}"
-        catchtouchstart="onTouchStart"
-        catchtouchmove="onTouchMove"
-        catchtouchend="onTouchEnd"
-        data-index="{{index}}">
-        <view class="bill-row">
-          <view class="bill-left">
-            <view class="bill-icon-wrap">
-              <text class="bill-icon">{{item.icon}}</text>
-            </view>
-            <view class="bill-info">
-              <text class="bill-name">{{item.category}}</text>
-              <text class="bill-note" wx:if="{{item.note}}">{{item.note}}</text>
-            </view>
+      <!-- 该日期下的账单 -->
+      <view class="swipe-wrap" wx:for="{{item.bills}}" wx:for-item="bill" wx:key="_id">
+        <view class="swipe-bg">
+          <view class="swipe-btn swipe-btn-edit" catchtap="editBill" data-id="{{bill._id}}">
+            <text>修改</text>
           </view>
-          <view class="bill-right">
-            <text class="bill-amount {{item.type === 'expense' ? 'red' : 'green'}}">{{item.amountStr}}</text>
-            <text class="bill-date">{{item.date}}</text>
+          <view class="swipe-btn swipe-btn-delete" catchtap="confirmDelete" data-id="{{bill._id}}">
+            <text>删除</text>
+          </view>
+        </view>
+        <view class="swipe-card {{bill.swiped ? 'open' : ''}}"
+          catchtouchstart="onTouchStart"
+          catchtouchmove="onTouchMove"
+          catchtouchend="onTouchEnd"
+          data-date="{{item.date}}"
+          data-index="{{index}}">
+          <view class="bill-row">
+            <view class="bill-left">
+              <view class="bill-icon-wrap">
+                <text class="bill-icon">{{bill.icon}}</text>
+              </view>
+              <view class="bill-info">
+                <text class="bill-name">{{bill.category}}</text>
+                <text class="bill-note" wx:if="{{bill.note}}">{{bill.note}}</text>
+              </view>
+            </view>
+            <view class="bill-right">
+              <text class="bill-amount {{bill.type === 'expense' ? 'red' : 'green'}}">{{bill.amountStr}}</text>
+            </view>
           </view>
         </view>
       </view>
-    </view>
+    </block>
 
+    <!-- 加载状态 -->
     <view class="load-more" wx:if="{{loading}}">
       <view class="loading-spinner"></view>
       <text>加载中</text>
@@ -93,7 +126,7 @@
       <text class="load-end-text">没有更多了</text>
       <view class="load-end-line"></view>
     </view>
-  </view>
+  </scroll-view>
 
   <!-- 记账按钮 -->
   <view class="fab-btn" bindtap="goToAdd">

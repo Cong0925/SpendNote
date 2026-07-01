@@ -2,6 +2,7 @@
 Page({
   data: {
     bills: [],
+    groupedBills: [],
     // 类型选择
     viewMode: 'day',
     viewModes: [
@@ -25,6 +26,9 @@ Page({
     // 数据
     totalExpenseStr: '0.00',
     totalIncomeStr: '0.00',
+    balanceStr: '0.00',
+    balance: 0,
+    totalBills: 0,
     loading: false,
     hasMore: true,
     // 滑动相关
@@ -173,7 +177,7 @@ Page({
         name: 'billFunctions',
         data: {
           action: 'getBillsByDateRange',
-          data: { startDate: start, endDate: end, page: 1, pageSize: 50 }
+          data: { startDate: start, endDate: end, page: 1, pageSize: 200 }
         }
       })
 
@@ -191,11 +195,18 @@ Page({
           else totalIncome += bill.amount
         })
 
+        const balance = totalIncome - totalExpense
+        const groupedBills = this.groupBillsByDate(bills, viewMode)
+
         this.setData({
           bills,
+          groupedBills,
           totalExpenseStr: this.formatAmount(totalExpense),
           totalIncomeStr: this.formatAmount(totalIncome),
-          hasMore: bills.length >= 50,
+          balanceStr: this.formatAmount(Math.abs(balance)),
+          balance,
+          totalBills: bills.length,
+          hasMore: bills.length >= 200,
           swipedIndex: -1
         })
       }
@@ -204,6 +215,78 @@ Page({
     } finally {
       this.setData({ loading: false })
     }
+  },
+
+  // 按日期分组账单
+  groupBillsByDate(bills, viewMode) {
+    const groupMap = {}
+
+    bills.forEach(bill => {
+      let dateKey = bill.date
+      let dateText = ''
+
+      if (viewMode === 'day') {
+        // 日模式：按具体日期分组
+        dateKey = bill.date.substring(0, 10) // YYYY-MM-DD
+        const [y, m, d] = dateKey.split('-')
+        const date = new Date(parseInt(y), parseInt(m) - 1, parseInt(d))
+        const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+        dateText = `${parseInt(m)}月${parseInt(d)}日 ${weekDays[date.getDay()]}`
+      } else if (viewMode === 'month') {
+        // 月模式：按月份分组
+        dateKey = bill.date.substring(0, 7) // YYYY-MM
+        const [y, m] = dateKey.split('-')
+        dateText = `${y}年${parseInt(m)}月`
+      } else if (viewMode === 'quarter') {
+        // 季度模式：按季度分组
+        const [y, m] = bill.date.split('-')
+        const quarter = Math.ceil(parseInt(m) / 3)
+        dateKey = `${y}-Q${quarter}`
+        dateText = `${y}年Q${quarter}`
+      } else if (viewMode === 'year') {
+        // 年模式：按年份分组
+        dateKey = bill.date.substring(0, 4) // YYYY
+        dateText = `${dateKey}年`
+      }
+
+      if (!groupMap[dateKey]) {
+        groupMap[dateKey] = {
+          date: dateKey,
+          dateText,
+          bills: [],
+          income: 0,
+          expense: 0
+        }
+      }
+
+      groupMap[dateKey].bills.push(bill)
+      if (bill.type === 'expense') {
+        groupMap[dateKey].expense += bill.amount
+      } else {
+        groupMap[dateKey].income += bill.amount
+      }
+    })
+
+    // 转换为数组并按日期倒序排列
+    const groups = Object.values(groupMap).map(group => ({
+      ...group,
+      incomeStr: this.formatAmount(group.income),
+      expenseStr: this.formatAmount(group.expense),
+      balanceStr: this.formatAmount(Math.abs(group.income - group.expense))
+    }))
+
+    // 倒序排列（最新的在最上面）
+    groups.sort((a, b) => b.date.localeCompare(a.date))
+
+    return groups
+  },
+
+  // 跳转到搜索页
+  goToSearch() {
+    const { viewMode, rangeStartDate, rangeEndDate } = this.data
+    wx.navigateTo({
+      url: `/pages/search/search?viewMode=${viewMode}&startDate=${rangeStartDate}&endDate=${rangeEndDate}`
+    })
   },
 
   formatAmount(amount) {
@@ -222,25 +305,61 @@ Page({
   },
 
   onTouchMove(e) {
-    const { startX, swipedIndex } = this.data
+    const { startX, swipedIndex, groupedBills } = this.data
+    const date = e.currentTarget.dataset.date
     const index = e.currentTarget.dataset.index
     const diffX = startX - e.touches[0].clientX
 
-    if (swipedIndex !== -1 && swipedIndex !== index) {
-      const bills = this.data.bills.map(b => ({ ...b, swiped: false }))
-      this.setData({ bills, swipedIndex: -1 })
+    // 关闭之前打开的
+    if (swipedIndex !== -1 && swipedIndex !== `${date}-${index}`) {
+      const newGroupedBills = groupedBills.map(group => ({
+        ...group,
+        bills: group.bills.map(b => ({ ...b, swiped: false }))
+      }))
+      this.setData({ groupedBills: newGroupedBills, swipedIndex: -1 })
     }
 
     if (diffX > 50) {
-      const bills = this.data.bills.map((b, i) => ({ ...b, swiped: i === index }))
-      this.setData({ bills, swipedIndex: index })
+      const newGroupedBills = groupedBills.map(group => ({
+        ...group,
+        bills: group.bills.map((b, i) => ({
+          ...b,
+          swiped: group.date === date && i === index
+        }))
+      }))
+      this.setData({ groupedBills: newGroupedBills, swipedIndex: `${date}-${index}` })
     } else if (diffX < -30) {
-      const bills = this.data.bills.map(b => ({ ...b, swiped: false }))
-      this.setData({ bills, swipedIndex: -1 })
+      const newGroupedBills = groupedBills.map(group => ({
+        ...group,
+        bills: group.bills.map(b => ({ ...b, swiped: false }))
+      }))
+      this.setData({ groupedBills: newGroupedBills, swipedIndex: -1 })
     }
   },
 
   onTouchEnd() {},
+
+  // 修改账单
+  editBill(e) {
+    const billId = e.currentTarget.dataset.id
+    const { bills } = this.data
+    const bill = bills.find(b => b._id === billId)
+
+    if (bill) {
+      // 跳转到记账页面进行修改，传递账单信息
+      wx.navigateTo({
+        url: `/pages/add/add?billId=${billId}&type=${bill.type}&amount=${bill.amount}&category=${bill.category}&icon=${bill.icon}&note=${bill.note || ''}&date=${bill.date}`
+      })
+    }
+
+    // 关闭滑动状态
+    const { groupedBills } = this.data
+    const newGroupedBills = groupedBills.map(group => ({
+      ...group,
+      bills: group.bills.map(b => ({ ...b, swiped: false }))
+    }))
+    this.setData({ groupedBills: newGroupedBills, swipedIndex: -1 })
+  },
 
   // 删除
   confirmDelete(e) {
@@ -266,8 +385,12 @@ Page({
             wx.showToast({ title: '删除失败', icon: 'none' })
           }
         } else {
-          const bills = this.data.bills.map(b => ({ ...b, swiped: false }))
-          this.setData({ bills, swipedIndex: -1 })
+          const { groupedBills } = this.data
+          const newGroupedBills = groupedBills.map(group => ({
+            ...group,
+            bills: group.bills.map(b => ({ ...b, swiped: false }))
+          }))
+          this.setData({ groupedBills: newGroupedBills, swipedIndex: -1 })
         }
       }
     })

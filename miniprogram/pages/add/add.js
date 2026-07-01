@@ -1,6 +1,8 @@
 // pages/add/add.js
 Page({
   data: {
+    isEdit: false, // 是否为修改模式
+    billId: '', // 修改模式下的账单ID
     type: 'expense', // expense: 支出, income: 收入
     amount: '',
     category: '',
@@ -11,8 +13,22 @@ Page({
     loading: false
   },
 
-  onLoad() {
-    this.setCurrentDate()
+  onLoad(options) {
+    // 检查是否为修改模式
+    if (options.billId) {
+      this.setData({
+        isEdit: true,
+        billId: options.billId,
+        type: options.type || 'expense',
+        amount: options.amount || '',
+        category: options.category || '',
+        icon: options.icon || '',
+        note: options.note || '',
+        date: options.date || ''
+      })
+    } else {
+      this.setCurrentDate()
+    }
     this.loadCategories()
   },
 
@@ -132,7 +148,7 @@ Page({
 
   // 提交账单
   async submitBill() {
-    const { type, amount, category, icon, note, date } = this.data
+    const { isEdit, billId, type, amount, category, icon, note, date } = this.data
 
     // 验证
     if (!amount || parseFloat(amount) <= 0) {
@@ -162,24 +178,46 @@ Page({
     this.setData({ loading: true })
 
     try {
-      const res = await wx.cloud.callFunction({
-        name: 'billFunctions',
-        data: {
-          action: 'addBill',
+      let res
+
+      if (isEdit) {
+        // 修改模式
+        res = await wx.cloud.callFunction({
+          name: 'billFunctions',
           data: {
-            type: type,
-            amount: parseFloat(amount),
-            category: category,
-            icon: icon,
-            note: note,
-            date: date
+            action: 'updateBill',
+            data: {
+              billId: billId,
+              type: type,
+              amount: parseFloat(amount),
+              category: category,
+              icon: icon,
+              note: note,
+              date: date
+            }
           }
-        }
-      })
+        })
+      } else {
+        // 新增模式
+        res = await wx.cloud.callFunction({
+          name: 'billFunctions',
+          data: {
+            action: 'addBill',
+            data: {
+              type: type,
+              amount: parseFloat(amount),
+              category: category,
+              icon: icon,
+              note: note,
+              date: date
+            }
+          }
+        })
+      }
 
       if (res.result.success) {
         wx.showToast({
-          title: '记账成功',
+          title: isEdit ? '修改成功' : '记账成功',
           icon: 'success'
         })
 
@@ -189,14 +227,14 @@ Page({
         }, 1500)
       } else {
         wx.showToast({
-          title: res.result.error || '记账失败',
+          title: res.result.error || (isEdit ? '修改失败' : '记账失败'),
           icon: 'none'
         })
       }
     } catch (error) {
-      console.error('记账失败:', error)
+      console.error(isEdit ? '修改失败:' : '记账失败:', error)
       wx.showToast({
-        title: '记账失败，请重试',
+        title: isEdit ? '修改失败，请重试' : '记账失败，请重试',
         icon: 'none'
       })
     } finally {

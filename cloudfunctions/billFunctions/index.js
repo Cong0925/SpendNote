@@ -21,6 +21,10 @@ exports.main = async (event, context) => {
       return await getBills(OPENID, event.data)
     case 'getBillsByDateRange':
       return await getBillsByDateRange(OPENID, event.data)
+    case 'getBillById':
+      return await getBillById(OPENID, event.data)
+    case 'updateBill':
+      return await updateBill(OPENID, event.data)
     case 'deleteBill':
       return await deleteBill(OPENID, event.billId)
     case 'getStats':
@@ -122,6 +126,59 @@ async function deleteBill(openid, billId) {
     return { success: true, deleted: result.stats.removed }
   } catch (error) {
     console.error('删除账单失败:', error)
+    return { success: false, error: error.message }
+  }
+}
+
+// 根据ID获取账单
+async function getBillById(openid, data = {}) {
+  try {
+    const { billId } = data
+
+    if (!billId) {
+      return { success: false, error: '缺少账单ID' }
+    }
+
+    const result = await billsCollection.doc(billId).get()
+
+    if (result.data) {
+      return { success: true, data: result.data }
+    } else {
+      return { success: false, error: '账单不存在' }
+    }
+  } catch (error) {
+    console.error('获取账单详情失败:', error)
+    return { success: false, error: error.message }
+  }
+}
+
+// 更新账单
+async function updateBill(openid, data = {}) {
+  try {
+    const { billId, type, amount, category, icon, note, date } = data
+
+    if (!billId) {
+      return { success: false, error: '缺少账单ID' }
+    }
+
+    if (!type || !amount || !category || !date) {
+      return { success: false, error: '缺少必要参数' }
+    }
+
+    const result = await billsCollection.doc(billId).update({
+      data: {
+        type: type,
+        amount: parseFloat(amount),
+        category: category,
+        icon: icon || '',
+        note: note || '',
+        date: date
+      }
+    })
+
+    return { success: true, updated: result.stats.updated }
+  } catch (error) {
+    console.error('更新账单失败:', error)
     return { success: false, error: error.message }
   }
 }

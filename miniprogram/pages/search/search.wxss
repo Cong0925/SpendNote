@@ -1,0 +1,352 @@
+/* pages/search/search.wxss */
+page {
+  background: var(--color-bg);
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ============ 导航栏 ============ */
+.nav-bar {
+  background: var(--color-bg);
+  flex-shrink: 0;
+}
+
+.status-bar {
+  width: 100%;
+}
+
+.nav-content {
+  display: flex;
+  align-items: center;
+  height: 88rpx;
+  padding-left: 20rpx;
+  padding-right: 20rpx;
+}
+
+.nav-back {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-back:active {
+  opacity: 0.6;
+}
+
+.back-arrow {
+  width: 20rpx;
+  height: 20rpx;
+  border-left: 4rpx solid var(--color-text);
+  border-bottom: 4rpx solid var(--color-text);
+  transform: rotate(45deg);
+}
+
+.nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.nav-right {
+  width: 64rpx;
+}
+
+/* ============ 搜索区域 ============ */
+.search-area {
+  padding: 16rpx 32rpx 24rpx;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  padding: 8rpx;
+  box-shadow: var(--shadow-sm);
+  box-sizing: border-box;
+}
+
+.search-input {
+  flex: 1;
+  height: 72rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  color: var(--color-text);
+  box-sizing: border-box;
+}
+
+.search-btn {
+  height: 64rpx;
+  padding: 0 32rpx;
+  background: var(--color-primary);
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.search-btn:active {
+  opacity: 0.8;
+}
+
+/* ============ 汇总卡片 ============ */
+.summary-card {
+  margin: 0 32rpx 24rpx;
+  padding: 28rpx 32rpx;
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.summary-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.summary-label {
+  font-size: 28rpx;
+  color: var(--color-text-secondary);
+}
+
+.summary-value {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 8rpx;
+}
+
+.summary-detail {
+  display: flex;
+  justify-content: space-between;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-item-label {
+  font-size: 24rpx;
+  color: var(--color-text-tertiary);
+  margin-bottom: 8rpx;
+}
+
+.summary-item-value {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.summary-item-value.income {
+  color: var(--color-income);
+}
+
+.summary-item-value.expense {
+  color: var(--color-expense);
+}
+
+/* ============ 滚动区域 ============ */
+.scroll-area {
+  flex: 1;
+  padding: 0 32rpx;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* ============ 空状态 ============ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 0;
+  box-sizing: border-box;
+}
+
+.empty-icon {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  background: var(--color-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72rpx;
+  margin-bottom: 32rpx;
+  box-shadow: var(--shadow-md);
+}
+
+.empty-title {
+  font-size: 32rpx;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: var(--color-text-tertiary);
+}
+
+/* ============ 日期分组 ============ */
+.group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 8rpx;
+  margin-top: 16rpx;
+  box-sizing: border-box;
+}
+
+.group-date {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+
+.group-summary {
+  display: flex;
+  gap: 16rpx;
+  flex-shrink: 0;
+}
+
+.group-income,
+.group-expense,
+.group-balance {
+  font-size: 22rpx;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+/* ============ 账单卡片 ============ */
+.bill-card {
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  margin-bottom: 12rpx;
+  box-shadow: var(--shadow-sm);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.bill-card:active {
+  opacity: 0.8;
+  transform: scale(0.99);
+}
+
+.bill-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx;
+  box-sizing: border-box;
+}
+
+.bill-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.bill-icon-wrap {
+  width: 80rpx;
+  height: 80rpx;
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.bill-icon {
+  font-size: 36rpx;
+}
+
+.bill-info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.bill-name {
+  font-size: 30rpx;
+  color: var(--color-text);
+  font-weight: 500;
+  display: block;
+  margin-bottom: 4rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bill-note {
+  font-size: 24rpx;
+  color: var(--color-text-tertiary);
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bill-right {
+  text-align: right;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.bill-amount {
+  font-size: 32rpx;
+  font-weight: 600;
+  display: block;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+  letter-spacing: -0.5rpx;
+}
+
+.bill-amount.red { color: var(--color-expense); }
+.bill-amount.green { color: var(--color-income); }
+
+/* ============ 加载 ============ */
+.load-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+  color: var(--color-text-tertiary);
+  font-size: 24rpx;
+  gap: 12rpx;
+  box-sizing: border-box;
+}
+
+.loading-spinner {
+  width: 28rpx;
+  height: 28rpx;
+  border: 3rpx solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

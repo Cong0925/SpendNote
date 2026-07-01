@@ -3,9 +3,29 @@ page {
   background: var(--color-bg);
 }
 
-.container {
-  padding: 0 32rpx 180rpx;
-  min-height: 100vh;
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.fixed-area {
+  padding: 0 32rpx;
+  flex-shrink: 0;
+}
+
+.scroll-area {
+  flex: 1;
+  padding: 0 32rpx;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.scroll-area > view,
+.scroll-area > block {
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 /* ============ 日期选择器 ============ */
@@ -150,6 +170,31 @@ page {
   margin: 0 24rpx;
 }
 
+/* ============ 搜索框 ============ */
+.search-box {
+  display: flex;
+  align-items: center;
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  padding: 24rpx 28rpx;
+  margin-bottom: 24rpx;
+  box-shadow: var(--shadow-sm);
+}
+
+.search-box:active {
+  opacity: 0.8;
+}
+
+.search-icon {
+  font-size: 32rpx;
+  margin-right: 16rpx;
+}
+
+.search-placeholder {
+  font-size: 28rpx;
+  color: var(--color-text-tertiary);
+}
+
 /* ============ 列表标题 ============ */
 .list-header {
   display: flex;
@@ -175,11 +220,49 @@ page {
   margin-top: 4rpx;
 }
 
+/* ============ 日期分组 ============ */
+.group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 8rpx;
+  margin-top: 16rpx;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.group-date {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+
+.group-summary {
+  display: flex;
+  gap: 12rpx;
+  flex-shrink: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.group-income,
+.group-expense,
+.group-balance {
+  font-size: 24rpx;
+  color: var(--color-text-secondary);
+}
+
+.group-balance {
+  color: var(--color-text-secondary);
+}
+
 .swipe-wrap {
   position: relative;
   margin-bottom: 12rpx;
   overflow: hidden;
   border-radius: var(--radius-lg);
+  min-width: 0;
 }
 
 .swipe-bg {
@@ -187,15 +270,33 @@ page {
   top: 0;
   right: 0;
   bottom: 0;
-  width: 140rpx;
+  width: 280rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 0;
+  padding:1rpx;
+}
+
+.swipe-btn {
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 100%;
+}
+
+.swipe-btn-edit {
+  width: 140rpx;
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+}
+
+.swipe-btn-delete {
+  width: 140rpx;
   background: linear-gradient(135deg, #EF4444, #DC2626);
   border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
 }
 
-.swipe-bg text {
+.swipe-btn text {
   color: #ffffff;
   font-size: 28rpx;
   font-weight: 500;
@@ -211,7 +312,7 @@ page {
 }
 
 .swipe-card.open {
-  transform: translateX(-140rpx);
+  transform: translateX(-280rpx);
 }
 
 .bill-row {
@@ -219,6 +320,8 @@ page {
   align-items: center;
   justify-content: space-between;
   padding: 28rpx 28rpx;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .bill-left {
@@ -270,6 +373,7 @@ page {
   text-align: right;
   flex-shrink: 0;
   margin-left: 16rpx;
+  min-width: 0;
 }
 
 .bill-amount {
@@ -279,6 +383,7 @@ page {
   margin-bottom: 4rpx;
   font-family: 'SF Pro Display', -apple-system, sans-serif;
   letter-spacing: -0.5rpx;
+  white-space: nowrap;
 }
 
 .bill-amount.red { color: var(--color-expense); }

@@ -3,7 +3,9 @@
     "pages/index/index",
     "pages/add/add",
     "pages/stats/stats",
-    "pages/mine/mine"
+    "pages/mine/mine",
+    "pages/search/search",
+    "pages/detail/detail"
   ],
   "usingComponents": {
     "van-datetime-picker": "@vant/weapp/datetime-picker/index",
