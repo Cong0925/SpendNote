@@ -13,6 +13,7 @@ Page({
     ],
     // 日期相关
     currentDate: '',
+    savedDate: '', // 保存完整日期，用于视图切换时恢复
     dateDisplay: '',
     // 季度弹窗
     showQuarter: false,
@@ -74,6 +75,7 @@ Page({
 
     this.setData({
       currentDate: date,
+      savedDate: date,
       dateDisplay: this.getDisplayDate(date, viewMode),
       rangeStartDate: rangeStartDate,
       rangeEndDate: rangeEndDate,
@@ -410,22 +412,40 @@ Page({
   // 快捷标签切换
   selectQuickTab(e) {
     const value = e.currentTarget.dataset.value
-    const { currentDate } = this.data
+    const { currentDate, savedDate } = this.data
 
     // 同步日期精度：根据新模式截取日期
     let newDate = currentDate
     const parts = currentDate.split('-')
 
+    // 保存当前完整日期，用于后续切换恢复
+    let newSavedDate = savedDate
+    if (currentDate.length >= 7) {
+      // 保存完整的 YYYY-MM-DD 格式日期
+      newSavedDate = currentDate.length === 10 ? currentDate : `${currentDate}-01`
+    }
+
     if (value === 'day') {
       if (parts.length < 3) {
-        newDate = `${parts[0]}-${parts[1]}-01`
+        // 从月/年切换到日，使用 savedDate 中的日期
+        const savedParts = newSavedDate.split('-')
+        newDate = `${parts[0]}-${parts[1]}-${savedParts[2] || '01'}`
       }
     } else if (value === 'month') {
-      newDate = `${parts[0]}-${parts[1]}`
+      if (parts.length < 3) {
+        // 从年切换到月，使用 savedDate 中的月份
+        const savedParts = newSavedDate.split('-')
+        newDate = `${parts[0]}-${savedParts[1] || '01'}`
+      } else {
+        newDate = `${parts[0]}-${parts[1]}`
+      }
     } else if (value === 'year') {
       newDate = parts[0]
     } else if (value === 'quarter') {
       if (parts.length < 3) {
+        const savedParts = newSavedDate.split('-')
+        newDate = `${parts[0]}-${savedParts[1] || '01'}-01`
+      } else {
         newDate = `${parts[0]}-${parts[1]}-01`
       }
     }
@@ -463,6 +483,7 @@ Page({
     this.setData({
       viewMode: value,
       currentDate: newDate,
+      savedDate: newSavedDate,
       dateDisplay: this.getDisplayDate(newDate, value),
       rangeStartDate: rangeStartDate,
       rangeEndDate: rangeEndDate,
