@@ -59,8 +59,7 @@ page {
 
 /* ============ 搜索区域 ============ */
 .search-section {
-  padding: 24rpx 32rpx;
-  background: rgba(255, 255, 255, 0.7);
+  padding: 24rpx 0;
   backdrop-filter: blur(20rpx);
   -webkit-backdrop-filter: blur(20rpx);
   position: sticky;

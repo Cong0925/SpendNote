@@ -26,7 +26,6 @@ page {
 /* ============ 表单区域 ============ */
 .form-section {
   background: var(--color-card);
-  margin: 0 32rpx 24rpx;
   border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow: var(--shadow-card);

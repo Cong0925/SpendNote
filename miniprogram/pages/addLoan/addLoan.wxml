@@ -48,23 +48,23 @@
     <!-- 时间 -->
     <view class="form-item">
       <text class="form-label">时间:</text>
-      <picker mode="date" value="{{form.loanDate}}" bindchange="onDateChange">
-        <view class="form-picker">
+      <view class="form-picker">
+        <picker mode="date" value="{{form.loanDate}}" bindchange="onDateChange">
           <text>{{form.loanDate || '请选择日期'}}</text>
           <text class="picker-arrow">></text>
-        </view>
-      </picker>
+        </picker>
+      </view>
     </view>
 
     <!-- 账户 -->
     <view class="form-item">
       <text class="form-label">账户:</text>
-      <picker range="{{accountList}}" range-key="name" bindchange="onAccountChange">
-        <view class="form-picker">
+      <view class="form-picker">
+        <picker range="{{accountList}}" range-key="name" bindchange="onAccountChange">
           <text>{{form.accountName || '请选择账户'}}</text>
           <text class="picker-arrow">></text>
-        </view>
-      </picker>
+        </picker>
+      </view>
     </view>
 
     <!-- 备注 -->

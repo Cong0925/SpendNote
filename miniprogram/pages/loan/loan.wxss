@@ -15,7 +15,7 @@ page {
   background: linear-gradient(135deg, #2563EB 0%, #1E40AF 50%, #1E3A8A 100%);
   border-radius: var(--radius-xl);
   padding: 40rpx;
-  margin: 24rpx 32rpx 0;
+  margin-bottom:30rpx;
   position: relative;
   overflow: hidden;
   box-shadow: 0 8rpx 32rpx rgba(37, 99, 235, 0.3);
@@ -95,7 +95,7 @@ page {
 /* ============ 借款记录列表 ============ */
 .loan-list {
   background: var(--color-card);
-  margin: 24rpx 32rpx 0;
+  margin-bottom:30rpx;
   border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow: var(--shadow-card);
