@@ -22,7 +22,27 @@ Page({
   },
 
   onShow() {
+    const app = getApp()
+
+    // 检测是否发生了 Tab 切换
+    if (app.checkTabBarChange('pages/mine/mine')) {
+      // 发生了 Tab 切换，重置临时状态
+      this.resetTemporaryStates()
+    }
+
+    // 加载数据
     this.loadOverview()
+  },
+
+  /**
+   * 重置临时状态
+   * 当从其他Tab切换回来时，重置这些状态
+   */
+  resetTemporaryStates() {
+    this.setData({
+      showClearModal: false,     // 重置清除数据弹窗
+      clearStep: 0               // 重置清除步骤
+    })
   },
 
   // 加载用户信息

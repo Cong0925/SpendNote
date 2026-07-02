@@ -49,7 +49,26 @@ Page({
   },
 
   onShow() {
+    const app = getApp()
+
+    // 检测是否发生了 Tab 切换
+    if (app.checkTabBarChange('pages/stats/stats')) {
+      // 发生了 Tab 切换，重置临时状态
+      this.resetTemporaryStates()
+    }
+
+    // 加载数据
     this.loadStats()
+  },
+
+  /**
+   * 重置临时状态
+   * 当从其他Tab切换回来时，重置这些状态
+   */
+  resetTemporaryStates() {
+    this.setData({
+      showQuarter: false         // 重置季度弹窗
+    })
   },
 
   initDate() {

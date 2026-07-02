@@ -49,7 +49,25 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    const app = getApp()
+
+    // 检测是否发生了 Tab 切换
+    if (app.checkTabBarChange('pages/account/account')) {
+      // 发生了 Tab 切换，重置临时状态
+      this.resetTemporaryStates()
+    }
+
+    // 加载数据
     this.loadData()
+  },
+
+  /**
+   * 重置临时状态
+   * 当从其他Tab切换回来时，重置这些状态
+   */
+  resetTemporaryStates() {
+    // 账户页面目前没有需要重置的临时状态
+    // 如果将来添加了临时状态（如筛选、编辑等），可以在这里重置
   },
 
   /**

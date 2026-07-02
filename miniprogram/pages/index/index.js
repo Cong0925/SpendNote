@@ -52,7 +52,28 @@ Page({
   },
 
   onShow() {
+    const app = getApp()
+
+    // 检测是否发生了 Tab 切换
+    if (app.checkTabBarChange('pages/index/index')) {
+      // 发生了 Tab 切换，重置临时状态
+      this.resetTemporaryStates()
+    }
+
+    // 加载数据
     this.loadBills()
+  },
+
+  /**
+   * 重置临时状态
+   * 当从其他Tab切换回来时，重置这些状态
+   */
+  resetTemporaryStates() {
+    this.setData({
+      expandedAmount: null,      // 重置展开状态
+      swipedIndex: -1,           // 重置滑动状态
+      showQuarter: false         // 重置季度弹窗
+    })
   },
 
   // 初始化日期
