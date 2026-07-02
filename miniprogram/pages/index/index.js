@@ -404,6 +404,7 @@ Page({
           date: monthKey,
           dateText: `${y}年${parseInt(m)}月`,
           children: {},
+          bills: [], // 添加 bills 数组用于滑动操作
           income: 0,
           expense: 0
         }
@@ -420,6 +421,7 @@ Page({
       }
 
       monthMap[monthKey].children[dateKey].bills.push(bill)
+      monthMap[monthKey].bills.push(bill) // 添加到月份级别的 bills 数组
       monthMap[monthKey].children[dateKey].income += bill.type === 'income' ? bill.amount : 0
       monthMap[monthKey].children[dateKey].expense += bill.type === 'expense' ? bill.amount : 0
       monthMap[monthKey].income += bill.type === 'income' ? bill.amount : 0
@@ -472,6 +474,7 @@ Page({
           date: quarterKey,
           dateText: `${y}年Q${quarterNum}`,
           children: {},
+          bills: [], // 添加 bills 数组用于滑动操作
           income: 0,
           expense: 0
         }
@@ -482,6 +485,7 @@ Page({
           date: monthKey,
           dateText: `${parseInt(m)}月`,
           children: {},
+          bills: [], // 添加 bills 数组用于滑动操作
           income: 0,
           expense: 0
         }
@@ -498,6 +502,8 @@ Page({
       }
 
       quarterMap[quarterKey].children[monthKey].children[dateKey].bills.push(bill)
+      quarterMap[quarterKey].children[monthKey].bills.push(bill) // 添加到月份级别的 bills 数组
+      quarterMap[quarterKey].bills.push(bill) // 添加到季度级别的 bills 数组
       quarterMap[quarterKey].children[monthKey].children[dateKey].income += bill.type === 'income' ? bill.amount : 0
       quarterMap[quarterKey].children[monthKey].children[dateKey].expense += bill.type === 'expense' ? bill.amount : 0
       quarterMap[quarterKey].children[monthKey].income += bill.type === 'income' ? bill.amount : 0
@@ -557,6 +563,7 @@ Page({
           date: yearKey,
           dateText: `${y}年`,
           children: {},
+          bills: [], // 添加 bills 数组用于滑动操作
           income: 0,
           expense: 0
         }
@@ -567,6 +574,7 @@ Page({
           date: monthKey,
           dateText: `${monthNum}月`,
           children: {},
+          bills: [], // 添加 bills 数组用于滑动操作
           income: 0,
           expense: 0
         }
@@ -583,6 +591,8 @@ Page({
       }
 
       yearMap[yearKey].children[monthKey].children[dateKey].bills.push(bill)
+      yearMap[yearKey].children[monthKey].bills.push(bill) // 添加到月份级别的 bills 数组
+      yearMap[yearKey].bills.push(bill) // 添加到年份级别的 bills 数组
       yearMap[yearKey].children[monthKey].children[dateKey].income += bill.type === 'income' ? bill.amount : 0
       yearMap[yearKey].children[monthKey].children[dateKey].expense += bill.type === 'expense' ? bill.amount : 0
       yearMap[yearKey].children[monthKey].income += bill.type === 'income' ? bill.amount : 0
@@ -656,36 +666,95 @@ Page({
   },
 
   onTouchMove(e) {
-    const { startX, swipedIndex, groupedBills } = this.data
+    const { startX, swipedIndex, groupedBills, viewMode } = this.data
     const date = e.currentTarget.dataset.date
     const index = e.currentTarget.dataset.index
     const diffX = startX - e.touches[0].clientX
 
     // 关闭之前打开的
     if (swipedIndex !== -1 && swipedIndex !== `${date}-${index}`) {
-      const newGroupedBills = groupedBills.map(group => ({
-        ...group,
-        bills: group.bills.map(b => ({ ...b, swiped: false }))
-      }))
+      const newGroupedBills = this.updateBillsSwipedState(groupedBills, viewMode, null)
       this.setData({ groupedBills: newGroupedBills, swipedIndex: -1 })
     }
 
     if (diffX > 50) {
-      const newGroupedBills = groupedBills.map(group => ({
+      const newGroupedBills = this.updateBillsSwipedState(groupedBills, viewMode, { date, index })
+      this.setData({ groupedBills: newGroupedBills, swipedIndex: `${date}-${index}` })
+    } else if (diffX < -30) {
+      const newGroupedBills = this.updateBillsSwipedState(groupedBills, viewMode, null)
+      this.setData({ groupedBills: newGroupedBills, swipedIndex: -1 })
+    }
+  },
+
+  /**
+   * 更新账单的滑动状态
+   * @param {Array} groups - 分组数据
+   * @param {String} viewMode - 视图模式
+   * @param {Object|null} target - 目标账单 { date, index }，null 表示关闭所有
+   * @returns {Array} 更新后的分组数据
+   */
+  updateBillsSwipedState(groups, viewMode, target) {
+    if (viewMode === 'day') {
+      // 日模式：直接更新 bills 数组
+      return groups.map(group => ({
         ...group,
         bills: group.bills.map((b, i) => ({
           ...b,
-          swiped: group.date === date && i === index
+          swiped: target && group.date === target.date && i === target.index
         }))
       }))
-      this.setData({ groupedBills: newGroupedBills, swipedIndex: `${date}-${index}` })
-    } else if (diffX < -30) {
-      const newGroupedBills = groupedBills.map(group => ({
-        ...group,
-        bills: group.bills.map(b => ({ ...b, swiped: false }))
-      }))
-      this.setData({ groupedBills: newGroupedBills, swipedIndex: -1 })
     }
+
+    // 月/季/年模式：需要递归更新嵌套结构中的 bills
+    return groups.map(group => {
+      if (!group.children) {
+        // 没有 children，直接更新 bills
+        return {
+          ...group,
+          bills: group.bills.map(b => ({ ...b, swiped: false }))
+        }
+      }
+
+      // 有 children，递归处理
+      const newChildren = this.updateChildrenSwipedState(group.children, viewMode, target)
+      return {
+        ...group,
+        children: newChildren
+      }
+    })
+  },
+
+  /**
+   * 递归更新子分组的滑动状态
+   * @param {Object} children - 子分组对象
+   * @param {String} viewMode - 视图模式
+   * @param {Object|null} target - 目标账单 { date, index }
+   * @returns {Object} 更新后的子分组对象
+   */
+  updateChildrenSwipedState(children, viewMode, target) {
+    const newChildren = {}
+
+    Object.keys(children).forEach(key => {
+      const child = children[key]
+      const newChild = { ...child }
+
+      // 如果有 bills 数组，更新滑动状态
+      if (child.bills && Array.isArray(child.bills)) {
+        newChild.bills = child.bills.map((b, i) => ({
+          ...b,
+          swiped: target && child.date === target.date && i === target.index
+        }))
+      }
+
+      // 如果有 children，递归处理
+      if (child.children) {
+        newChild.children = this.updateChildrenSwipedState(child.children, viewMode, target)
+      }
+
+      newChildren[key] = newChild
+    })
+
+    return newChildren
   },
 
   onTouchEnd() {},
@@ -704,11 +773,8 @@ Page({
     }
 
     // 关闭滑动状态
-    const { groupedBills } = this.data
-    const newGroupedBills = groupedBills.map(group => ({
-      ...group,
-      bills: group.bills.map(b => ({ ...b, swiped: false }))
-    }))
+    const { groupedBills, viewMode } = this.data
+    const newGroupedBills = this.updateBillsSwipedState(groupedBills, viewMode, null)
     this.setData({ groupedBills: newGroupedBills, swipedIndex: -1 })
   },
 
@@ -736,11 +802,8 @@ Page({
             wx.showToast({ title: '删除失败', icon: 'none' })
           }
         } else {
-          const { groupedBills } = this.data
-          const newGroupedBills = groupedBills.map(group => ({
-            ...group,
-            bills: group.bills.map(b => ({ ...b, swiped: false }))
-          }))
+          const { groupedBills, viewMode } = this.data
+          const newGroupedBills = this.updateBillsSwipedState(groupedBills, viewMode, null)
           this.setData({ groupedBills: newGroupedBills, swipedIndex: -1 })
         }
       }
