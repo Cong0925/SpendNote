@@ -33,6 +33,10 @@ exports.main = async (event, context) => {
         return await listBillsByAccount(OPENID, data.accountId)
       case 'getStats':
         return await getBillStats(OPENID, data)
+      case 'getBillsByDateRange':
+        return await listBills(OPENID, data)
+      case 'getStatsByDateRange':
+        return await getStatsByDateRange(OPENID, data)
       default:
         return { success: false, error: '未知操作类型' }
     }
@@ -266,5 +270,64 @@ async function updateAccountBalance(accountId, billType, amount) {
       })
   } catch (err) {
     console.error('更新账户余额失败：', err)
+  }
+}
+
+/**
+ * 按日期范围获取统计（支持分类统计）
+ */
+async function getStatsByDateRange(openid, params = {}) {
+  const { startDate, endDate } = params
+
+  let whereCondition = { _openid: openid }
+
+  if (startDate && endDate) {
+    whereCondition.date = _.gte(startDate).and(_.lte(endDate))
+  }
+
+  // 获取所有账单（包含分类信息）
+  const result = await db.collection(BILLS_COLLECTION)
+    .where(whereCondition)
+    .field({ type: true, amount: true, category: true, icon: true })
+    .get()
+
+  // 计算统计
+  let totalIncome = 0
+  let totalExpense = 0
+  const categoryMap = {}
+
+  result.data.forEach(bill => {
+    if (bill.type === 'income') {
+      totalIncome += bill.amount
+    } else {
+      totalExpense += bill.amount
+    }
+
+    // 按分类统计
+    const key = `${bill.type}_${bill.category}`
+    if (!categoryMap[key]) {
+      categoryMap[key] = {
+        type: bill.type,
+        category: bill.category,
+        icon: bill.icon,
+        amount: 0,
+        count: 0
+      }
+    }
+    categoryMap[key].amount += bill.amount
+    categoryMap[key].count += 1
+  })
+
+  // 转换为数组
+  const categoryStats = Object.values(categoryMap)
+
+  return {
+    success: true,
+    data: {
+      totalIncome,
+      totalExpense,
+      balance: totalIncome - totalExpense,
+      categoryStats
+    }
   }
 }
