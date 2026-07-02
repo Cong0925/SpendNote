@@ -25,7 +25,11 @@ Page({
     // 账户列表
     accountList: [],
     // 加载状态
-    loading: false
+    loading: false,
+    // 账户选择弹窗状态
+    showFromAccountPicker: false,
+    showToAccountPicker: false,
+    loadingAccounts: false
   },
 
   /**
@@ -49,6 +53,8 @@ Page({
    * 加载账户列表
    */
   async loadAccountList() {
+    this.setData({ loadingAccounts: true })
+
     try {
       const res = await wx.cloud.callFunction({
         name: 'accountFunctions',
@@ -66,6 +72,8 @@ Page({
       }
     } catch (err) {
       console.error('加载账户列表失败：', err)
+    } finally {
+      this.setData({ loadingAccounts: false })
     }
   },
 
@@ -97,18 +105,25 @@ Page({
    * 选择转出账户
    */
   selectFromAccount() {
-    const { accountList, form } = this.data
-    const names = accountList.map(item => item.name)
+    this.setData({ showFromAccountPicker: true })
+  },
 
-    wx.showActionSheet({
-      itemList: names,
-      success: (res) => {
-        const selected = accountList[res.tapIndex]
-        this.setData({
-          'form.fromAccountId': selected._id,
-          'form.fromAccountName': selected.name
-        })
-      }
+  /**
+   * 关闭转出账户选择弹窗
+   */
+  onFromAccountPickerClose() {
+    this.setData({ showFromAccountPicker: false })
+  },
+
+  /**
+   * 选择转出账户
+   */
+  onFromAccountSelect(e) {
+    const { id, name } = e.detail
+    this.setData({
+      'form.fromAccountId': id || '',
+      'form.fromAccountName': name || '',
+      showFromAccountPicker: false
     })
   },
 
@@ -116,18 +131,25 @@ Page({
    * 选择转入账户
    */
   selectToAccount() {
-    const { accountList, form } = this.data
-    const names = accountList.map(item => item.name)
+    this.setData({ showToAccountPicker: true })
+  },
 
-    wx.showActionSheet({
-      itemList: names,
-      success: (res) => {
-        const selected = accountList[res.tapIndex]
-        this.setData({
-          'form.toAccountId': selected._id,
-          'form.toAccountName': selected.name
-        })
-      }
+  /**
+   * 关闭转入账户选择弹窗
+   */
+  onToAccountPickerClose() {
+    this.setData({ showToAccountPicker: false })
+  },
+
+  /**
+   * 选择转入账户
+   */
+  onToAccountSelect(e) {
+    const { id, name } = e.detail
+    this.setData({
+      'form.toAccountId': id || '',
+      'form.toAccountName': name || '',
+      showToAccountPicker: false
     })
   },
 

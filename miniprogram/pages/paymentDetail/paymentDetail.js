@@ -29,6 +29,8 @@ Page({
       remark: '',
       images: []
     },
+    // 最大图片数量
+    maxImages: 4,
     // 账户选择相关
     showAccountPicker: false,
     accountList: [],

@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "新建借款"
+  "navigationBarTitleText": "新建借款",
+  "usingComponents": {
+    "account-picker": "/components/account-picker/index"
+  }
 }

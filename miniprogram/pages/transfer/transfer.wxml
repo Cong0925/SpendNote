@@ -75,3 +75,23 @@
     <view class="loading-spinner"></view>
   </view>
 </view>
+
+<!-- 转出账户选择弹窗 -->
+<account-picker
+  show="{{showFromAccountPicker}}"
+  accountList="{{accountList}}"
+  selectedId="{{form.fromAccountId}}"
+  loading="{{loadingAccounts}}"
+  bind:close="onFromAccountPickerClose"
+  bind:select="onFromAccountSelect"
+/>
+
+<!-- 转入账户选择弹窗 -->
+<account-picker
+  show="{{showToAccountPicker}}"
+  accountList="{{accountList}}"
+  selectedId="{{form.toAccountId}}"
+  loading="{{loadingAccounts}}"
+  bind:close="onToAccountPickerClose"
+  bind:select="onToAccountSelect"
+/>

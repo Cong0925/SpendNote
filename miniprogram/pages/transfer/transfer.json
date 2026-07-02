@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "转账",
-  "usingComponents": {}
+  "usingComponents": {
+    "account-picker": "/components/account-picker/index"
+  }
 }

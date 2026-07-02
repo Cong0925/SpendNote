@@ -28,7 +28,10 @@ Page({
     // 账户列表
     accountList: [],
     // 最大图片数量
-    maxImages: 4
+    maxImages: 4,
+    // 账户选择弹窗状态
+    showAccountPicker: false,
+    loadingAccounts: false
   },
 
   /**
@@ -105,6 +108,8 @@ Page({
    * 加载账户列表
    */
   async loadAccountList() {
+    this.setData({ loadingAccounts: true })
+
     try {
       const res = await wx.cloud.callFunction({
         name: 'accountFunctions',
@@ -120,6 +125,8 @@ Page({
       }
     } catch (err) {
       console.error('加载账户列表失败：', err)
+    } finally {
+      this.setData({ loadingAccounts: false })
     }
   },
 
@@ -159,15 +166,28 @@ Page({
   },
 
   /**
+   * 打开账户选择弹窗
+   */
+  openAccountPicker() {
+    this.setData({ showAccountPicker: true })
+  },
+
+  /**
+   * 关闭账户选择弹窗
+   */
+  onAccountPickerClose() {
+    this.setData({ showAccountPicker: false })
+  },
+
+  /**
    * 选择账户
    */
-  onAccountChange(e) {
-    const index = e.detail.value
-    const account = this.data.accountList[index]
-
+  onAccountSelect(e) {
+    const { id, name } = e.detail
     this.setData({
-      'form.accountId': account._id,
-      'form.accountName': account.name
+      'form.accountId': id || '',
+      'form.accountName': name || '',
+      showAccountPicker: false
     })
   },
 
