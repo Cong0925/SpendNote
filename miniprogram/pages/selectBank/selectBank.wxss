@@ -491,3 +491,81 @@ page {
     transform: translateY(0);
   }
 }
+
+/* ============ 骨架屏样式 ============ */
+.hot-bank-item.skeleton {
+  pointer-events: none;
+}
+
+.hot-bank-item.skeleton .hot-bank-icon-wrap {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.hot-bank-item.skeleton .skeleton-text {
+  width: 60rpx;
+  height: 22rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin-top: 12rpx;
+}
+
+.category-skeleton {
+  padding: 24rpx 0;
+}
+
+.category-skeleton-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid rgba(226, 232, 240, 0.4);
+}
+
+.category-skeleton-item:last-child {
+  border-bottom: none;
+}
+
+.skeleton-icon-circle {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.category-skeleton-info {
+  flex: 1;
+}
+
+.category-skeleton-info .skeleton-text {
+  border-radius: 8rpx;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.category-skeleton-info .skeleton-name {
+  width: 160rpx;
+  height: 28rpx;
+  margin-bottom: 8rpx;
+}
+
+.category-skeleton-info .skeleton-count {
+  width: 100rpx;
+  height: 22rpx;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

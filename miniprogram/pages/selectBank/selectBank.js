@@ -43,7 +43,8 @@ Page({
     isSearching: false,
 
     // 加载状态
-    loading: true
+    loadingHot: true,
+    loadingCategories: true
   },
 
   /**
@@ -66,8 +67,6 @@ Page({
    * 加载数据
    */
   async loadData() {
-    this.setData({ loading: true })
-
     try {
       // 并行加载热门银行和分类银行
       await Promise.all([
@@ -80,8 +79,6 @@ Page({
         title: '加载失败',
         icon: 'none'
       })
-    } finally {
-      this.setData({ loading: false })
     }
   },
 
@@ -104,6 +101,8 @@ Page({
       }
     } catch (err) {
       console.error('加载热门银行失败：', err)
+    } finally {
+      this.setData({ loadingHot: false })
     }
   },
 
@@ -144,7 +143,7 @@ Page({
       }
     }
 
-    this.setData({ categoryBanks })
+    this.setData({ categoryBanks, loadingCategories: false })
   },
 
   /**

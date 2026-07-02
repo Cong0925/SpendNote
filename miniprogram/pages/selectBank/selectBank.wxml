@@ -57,9 +57,25 @@
   </view>
 
   <!-- 正常内容 -->
-  <scroll-view scroll-y class="content-scroll" wx:if="{{!isSearching && !loading}}">
-    <!-- 热门银行 -->
-    <view class="section" wx:if="{{hotBanks.length > 0}}">
+  <scroll-view scroll-y class="content-scroll" wx:if="{{!isSearching}}">
+    <!-- 热门银行骨架屏 -->
+    <view class="section" wx:if="{{loadingHot}}">
+      <view class="section-header">
+        <view class="section-title-wrap">
+          <text class="section-icon">🔥</text>
+          <text class="section-title">热门银行</text>
+        </view>
+      </view>
+      <view class="hot-banks-grid">
+        <view class="hot-bank-item skeleton" wx:for="{{8}}" wx:key="*this">
+          <view class="hot-bank-icon-wrap skeleton-icon"></view>
+          <view class="skeleton-text"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 热门银行真实内容 -->
+    <view class="section" wx:if="{{!loadingHot && hotBanks.length > 0}}">
       <view class="section-header">
         <view class="section-title-wrap">
           <text class="section-icon">🔥</text>
@@ -85,12 +101,31 @@
       </view>
     </view>
 
-    <!-- 分类银行 -->
+    <!-- 分类银行骨架屏 -->
+    <view class="section" wx:if="{{loadingCategories}}">
+      <view class="section-header">
+        <view class="section-title-wrap">
+          <text class="section-icon">🏦</text>
+          <text class="section-title">银行分类</text>
+        </view>
+      </view>
+      <view class="category-skeleton">
+        <view class="category-skeleton-item" wx:for="{{4}}" wx:key="*this">
+          <view class="skeleton-icon-circle"></view>
+          <view class="category-skeleton-info">
+            <view class="skeleton-text skeleton-name"></view>
+            <view class="skeleton-text skeleton-count"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 分类银行真实内容 -->
     <view
       class="section"
       wx:for="{{categories}}"
       wx:key="key"
-      wx:if="{{categoryBanks[item.key] && categoryBanks[item.key].total > 0}}"
+      wx:if="{{!loadingCategories && categoryBanks[item.key] && categoryBanks[item.key].total > 0}}"
     >
       <view
         class="section-header"
@@ -139,12 +174,4 @@
     <!-- 底部安全区 -->
     <view class="safe-bottom"></view>
   </scroll-view>
-
-  <!-- 加载状态 -->
-  <view class="loading-mask" wx:if="{{loading}}">
-    <view class="loading-content">
-      <view class="loading-spinner"></view>
-      <text class="loading-text">加载银行列表...</text>
-    </view>
-  </view>
 </view>
