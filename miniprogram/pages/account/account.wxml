@@ -98,7 +98,7 @@
       </view>
       <view class="account-right">
         <text class="account-debt-label">应还</text>
-        <text class="account-amount debt-amount">{{hideAmount ? '******' : '￥' + item.balance}}</text>
+        <text class="account-amount debt-amount">{{hideAmount ? '******' : '￥-' + item.balance}}</text>
       </view>
     </view>
 

@@ -6,7 +6,7 @@
   <view class="balance-card {{account.isDebt ? 'debt-card' : 'asset-card'}}">
     <view class="balance-label">{{account.isDebt ? '应还' : '余额'}}</view>
     <view class="balance-value" bindtap="goToAccountDetail">
-      <text class="balance-amount">￥{{account.balance || 0}}</text>
+      <text class="balance-amount">{{account.isDebt ? '￥-' : '￥'}}{{account.balance || 0}}</text>
       <text class="edit-icon">✎</text>
     </view>
   </view>

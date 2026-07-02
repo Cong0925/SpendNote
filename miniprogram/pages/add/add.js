@@ -125,9 +125,12 @@ Page({
     this.setData({
       type: type,
       category: '',
-      icon: ''
+      icon: '',
+      accountId: '',
+      accountName: ''
     })
     this.loadCategories()
+    this.loadAccountList()
   },
 
   // 输入金额
@@ -171,8 +174,15 @@ Page({
       })
 
       if (res.result.success) {
+        let accountList = res.result.data || []
+
+        // 收入时只显示普通账户，支出时显示所有账户
+        if (this.data.type === 'income') {
+          accountList = accountList.filter(item => !item.isDebt)
+        }
+
         this.setData({
-          accountList: res.result.data || []
+          accountList
         })
       }
     } catch (err) {

@@ -241,7 +241,20 @@ async function getBillStats(openid, params = {}) {
 async function updateAccountBalance(accountId, billType, amount) {
   try {
     const amountNum = Math.abs(Number(amount))
-    const balanceChange = billType === 'income' ? amountNum : -amountNum
+
+    // 先获取账户信息，判断是否为负债账户
+    const accountRes = await db.collection('accounts').doc(accountId).get()
+    const account = accountRes.data
+
+    let balanceChange = 0
+
+    if (account.isDebt) {
+      // 负债账户：支出时负债增多（余额增加），收入已在前端过滤不允许选择
+      balanceChange = amountNum
+    } else {
+      // 普通账户：收入增加余额，支出减少余额（可为负数，允许透支）
+      balanceChange = billType === 'income' ? amountNum : -amountNum
+    }
 
     await db.collection('accounts')
       .doc(accountId)

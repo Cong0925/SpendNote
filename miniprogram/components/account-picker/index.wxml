@@ -38,7 +38,7 @@
         </view>
         <view class="account-info">
           <text class="account-name">{{item.name}}</text>
-          <text class="account-desc">余额：¥{{item.balance}}</text>
+          <text class="account-desc">余额：¥{{item.isDebt ? '-' : ''}}{{item.balance}}</text>
         </view>
         <view class="account-check" wx:if="{{selectedId === item._id}}">
           <text>✓</text>
