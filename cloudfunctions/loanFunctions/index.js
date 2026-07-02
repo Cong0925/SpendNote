@@ -153,9 +153,56 @@ async function deleteLoan(openid, id) {
     return { success: false, error: '缺少借款ID' }
   }
 
+  // 先获取要删除的记录，以便联动更新账户余额
+  const loanResult = await db.collection(LOANS_COLLECTION)
+    .where({ _id: id, _openid: openid })
+    .get()
+
+  if (loanResult.data.length === 0) {
+    return { success: false, error: '借款记录不存在' }
+  }
+
+  const loan = loanResult.data[0]
+
+  // 删除借款记录
   const result = await db.collection(LOANS_COLLECTION)
     .where({ _id: id, _openid: openid })
     .remove()
+
+  // 联动更新账户余额
+  // 删除借出记录：之前减少了账户余额，现在需要加回来（未还部分）
+  // 删除借入记录：之前增加了账户余额，现在需要减回去（未还部分）
+  const remainingAmount = loan.amount - (loan.paidAmount || 0)
+  let balanceChange = 0
+
+  if (loan.type === 'lend') {
+    // 借出记录删除：增加账户余额（恢复未还部分）
+    balanceChange = remainingAmount
+  } else if (loan.type === 'borrow') {
+    // 借入记录删除：减少账户余额（扣除未还部分）
+    balanceChange = -remainingAmount
+  }
+
+  // 如果有关联账户且有未还金额，更新账户余额
+  if (loan.accountId && balanceChange !== 0) {
+    try {
+      const accountResult = await db.collection('accounts')
+        .where({ _id: loan.accountId, _openid: openid })
+        .update({
+          data: {
+            balance: _.inc(balanceChange),
+            updatedAt: db.serverDate()
+          }
+        })
+
+      if (accountResult.stats.updated === 0) {
+        console.error('更新账户余额失败：账户不存在或无权限')
+      }
+    } catch (err) {
+      console.error('更新账户余额异常：', err)
+      // 即使余额更新失败，借款记录已删除，返回成功
+    }
+  }
 
   return {
     success: true,
@@ -299,6 +346,7 @@ async function updatePaidAmount(openid, id, amount) {
   // 更新状态
   const newStatus = roundNumber(newPaidAmount) >= roundNumber(loan.amount) ? 'completed' : 'pending'
 
+  // 更新借款记录
   const result = await db.collection(LOANS_COLLECTION)
     .where({ _id: id, _openid: openid })
     .update({
@@ -308,6 +356,39 @@ async function updatePaidAmount(openid, id, amount) {
         updatedAt: db.serverDate()
       }
     })
+
+  // 联动更新账户余额
+  // 借出还款（收到还款）：增加账户余额（正数）
+  // 借入还款（还给别人）：减少账户余额（负数）
+  let balanceChange = 0
+  if (loan.type === 'lend') {
+    // 借出：收到还款，增加账户余额
+    balanceChange = amountNum
+  } else if (loan.type === 'borrow') {
+    // 借入：还给别人，减少账户余额
+    balanceChange = -amountNum
+  }
+
+  // 如果有关联账户，更新账户余额
+  if (loan.accountId && balanceChange !== 0) {
+    try {
+      const accountResult = await db.collection('accounts')
+        .where({ _id: loan.accountId, _openid: openid })
+        .update({
+          data: {
+            balance: _.inc(balanceChange),
+            updatedAt: db.serverDate()
+          }
+        })
+
+      if (accountResult.stats.updated === 0) {
+        console.error('更新账户余额失败：账户不存在或无权限')
+      }
+    } catch (err) {
+      console.error('更新账户余额异常：', err)
+      // 即使余额更新失败，借款记录已更新，返回成功
+    }
+  }
 
   return {
     success: true,

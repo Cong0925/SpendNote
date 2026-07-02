@@ -246,6 +246,15 @@ Page({
       return
     }
 
+    // 校验是否选择了账户
+    if (!form.accountId) {
+      wx.showToast({
+        title: '请选择账户',
+        icon: 'none'
+      })
+      return
+    }
+
     wx.showLoading({ title: '保存中...' })
 
     try {
@@ -275,7 +284,7 @@ Page({
           }
         })
       } else {
-        // 新增模式
+        // 新增模式 - 创建借出/借入记录
         res = await wx.cloud.callFunction({
           name: 'loanFunctions',
           data: {
@@ -283,6 +292,33 @@ Page({
             data
           }
         })
+
+        // 创建成功后，联动更新账户余额
+        if (res.result.success && form.accountId) {
+          const amount = Math.abs(Number(form.amount))
+          // 借出：减少账户余额（负数）；借入：增加账户余额（正数）
+          const balanceChange = currentType === 'lend' ? -amount : amount
+
+          const updateRes = await wx.cloud.callFunction({
+            name: 'accountFunctions',
+            data: {
+              action: 'updateBalance',
+              data: {
+                id: form.accountId,
+                amount: balanceChange
+              }
+            }
+          })
+
+          if (!updateRes.result.success) {
+            console.error('更新账户余额失败：', updateRes.result.error)
+            // 即使余额更新失败，借出/借入记录已创建，提示用户
+            wx.showToast({
+              title: '记录已保存，但余额更新失败',
+              icon: 'none'
+            })
+          }
+        }
       }
 
       if (res.result.success) {

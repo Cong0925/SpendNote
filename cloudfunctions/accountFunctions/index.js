@@ -226,6 +226,9 @@ async function listAccounts(openid, params = {}) {
 
 /**
  * 获取账户汇总（总资产、总负债、净资产）
+ * 总资产 = 所有资产类账户余额 + 借出应收
+ * 总负债 = 所有负债类账户余额 + 借入应还
+ * 净资产 = 总资产 - 总负债
  */
 async function getAccountSummary(openid) {
   // 获取所有资产类账户
@@ -240,11 +243,53 @@ async function getAccountSummary(openid) {
     .field({ balance: true })
     .get()
 
-  // 计算总资产（精确处理浮点数精度）
-  const totalAsset = roundNumber(assetResult.data.reduce((sum, item) => sum + (item.balance || 0), 0))
+  // 计算账户余额（精确处理浮点数精度）
+  const accountAsset = roundNumber(assetResult.data.reduce((sum, item) => sum + (item.balance || 0), 0))
+  const accountDebt = roundNumber(debtResult.data.reduce((sum, item) => sum + (item.balance || 0), 0))
 
-  // 计算总负债
-  const totalDebt = roundNumber(debtResult.data.reduce((sum, item) => sum + (item.balance || 0), 0))
+  // 获取借出应收（所有进行中的借出记录的未还金额）
+  let lendReceivable = 0
+  try {
+    const lendResult = await db.collection('loans')
+      .where({
+        _openid: openid,
+        type: 'lend',
+        status: 'pending'
+      })
+      .field({ amount: true, paidAmount: true })
+      .get()
+
+    lendReceivable = roundNumber(lendResult.data.reduce((sum, item) => {
+      return sum + (item.amount - (item.paidAmount || 0))
+    }, 0))
+  } catch (err) {
+    console.error('获取借出应收失败：', err)
+  }
+
+  // 获取借入应还（所有进行中的借入记录的未还金额）
+  let borrowRepayable = 0
+  try {
+    const borrowResult = await db.collection('loans')
+      .where({
+        _openid: openid,
+        type: 'borrow',
+        status: 'pending'
+      })
+      .field({ amount: true, paidAmount: true })
+      .get()
+
+    borrowRepayable = roundNumber(borrowResult.data.reduce((sum, item) => {
+      return sum + (item.amount - (item.paidAmount || 0))
+    }, 0))
+  } catch (err) {
+    console.error('获取借入应还失败：', err)
+  }
+
+  // 计算总资产 = 账户余额 + 借出应收
+  const totalAsset = roundNumber(accountAsset + lendReceivable)
+
+  // 计算总负债 = 负债账户余额 + 借入应还
+  const totalDebt = roundNumber(accountDebt + borrowRepayable)
 
   // 计算净资产
   const netAsset = roundNumber(totalAsset - totalDebt)
@@ -255,6 +300,10 @@ async function getAccountSummary(openid) {
       totalAsset,
       totalDebt,
       netAsset,
+      accountAsset,
+      accountDebt,
+      lendReceivable,
+      borrowRepayable,
       assetCount: assetResult.data.length,
       debtCount: debtResult.data.length
     }
