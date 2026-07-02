@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "收款",
+  "usingComponents": {
+    "account-picker": "/components/account-picker/index"
+  }
+}

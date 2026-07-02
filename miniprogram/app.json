@@ -12,6 +12,9 @@
     "pages/accountDetail/accountDetail",
     "pages/loan/loan",
     "pages/addLoan/addLoan",
+    "pages/loanDetail/loanDetail",
+    "pages/paymentDetail/paymentDetail",
+    "pages/loanPayment/loanPayment",
     "pages/accountInfo/accountInfo",
     "pages/transfer/transfer"
   ],

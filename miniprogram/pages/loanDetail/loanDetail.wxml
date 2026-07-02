@@ -1,0 +1,81 @@
+<!--
+  借款详情页面
+-->
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 借款信息卡片 -->
+  <view class="info-card" wx:if="{{loanInfo && !loading}}">
+    <!-- 借出方/借入方 -->
+    <view class="party-row">
+      <text class="party-label">借出方：{{loanInfo.type === 'lend' ? '自己' : loanInfo.personName}}</text>
+      <text class="party-label">借入方：{{loanInfo.type === 'lend' ? loanInfo.personName : '自己'}}</text>
+    </view>
+
+    <!-- 金额信息 -->
+    <view class="amount-row">
+      <view class="amount-item">
+        <text class="amount-label">总额</text>
+        <text class="amount-value">￥{{loanInfo.amountStr}}</text>
+      </view>
+      <view class="amount-item">
+        <text class="amount-label">已{{loanInfo.type === 'lend' ? '收' : '还'}}</text>
+        <text class="amount-value received">￥{{loanInfo.paidAmountStr}}</text>
+      </view>
+      <view class="amount-item">
+        <text class="amount-label">未{{loanInfo.type === 'lend' ? '收' : '还'}}</text>
+        <text class="amount-value remaining">￥{{loanInfo.remainingStr}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作记录列表 -->
+  <view class="payment-list">
+    <view class="list-title">操作记录</view>
+
+    <!-- 加载状态 -->
+    <view class="list-loading" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 记录列表 -->
+    <view
+      class="payment-item"
+      wx:for="{{paymentList}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      data-type="{{item.type}}"
+      bindtap="goToPaymentDetail"
+      wx:if="{{!loading}}"
+    >
+      <view class="payment-left">
+        <view class="payment-icon {{item.type === 'initial' ? 'initial-icon' : (item.type === 'receive' ? 'receive-icon' : 'repay-icon')}}">
+          <text class="icon-text">{{item.typeText}}</text>
+        </view>
+        <view class="payment-info">
+          <text class="payment-type">{{item.typeText}}</text>
+          <text class="payment-date">{{item.dateStr}}</text>
+        </view>
+      </view>
+      <view class="payment-right">
+        <text class="payment-amount">￥{{item.amountStr}}</text>
+        <text class="payment-arrow">></text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!loading && paymentList.length === 0}}">
+      <text class="empty-text">暂无操作记录</text>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-btn" bindtap="goToPayment" wx:if="{{loanInfo && loanInfo.status === 'pending'}}">
+    <text>{{loanInfo.type === 'lend' ? '收款' : '还款'}}</text>
+  </view>
+</view>

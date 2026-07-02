@@ -41,12 +41,16 @@ Page({
       // 编辑模式
       this.setData({ isEdit: true, loanId: id })
       this.loadLoanData(id)
+      // 动态设置页面标题
+      wx.setNavigationBarTitle({ title: '编辑借款' })
     } else {
       // 新增模式
       this.setData({
         currentType: type || 'lend',
         'form.loanDate': this.formatDate(new Date())
       })
+      // 动态设置页面标题
+      wx.setNavigationBarTitle({ title: '新建借款' })
     }
 
     this.loadAccountList()
@@ -241,15 +245,6 @@ Page({
     if (!form.loanDate) {
       wx.showToast({
         title: '请选择日期',
-        icon: 'none'
-      })
-      return
-    }
-
-    // 校验是否选择了账户
-    if (!form.accountId) {
-      wx.showToast({
-        title: '请选择账户',
         icon: 'none'
       })
       return

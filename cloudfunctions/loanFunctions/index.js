@@ -103,6 +103,23 @@ async function addLoan(openid, data) {
 
   const result = await db.collection(LOANS_COLLECTION).add({ data: loan })
 
+  // 创建初始操作记录
+  const payment = {
+    _openid: openid,
+    loanId: result._id,
+    type: 'initial', // 初始记录
+    amount: Math.abs(amount),
+    date: new Date(loanDate),
+    accountId: accountId || '',
+    accountName: '', // 初始记录不需要账户名
+    remark: remark || '',
+    images: images || [],
+    createdAt: now,
+    updatedAt: now
+  }
+
+  await db.collection('loanPayments').add({ data: payment })
+
   return {
     success: true,
     data: { _id: result._id }

@@ -15,7 +15,9 @@ Page({
     // 汇总数据
     summary: {
       lendReceivable: 0,
-      borrowRepayable: 0
+      borrowRepayable: 0,
+      lendReceivableStr: '0.00',
+      borrowRepayableStr: '0.00'
     },
     // 借款记录列表
     loanList: [],
@@ -154,7 +156,7 @@ Page({
   goToLoanDetail(e) {
     const { id } = e.currentTarget.dataset
     wx.navigateTo({
-      url: `/pages/addLoan/addLoan?id=${id}`
+      url: `/pages/loanDetail/loanDetail?id=${id}`
     })
   },
 

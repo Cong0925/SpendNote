@@ -1,0 +1,120 @@
+<!--
+  记录详情页面
+-->
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+
+  <!-- 记录信息 -->
+  <view class="detail-card" wx:if="{{paymentInfo && !loading}}">
+    <!-- 查看模式 -->
+    <view class="detail-view" wx:if="{{!isEditing}}">
+      <!-- 类型标识 -->
+      <view class="type-badge {{paymentInfo.type === 'receive' ? 'receive' : 'repay'}}">
+        <text>{{paymentInfo.typeText}}</text>
+      </view>
+
+      <!-- 金额 -->
+      <view class="amount-display">
+        <text class="amount-label">金额</text>
+        <text class="amount-value">￥{{paymentInfo.amountStr}}</text>
+      </view>
+
+      <!-- 信息列表 -->
+      <view class="info-list">
+        <view class="info-item">
+          <text class="info-label">类型</text>
+          <text class="info-value">{{paymentInfo.typeText}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">日期</text>
+          <text class="info-value">{{paymentInfo.dateStr}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">账户</text>
+          <text class="info-value {{!paymentInfo.accountName ? 'empty' : ''}}">{{paymentInfo.accountName || '未关联账户'}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">备注</text>
+          <text class="info-value {{!paymentInfo.remark ? 'empty' : ''}}">{{paymentInfo.remark || '暂无'}}</text>
+        </view>
+      </view>
+
+      <!-- 图片列表 -->
+      <view class="image-section" wx:if="{{paymentInfo.images && paymentInfo.images.length > 0}}">
+        <text class="section-label">附件图片</text>
+        <view class="image-list">
+          <image
+            class="image-item"
+            wx:for="{{paymentInfo.images}}"
+            wx:key="*this"
+            src="{{item}}"
+            mode="aspectFill"
+            bindtap="previewImage"
+            data-url="{{item}}"
+          />
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="action-buttons">
+        <view class="action-btn edit" bindtap="startEdit">
+          <text>修改</text>
+        </view>
+        <view class="action-btn delete" bindtap="deletePayment">
+          <text>删除</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 编辑模式 -->
+    <view class="edit-form" wx:if="{{isEditing}}">
+      <!-- 金额 -->
+      <view class="form-item">
+        <text class="form-label">金额</text>
+        <input
+          class="form-input"
+          type="digit"
+          placeholder="请输入金额"
+          value="{{editForm.amount}}"
+          bindinput="onAmountInput"
+        />
+      </view>
+
+      <!-- 日期 -->
+      <view class="form-item">
+        <text class="form-label">日期</text>
+        <picker mode="date" value="{{editForm.date}}" bindchange="onDateChange">
+          <view class="form-picker">
+            <text>{{editForm.date || '请选择日期'}}</text>
+            <text class="picker-arrow">></text>
+          </view>
+        </picker>
+      </view>
+
+      <!-- 备注 -->
+      <view class="form-item">
+        <text class="form-label">备注</text>
+        <textarea
+          class="form-textarea"
+          placeholder="请输入备注（选填）"
+          value="{{editForm.remark}}"
+          bindinput="onRemarkInput"
+        />
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="action-buttons">
+        <view class="action-btn cancel" bindtap="cancelEdit">
+          <text>取消</text>
+        </view>
+        <view class="action-btn save" bindtap="saveEdit">
+          <text>保存</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
