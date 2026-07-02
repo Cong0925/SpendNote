@@ -2,7 +2,7 @@
   账户主页 - 与现有页面统一风格
 -->
 <view class="container">
-  <!-- 顶部净资产区域 -->
+  <!-- 顶部净资产区域 - 直接加载，不显示loading -->
   <view class="hero-card">
     <view class="header-title">净资产</view>
     <view class="net-asset">
@@ -17,42 +17,51 @@
     </view>
   </view>
 
-  <!-- 借款记账 -->
+  <!-- 借款记账 - 独立loading -->
   <view class="section">
     <view class="section-title loan-title">借款记账</view>
 
-    <view class="loan-item" bindtap="goToLoan">
-      <view class="loan-left">
-        <view class="loan-icon lend-icon">
-          <image class="loan-icon-img" src="/images/loan/lend.png" mode="aspectFit" />
-        </view>
-        <view class="loan-info">
-          <text class="loan-name">借出</text>
-          <text class="loan-type">应收</text>
-        </view>
-      </view>
-      <view class="loan-right">
-        <text class="loan-amount">{{hideAmount ? '******' : '￥' + loanSummary.lendReceivableStr}}</text>
-      </view>
+    <!-- 加载中状态 -->
+    <view class="section-loading" wx:if="{{loadingLoans}}">
+      <view class="loading-spinner-small"></view>
+      <text class="loading-text">加载中...</text>
     </view>
 
-    <view class="loan-item" bindtap="goToLoan">
-      <view class="loan-left">
-        <view class="loan-icon borrow-icon">
-          <image class="loan-icon-img" src="/images/loan/borrow.png" mode="aspectFit" />
+    <!-- 加载完成 -->
+    <block wx:else>
+      <view class="loan-item" bindtap="goToLoan">
+        <view class="loan-left">
+          <view class="loan-icon lend-icon">
+            <image class="loan-icon-img" src="/images/loan/lend.png" mode="aspectFit" />
+          </view>
+          <view class="loan-info">
+            <text class="loan-name">借出</text>
+            <text class="loan-type">应收</text>
+          </view>
         </view>
-        <view class="loan-info">
-          <text class="loan-name">借入</text>
-          <text class="loan-type">应还</text>
+        <view class="loan-right">
+          <text class="loan-amount">{{hideAmount ? '******' : '￥' + loanSummary.lendReceivableStr}}</text>
         </view>
       </view>
-      <view class="loan-right">
-        <text class="loan-amount">{{hideAmount ? '******' : '￥' + loanSummary.borrowRepayableStr}}</text>
+
+      <view class="loan-item" bindtap="goToLoan">
+        <view class="loan-left">
+          <view class="loan-icon borrow-icon">
+            <image class="loan-icon-img" src="/images/loan/borrow.png" mode="aspectFit" />
+          </view>
+          <view class="loan-info">
+            <text class="loan-name">借入</text>
+            <text class="loan-type">应还</text>
+          </view>
+        </view>
+        <view class="loan-right">
+          <text class="loan-amount">{{hideAmount ? '******' : '￥' + loanSummary.borrowRepayableStr}}</text>
+        </view>
       </view>
-    </view>
+    </block>
   </view>
 
-  <!-- 我的账户 -->
+  <!-- 我的账户 - 独立loading -->
   <view class="section">
     <view class="section-header">
       <text class="section-title">我的账户</text>
@@ -61,56 +70,60 @@
       </view>
     </view>
 
-    <!-- 资产类账户 -->
-    <view
-      class="account-item"
-      wx:for="{{assetAccounts}}"
-      wx:key="_id"
-      data-id="{{item._id}}"
-      bindtap="goToAccountDetail"
-    >
-      <view class="account-left">
-        <image class="account-icon" src="{{item.icon}}" mode="aspectFit"></image>
-        <view class="account-info">
-          <text class="account-name">{{item.name}}</text>
-          <text class="account-type">{{item.type}}</text>
+    <!-- 加载中状态 -->
+    <view class="section-loading" wx:if="{{loadingAccounts}}">
+      <view class="loading-spinner-small"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 加载完成 -->
+    <block wx:else>
+      <!-- 资产类账户 -->
+      <view
+        class="account-item"
+        wx:for="{{assetAccounts}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="goToAccountDetail"
+      >
+        <view class="account-left">
+          <image class="account-icon" src="{{item.icon}}" mode="aspectFit"></image>
+          <view class="account-info">
+            <text class="account-name">{{item.name}}</text>
+            <text class="account-type">{{item.type}}</text>
+          </view>
+        </view>
+        <view class="account-right">
+          <text class="account-amount">{{hideAmount ? '******' : '￥' + item.balanceStr}}</text>
         </view>
       </view>
-      <view class="account-right">
-        <text class="account-amount">{{hideAmount ? '******' : '￥' + item.balanceStr}}</text>
-      </view>
-    </view>
 
-    <!-- 负债类账户 -->
-    <view
-      class="account-item"
-      wx:for="{{debtAccounts}}"
-      wx:key="_id"
-      data-id="{{item._id}}"
-      bindtap="goToAccountDetail"
-    >
-      <view class="account-left">
-        <image class="account-icon" src="{{item.icon}}" mode="aspectFit"></image>
-        <view class="account-info">
-          <text class="account-name">{{item.name}}</text>
-          <text class="account-type">{{item.type}}</text>
+      <!-- 负债类账户 -->
+      <view
+        class="account-item"
+        wx:for="{{debtAccounts}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="goToAccountDetail"
+      >
+        <view class="account-left">
+          <image class="account-icon" src="{{item.icon}}" mode="aspectFit"></image>
+          <view class="account-info">
+            <text class="account-name">{{item.name}}</text>
+            <text class="account-type">{{item.type}}</text>
+          </view>
+        </view>
+        <view class="account-right">
+          <text class="account-debt-label">应还</text>
+          <text class="account-amount debt-amount">{{hideAmount ? '******' : '￥-' + item.balanceStr}}</text>
         </view>
       </view>
-      <view class="account-right">
-        <text class="account-debt-label">应还</text>
-        <text class="account-amount debt-amount">{{hideAmount ? '******' : '￥-' + item.balanceStr}}</text>
+
+      <!-- 添加账户按钮 -->
+      <view class="add-account-btn" bindtap="goToAddAccount">
+        <text class="add-icon">+</text>
+        <text>添加账户</text>
       </view>
-    </view>
-
-    <!-- 添加账户按钮 -->
-    <view class="add-account-btn" bindtap="goToAddAccount">
-      <text class="add-icon">+</text>
-      <text>添加账户</text>
-    </view>
-  </view>
-
-  <!-- 加载状态 -->
-  <view class="loading-mask" wx:if="{{loading}}">
-    <view class="loading-spinner"></view>
+    </block>
   </view>
 </view>

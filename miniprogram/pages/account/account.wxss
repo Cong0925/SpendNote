@@ -348,6 +348,31 @@ page {
   animation: spin 1s linear infinite;
 }
 
+/* ============ 局部加载状态 ============ */
+.section-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 0;
+  background: var(--color-card);
+}
+
+.loading-spinner-small {
+  width: 40rpx;
+  height: 40rpx;
+  border: 3rpx solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16rpx;
+}
+
+.loading-text {
+  font-size: 24rpx;
+  color: var(--color-text-tertiary);
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);

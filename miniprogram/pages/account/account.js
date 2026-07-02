@@ -28,7 +28,10 @@ Page({
     summary: {
       netAsset: 0,
       totalAsset: 0,
-      totalDebt: 0
+      totalDebt: 0,
+      netAssetStr: '0.00',
+      totalAssetStr: '0.00',
+      totalDebtStr: '0.00'
     },
     // 是否隐藏金额
     hideAmount: false,
@@ -39,10 +42,13 @@ Page({
     // 借款汇总
     loanSummary: {
       lendReceivable: 0,
-      borrowRepayable: 0
+      borrowRepayable: 0,
+      lendReceivableStr: '0.00',
+      borrowRepayableStr: '0.00'
     },
-    // 加载状态
-    loading: true
+    // 局部加载状态
+    loadingAccounts: false,
+    loadingLoans: false
   },
 
   /**
@@ -83,9 +89,11 @@ Page({
    * 加载所有数据
    */
   async loadData() {
-    this.setData({ loading: true })
+    // 净资产卡片：直接加载，不显示loading
+    // 账户信息和借款信息：分别显示loading状态
 
     try {
+      // 并行加载三个接口
       await Promise.all([
         this.loadAccountSummary(),
         this.loadAccounts(),
@@ -97,8 +105,6 @@ Page({
         title: '加载失败',
         icon: 'none'
       })
-    } finally {
-      this.setData({ loading: false })
     }
   },
 
@@ -134,6 +140,8 @@ Page({
    * 加载账户列表
    */
   async loadAccounts() {
+    this.setData({ loadingAccounts: true })
+
     try {
       const res = await wx.cloud.callFunction({
         name: 'accountFunctions',
@@ -160,6 +168,8 @@ Page({
       }
     } catch (err) {
       console.error('获取账户列表失败：', err)
+    } finally {
+      this.setData({ loadingAccounts: false })
     }
   },
 
@@ -167,6 +177,8 @@ Page({
    * 加载借款汇总
    */
   async loadLoanSummary() {
+    this.setData({ loadingLoans: true })
+
     try {
       const res = await wx.cloud.callFunction({
         name: 'loanFunctions',
@@ -187,6 +199,8 @@ Page({
       }
     } catch (err) {
       console.error('获取借款汇总失败：', err)
+    } finally {
+      this.setData({ loadingLoans: false })
     }
   },
 
