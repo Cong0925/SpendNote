@@ -247,7 +247,7 @@ Page({
         // hero-card 默认状态：带单位的金额
         const expenseUnit = formatAmountWithUnit(totalExpense)
         const incomeUnit = formatAmountWithUnit(totalIncome)
-        const balanceUnit = formatAmountWithUnit(Math.abs(balance))
+        const balanceUnit = formatAmountWithUnit(balance)
 
         this.setData({
           bills,
@@ -262,7 +262,7 @@ Page({
           // hero-card 展开状态 & group-summary：元为单位
           totalExpenseStr: formatAmountFull(totalExpense),
           totalIncomeStr: formatAmountFull(totalIncome),
-          balanceStr: formatAmountFull(Math.abs(balance)),
+          balanceStr: formatAmountFull(balance),
           balance,
           totalBills: bills.length,
           hasMore: bills.length >= 200,
@@ -374,7 +374,7 @@ Page({
     const groups = Object.values(groupMap).map(group => {
       const incomeUnit = formatAmountWithUnit(group.income)
       const expenseUnit = formatAmountWithUnit(group.expense)
-      const balanceUnit = formatAmountWithUnit(Math.abs(group.income - group.expense))
+      const balanceUnit = formatAmountWithUnit(group.income - group.expense)
       return {
         ...group,
         incomeStr: incomeUnit.value + ' /' + incomeUnit.unit,
@@ -431,7 +431,7 @@ Page({
     const groups = Object.values(monthMap).map(month => {
       const monthIncomeUnit = formatAmountWithUnit(month.income)
       const monthExpenseUnit = formatAmountWithUnit(month.expense)
-      const monthBalanceUnit = formatAmountWithUnit(Math.abs(month.income - month.expense))
+      const monthBalanceUnit = formatAmountWithUnit(month.income - month.expense)
       return {
         ...month,
         incomeStr: monthIncomeUnit.value + '/' + monthIncomeUnit.unit,
@@ -516,7 +516,7 @@ Page({
       return Object.values(children).map(child => {
         const childIncomeUnit = formatAmountWithUnit(child.income)
         const childExpenseUnit = formatAmountWithUnit(child.expense)
-        const childBalanceUnit = formatAmountWithUnit(Math.abs(child.income - child.expense))
+        const childBalanceUnit = formatAmountWithUnit(child.income - child.expense)
         return {
           ...child,
           incomeStr: childIncomeUnit.value + '/' + childIncomeUnit.unit,
@@ -530,7 +530,7 @@ Page({
     const groups = Object.values(quarterMap).map(quarter => {
       const quarterIncomeUnit = formatAmountWithUnit(quarter.income)
       const quarterExpenseUnit = formatAmountWithUnit(quarter.expense)
-      const quarterBalanceUnit = formatAmountWithUnit(Math.abs(quarter.income - quarter.expense))
+      const quarterBalanceUnit = formatAmountWithUnit(quarter.income - quarter.expense)
       return {
         ...quarter,
         incomeStr: quarterIncomeUnit.value + '/' + quarterIncomeUnit.unit,
@@ -605,7 +605,7 @@ Page({
       return Object.values(children).map(child => {
         const childIncomeUnit = formatAmountWithUnit(child.income)
         const childExpenseUnit = formatAmountWithUnit(child.expense)
-        const childBalanceUnit = formatAmountWithUnit(Math.abs(child.income - child.expense))
+        const childBalanceUnit = formatAmountWithUnit(child.income - child.expense)
         return {
           ...child,
           incomeStr: childIncomeUnit.value + '/' + childIncomeUnit.unit,
@@ -619,7 +619,7 @@ Page({
     const groups = Object.values(yearMap).map(year => {
       const yearIncomeUnit = formatAmountWithUnit(year.income)
       const yearExpenseUnit = formatAmountWithUnit(year.expense)
-      const yearBalanceUnit = formatAmountWithUnit(Math.abs(year.income - year.expense))
+      const yearBalanceUnit = formatAmountWithUnit(year.income - year.expense)
       return {
         ...year,
         incomeStr: yearIncomeUnit.value + '/' + yearIncomeUnit.unit,
@@ -813,87 +813,49 @@ Page({
   // 快捷标签切换
   selectQuickTab(e) {
     const value = e.currentTarget.dataset.value
-    const { currentDate, savedDate } = this.data
 
-    // 同步日期精度：根据新模式截取日期
-    let newDate = currentDate
-    const parts = currentDate.split('-')
+    // 获取当前真实日期
+    const now = new Date()
+    const realYear = now.getFullYear()
+    const realMonth = now.getMonth() + 1
+    const realDay = now.getDate()
+    const realMonthStr = String(realMonth).padStart(2, '0')
+    const realDayStr = String(realDay).padStart(2, '0')
 
-    // 保存当前完整日期，用于后续切换恢复
-    let newSavedDate = savedDate
-    if (currentDate.length >= 7) {
-      // 保存完整的 YYYY-MM-DD 格式日期
-      newSavedDate = currentDate.length === 10 ? currentDate : `${currentDate}-01`
-    }
-
-    // 确保 savedDate 是完整的 YYYY-MM-DD 格式（如果为空则使用当前日期）
-    if (!newSavedDate || newSavedDate.split('-').length < 3) {
-      const now = new Date()
-      const y = now.getFullYear()
-      const m = String(now.getMonth() + 1).padStart(2, '0')
-      const d = String(now.getDate()).padStart(2, '0')
-      newSavedDate = newSavedDate ? `${newSavedDate}-${m}-${d}` : `${y}-${m}-${d}`
-    }
+    let newDate = ''
+    let rangeStartDate = ''
+    let rangeEndDate = ''
 
     if (value === 'day') {
-      if (parts.length < 3) {
-        // 从月/年切换到日，使用 savedDate 中的日期
-        const savedParts = newSavedDate.split('-')
-        newDate = `${parts[0]}-${parts[1]}-${savedParts[2] || '01'}`
-      }
-    } else if (value === 'month') {
-      if (parts.length < 3) {
-        // 从年切换到月，使用 savedDate 中的月份
-        const savedParts = newSavedDate.split('-')
-        newDate = `${parts[0]}-${savedParts[1] || '01'}`
-      } else {
-        newDate = `${parts[0]}-${parts[1]}`
-      }
-    } else if (value === 'year') {
-      newDate = parts[0]
-    } else if (value === 'quarter') {
-      if (parts.length < 3) {
-        const savedParts = newSavedDate.split('-')
-        newDate = `${parts[0]}-${savedParts[1] || '01'}-01`
-      } else {
-        newDate = `${parts[0]}-${parts[1]}-01`
-      }
-    }
-
-    // 更新时间范围
-    let rangeStartDate = newDate
-    let rangeEndDate = newDate
-
-    if (value === 'day') {
-      // 日模式：保持当前日期
+      // 日模式：强制重置为当前真实日期
+      newDate = `${realYear}-${realMonthStr}-${realDayStr}`
       rangeStartDate = newDate
       rangeEndDate = newDate
     } else if (value === 'month') {
-      // 月模式：设置为当月范围
-      const [y, m] = newDate.split('-')
-      rangeStartDate = `${y}-${m}-01`
-      const lastDay = new Date(parseInt(y), parseInt(m), 0).getDate()
-      rangeEndDate = `${y}-${m}-${lastDay}`
-    } else if (value === 'year') {
-      // 年模式：设置为当年范围
-      const [y] = newDate.split('-')
-      rangeStartDate = `${y}-01-01`
-      rangeEndDate = `${y}-12-31`
+      // 月模式：强制重置为当前真实月份
+      newDate = `${realYear}-${realMonthStr}`
+      rangeStartDate = `${realYear}-${realMonthStr}-01`
+      const lastDay = new Date(realYear, realMonth, 0).getDate()
+      rangeEndDate = `${realYear}-${realMonthStr}-${String(lastDay).padStart(2, '0')}`
     } else if (value === 'quarter') {
-      // 季度模式：根据当前日期计算季度范围
-      const [y, m] = newDate.split('-')
-      const currentQuarter = Math.ceil(parseInt(m) / 3) - 1
+      // 季度模式：强制重置为当前真实季度
+      const currentQuarter = Math.ceil(realMonth / 3) - 1
       const startMonth = currentQuarter * 3 + 1
       const endMonth = (currentQuarter + 1) * 3
-      rangeStartDate = `${y}-${String(startMonth).padStart(2, '0')}-01`
-      const lastDay = new Date(y, endMonth, 0).getDate()
-      rangeEndDate = `${y}-${String(endMonth).padStart(2, '0')}-${lastDay}`
+      newDate = `${realYear}-${String(startMonth).padStart(2, '0')}-01`
+      rangeStartDate = `${realYear}-${String(startMonth).padStart(2, '0')}-01`
+      const lastDay = new Date(realYear, endMonth, 0).getDate()
+      rangeEndDate = `${realYear}-${String(endMonth).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`
+    } else if (value === 'year') {
+      // 年模式：强制重置为当前真实年份
+      newDate = `${realYear}`
+      rangeStartDate = `${realYear}-01-01`
+      rangeEndDate = `${realYear}-12-31`
     }
 
     this.setData({
       viewMode: value,
       currentDate: newDate,
-      savedDate: newSavedDate,
       dateDisplay: this.getDisplayDate(newDate, value),
       rangeStartDate: rangeStartDate,
       rangeEndDate: rangeEndDate,

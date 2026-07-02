@@ -180,49 +180,44 @@ Page({
   // 快捷标签切换
   selectQuickTab(e) {
     const value = e.currentTarget.dataset.value
-    const { currentDate } = this.data
 
-    // 同步日期精度：根据新模式截取日期
-    let newDate = currentDate
-    const parts = currentDate.split('-')
+    // 获取当前真实日期
+    const now = new Date()
+    const realYear = now.getFullYear()
+    const realMonth = now.getMonth() + 1
+    const realDay = now.getDate()
+    const realMonthStr = String(realMonth).padStart(2, '0')
+    const realDayStr = String(realDay).padStart(2, '0')
 
-    if (value === 'day') {
-      if (parts.length < 3) {
-        newDate = `${parts[0]}-${parts[1]}-01`
-      }
-    } else if (value === 'month') {
-      newDate = `${parts[0]}-${parts[1]}`
-    } else if (value === 'year') {
-      newDate = parts[0]
-    } else if (value === 'quarter') {
-      if (parts.length < 3) {
-        newDate = `${parts[0]}-${parts[1] || '01'}-01`
-      }
-    }
-
-    // 更新时间范围
-    let rangeStartDate = newDate
-    let rangeEndDate = newDate
+    let newDate = ''
+    let rangeStartDate = ''
+    let rangeEndDate = ''
 
     if (value === 'day') {
-      // 日模式：保持当前日期
+      // 日模式：强制重置为当前真实日期
+      newDate = `${realYear}-${realMonthStr}-${realDayStr}`
       rangeStartDate = newDate
       rangeEndDate = newDate
     } else if (value === 'month') {
-      // 月模式：设置为当月范围
-      const [y, m] = newDate.split('-')
-      rangeStartDate = `${y}-${m}-01`
-      const lastDay = new Date(parseInt(y), parseInt(m), 0).getDate()
-      rangeEndDate = `${y}-${m}-${lastDay}`
-    } else if (value === 'year') {
-      // 年模式：设置为当年范围
-      const [y] = newDate.split('-')
-      rangeStartDate = `${y}-01-01`
-      rangeEndDate = `${y}-12-31`
+      // 月模式：强制重置为当前真实月份
+      newDate = `${realYear}-${realMonthStr}`
+      rangeStartDate = `${realYear}-${realMonthStr}-01`
+      const lastDay = new Date(realYear, realMonth, 0).getDate()
+      rangeEndDate = `${realYear}-${realMonthStr}-${String(lastDay).padStart(2, '0')}`
     } else if (value === 'quarter') {
-      // 季度模式：保持原逻辑
-      rangeStartDate = newDate
-      rangeEndDate = newDate
+      // 季度模式：强制重置为当前真实季度
+      const currentQuarter = Math.ceil(realMonth / 3) - 1
+      const startMonth = currentQuarter * 3 + 1
+      const endMonth = (currentQuarter + 1) * 3
+      newDate = `${realYear}-${String(startMonth).padStart(2, '0')}-01`
+      rangeStartDate = `${realYear}-${String(startMonth).padStart(2, '0')}-01`
+      const lastDay = new Date(realYear, endMonth, 0).getDate()
+      rangeEndDate = `${realYear}-${String(endMonth).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`
+    } else if (value === 'year') {
+      // 年模式：强制重置为当前真实年份
+      newDate = `${realYear}`
+      rangeStartDate = `${realYear}-01-01`
+      rangeEndDate = `${realYear}-12-31`
     }
 
     this.setData({
@@ -306,7 +301,7 @@ Page({
         this.setData({
           totalExpenseStr: formatAmount(totalExpense),
           totalIncomeStr: formatAmount(totalIncome),
-          balanceStr: formatAmount(balance),
+          balanceStr: formatAmount(balance, { showSign: true }),
           balance,
           categoryStats: stats.categoryStats,
           displayStats,

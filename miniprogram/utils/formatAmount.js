@@ -41,13 +41,36 @@ function formatAmountWithUnit(amount) {
 /**
  * 格式化金额显示（带千分位，元为单位）
  * @param {number} amount - 金额
+ * @param {Object} options - 配置选项
+ * @param {boolean} options.showSign - 是否显示正负号（默认false）
  * @returns {string} 格式化后的金额字符串，如 '1,234,567.89'
  */
-function formatAmount(amount) {
+function formatAmount(amount, options = {}) {
   const num = parseFloat(amount) || 0
-  const parts = num.toFixed(2).split('.')
+  const { showSign = false } = options
+
+  // 处理负数
+  const isNegative = num < 0
+  const absNum = Math.abs(num)
+
+  // 格式化绝对值
+  const parts = absNum.toFixed(2).split('.')
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  return parts.join('.')
+
+  // 构建结果
+  let result = parts.join('.')
+
+  // 添加负号
+  if (isNegative) {
+    result = '-' + result
+  }
+
+  // 如果需要显示正号且是正数
+  if (showSign && !isNegative && num > 0) {
+    result = '+' + result
+  }
+
+  return result
 }
 
 /**
