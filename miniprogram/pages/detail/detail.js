@@ -40,8 +40,8 @@ Page({
       const res = await wx.cloud.callFunction({
         name: 'billFunctions',
         data: {
-          action: 'getBillById',
-          data: { billId }
+          action: 'get',
+          data: { id: billId }
         }
       })
 
@@ -129,7 +129,9 @@ Page({
       `category=${billDetail.category}`,
       `icon=${billDetail.icon}`,
       `note=${billDetail.note || ''}`,
-      `date=${billDetail.date}`
+      `date=${billDetail.date}`,
+      `accountId=${billDetail.accountId || ''}`,
+      `accountName=${billDetail.accountName || ''}`
     ].join('&')
 
     wx.navigateTo({

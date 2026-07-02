@@ -768,7 +768,7 @@ Page({
     if (bill) {
       // 跳转到记账页面进行修改，传递账单信息
       wx.navigateTo({
-        url: `/pages/add/add?billId=${billId}&type=${bill.type}&amount=${bill.amount}&category=${bill.category}&icon=${bill.icon}&note=${bill.note || ''}&date=${bill.date}`
+        url: `/pages/add/add?billId=${billId}&type=${bill.type}&amount=${bill.amount}&category=${bill.category}&icon=${bill.icon}&note=${bill.note || ''}&date=${bill.date}&accountId=${bill.accountId || ''}`
       })
     }
 

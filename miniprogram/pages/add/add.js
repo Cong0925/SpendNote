@@ -38,6 +38,10 @@ Page({
         accountId: options.accountId || '',
         accountName: options.accountName || ''
       })
+      // 如果有 accountId 但没有 accountName，加载账户信息
+      if (options.accountId && !options.accountName) {
+        this.loadAccountInfo(options.accountId)
+      }
     } else {
       this.setCurrentDate()
       // 如果从账户详情页面传入accountId，自动关联
