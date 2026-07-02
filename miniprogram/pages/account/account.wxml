@@ -6,14 +6,14 @@
   <view class="hero-card">
     <view class="header-title">净资产</view>
     <view class="net-asset">
-      <text class="net-asset-value">{{hideAmount ? '******' : '￥' + summary.netAsset}}</text>
+      <text class="net-asset-value">{{hideAmount ? '******' : '￥' + summary.netAssetStr}}</text>
       <view class="hide-btn" bindtap="toggleHideAmount">
         <text class="iconfont {{hideAmount ? 'icon-eye-close' : 'icon-eye'}}"></text>
       </view>
     </view>
     <view class="summary-row">
-      <text class="summary-item">负债: {{hideAmount ? '******' : '￥' + summary.totalDebt}}</text>
-      <text class="summary-item">总资产: {{hideAmount ? '******' : '￥' + summary.totalAsset}}</text>
+      <text class="summary-item">负债: {{hideAmount ? '******' : '￥' + summary.totalDebtStr}}</text>
+      <text class="summary-item">总资产: {{hideAmount ? '******' : '￥' + summary.totalAssetStr}}</text>
     </view>
   </view>
 
@@ -32,7 +32,7 @@
         </view>
       </view>
       <view class="loan-right">
-        <text class="loan-amount">{{hideAmount ? '******' : '￥' + loanSummary.lendReceivable}}</text>
+        <text class="loan-amount">{{hideAmount ? '******' : '￥' + loanSummary.lendReceivableStr}}</text>
       </view>
     </view>
 
@@ -47,7 +47,7 @@
         </view>
       </view>
       <view class="loan-right">
-        <text class="loan-amount">{{hideAmount ? '******' : '￥' + loanSummary.borrowRepayable}}</text>
+        <text class="loan-amount">{{hideAmount ? '******' : '￥' + loanSummary.borrowRepayableStr}}</text>
       </view>
     </view>
   </view>
@@ -77,7 +77,7 @@
         </view>
       </view>
       <view class="account-right">
-        <text class="account-amount">{{hideAmount ? '******' : '￥' + item.balance}}</text>
+        <text class="account-amount">{{hideAmount ? '******' : '￥' + item.balanceStr}}</text>
       </view>
     </view>
 
@@ -98,7 +98,7 @@
       </view>
       <view class="account-right">
         <text class="account-debt-label">应还</text>
-        <text class="account-amount debt-amount">{{hideAmount ? '******' : '￥-' + item.balance}}</text>
+        <text class="account-amount debt-amount">{{hideAmount ? '******' : '￥-' + item.balanceStr}}</text>
       </view>
     </view>
 

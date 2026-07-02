@@ -24,7 +24,7 @@
 
     <!-- 金额显示 -->
     <view class="amount-display">
-      <text class="amount-value">￥{{currentType === 'lend' ? summary.lendReceivable : summary.borrowRepayable}}</text>
+      <text class="amount-value">￥{{currentType === 'lend' ? summary.lendReceivableStr : summary.borrowRepayableStr}}</text>
       <text class="amount-label">({{currentType === 'lend' ? '还应收' : '还应还'}})</text>
     </view>
   </view>
@@ -59,10 +59,10 @@
         </view>
       </view>
       <view class="loan-right">
-        <text class="loan-total">￥{{item.amount}}</text>
+        <text class="loan-total">￥{{item.amountStr}}</text>
         <view class="loan-status">
-          <text>{{currentType === 'lend' ? '应收' : '应还'}}:￥{{item.amount - item.paidAmount}}</text>
-          <text> {{currentType === 'lend' ? '已收' : '已还'}}:￥{{item.paidAmount}}</text>
+          <text>{{currentType === 'lend' ? '应收' : '应还'}}:￥{{item.remainingStr}}</text>
+          <text> {{currentType === 'lend' ? '已收' : '已还'}}:￥{{item.paidAmountStr}}</text>
         </view>
       </view>
     </view>

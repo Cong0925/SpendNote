@@ -1,4 +1,6 @@
 // pages/detail/detail.js
+const { formatAmount } = require('../../utils/formatAmount')
+
 Page({
   data: {
     statusBarHeight: 20,
@@ -49,7 +51,7 @@ Page({
           billDetail: {
             ...bill,
             amount: parseFloat(bill.amount) || 0,
-            amountStr: this.formatAmount(bill.amount)
+            amountStr: formatAmount(bill.amount)
           }
         })
       } else {
@@ -133,10 +135,5 @@ Page({
     wx.navigateTo({
       url: `/pages/add/add?${params}`
     })
-  },
-
-  // 格式化金额
-  formatAmount(amount) {
-    return (parseFloat(amount) || 0).toFixed(2)
   }
 })

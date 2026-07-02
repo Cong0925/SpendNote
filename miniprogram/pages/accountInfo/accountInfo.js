@@ -3,6 +3,7 @@
  * 显示账户信息、账单列表和操作按钮
  */
 const app = getApp()
+const { formatAmount } = require('../../utils/formatAmount')
 
 // 账户类型映射
 const ACCOUNT_TYPE_MAP = {
@@ -101,6 +102,8 @@ Page({
         } else {
           account.title = account.typeText
         }
+        // 格式化余额
+        account.balanceStr = formatAmount(account.balance)
         this.setData({ account })
       }
     } catch (err) {
@@ -134,9 +137,20 @@ Page({
           }
         })
 
+        // 格式化账单金额
+        const formattedBillList = billList.map(bill => ({
+          ...bill,
+          amountStr: formatAmount(bill.amount)
+        }))
+
         this.setData({
-          billList,
-          stats: { income, expense }
+          billList: formattedBillList,
+          stats: {
+            income,
+            expense,
+            incomeStr: formatAmount(income),
+            expenseStr: formatAmount(expense)
+          }
         })
       }
     } catch (err) {

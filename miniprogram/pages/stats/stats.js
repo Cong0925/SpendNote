@@ -1,4 +1,5 @@
 // pages/stats/stats.js
+const { formatAmount } = require('../../utils/formatAmount')
 
 const CHART_COLORS = [
   '#2563EB', '#EF4444', '#22C55E', '#F59E0B', '#8B5CF6',
@@ -243,7 +244,7 @@ Page({
             return {
               ...item,
               amount,
-              amountStr: amount.toFixed(2),
+              amountStr: formatAmount(amount),
               percent: percent.toFixed(1),
               percentStr: percent.toFixed(1),
               color: CHART_COLORS[index % CHART_COLORS.length]
@@ -269,9 +270,9 @@ Page({
         }
 
         this.setData({
-          totalExpenseStr: totalExpense.toFixed(2),
-          totalIncomeStr: totalIncome.toFixed(2),
-          balanceStr: balance.toFixed(2),
+          totalExpenseStr: formatAmount(totalExpense),
+          totalIncomeStr: formatAmount(totalIncome),
+          balanceStr: formatAmount(balance),
           balance,
           categoryStats: stats.categoryStats,
           displayStats,

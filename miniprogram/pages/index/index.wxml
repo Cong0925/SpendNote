@@ -30,21 +30,49 @@
     </view>
 
     <!-- 收支概览卡片 -->
-    <view class="hero-card">
-      <view class="hero-amounts">
-        <view class="hero-amount-item">
-          <text class="hero-amount-label">支出</text>
-          <text class="hero-amount-value expense">¥{{totalExpenseStr}}</text>
+    <view class="hero-card {{expandedAmount ? 'expanded' : ''}}">
+      <!-- 三列并排显示（默认状态） -->
+      <view class="hero-amounts" wx:if="{{!expandedAmount}}">
+        <view class="hero-amount-item" bindtap="toggleAmountExpand" data-type="expense">
+          <text class="hero-amount-label">支出<text class="hero-amount-unit">/ {{totalExpenseUnit}}</text></text>
+          <text class="hero-amount-value expense">¥{{totalExpenseValue}}</text>
         </view>
         <view class="hero-divider"></view>
-        <view class="hero-amount-item">
-          <text class="hero-amount-label">收入</text>
-          <text class="hero-amount-value income">¥{{totalIncomeStr}}</text>
+        <view class="hero-amount-item" bindtap="toggleAmountExpand" data-type="income">
+          <text class="hero-amount-label">收入<text class="hero-amount-unit">/ {{totalIncomeUnit}}</text></text>
+          <text class="hero-amount-value income">¥{{totalIncomeValue}}</text>
         </view>
         <view class="hero-divider"></view>
-        <view class="hero-amount-item">
-          <text class="hero-amount-label">结余</text>
-          <text class="hero-amount-value {{balance >= 0 ? 'income' : 'expense'}}">¥{{balanceStr}}</text>
+        <view class="hero-amount-item" bindtap="toggleAmountExpand" data-type="balance">
+          <text class="hero-amount-label">结余<text class="hero-amount-unit">/ {{balanceUnit}}</text></text>
+          <text class="hero-amount-value {{balance >= 0 ? 'income' : 'expense'}}">¥{{balanceValue}}</text>
+        </view>
+      </view>
+
+      <!-- 展开状态：上方显示未点击的两个，下方显示点击的 -->
+      <view class="hero-amounts-expanded" wx:else>
+        <!-- 上方：未点击的两个 -->
+        <view class="hero-amounts-top">
+          <view class="hero-amount-item" wx:if="{{expandedAmount !== 'expense'}}" bindtap="toggleAmountExpand" data-type="expense">
+            <text class="hero-amount-label">支出<text class="hero-amount-unit">/ 元</text></text>
+            <text class="hero-amount-value expense">¥{{totalExpenseStr}} </text>
+          </view>
+          <view class="hero-amount-item" wx:if="{{expandedAmount !== 'income'}}" bindtap="toggleAmountExpand" data-type="income">
+            <text class="hero-amount-label">收入<text class="hero-amount-unit">/ 元</text></text>
+            <text class="hero-amount-value income">¥{{totalIncomeStr}}</text>
+          </view>
+          <view class="hero-amount-item" wx:if="{{expandedAmount !== 'balance'}}" bindtap="toggleAmountExpand" data-type="balance">
+            <text class="hero-amount-label">结余<text class="hero-amount-unit">/ 元</text></text>
+            <text class="hero-amount-value {{balance >= 0 ? 'income' : 'expense'}}">¥{{balanceStr}}</text>
+          </view>
+        </view>
+
+        <!-- 下方：点击展开的完整金额 -->
+        <view class="hero-amounts-bottom" bindtap="toggleAmountExpand" data-type="{{expandedAmount}}">
+          <view class="hero-amount-expanded-item {{expandedAmount}}-expanded">
+            <text class="hero-amount-label-expanded">{{expandedAmount === 'expense' ? '支出' : (expandedAmount === 'income' ? '收入' : '结余')}}<text class="hero-amount-unit">/ 元</text></text>
+            <text class="hero-amount-value-expanded {{expandedAmount}}">¥{{expandedAmount === 'expense' ? totalExpenseStr : (expandedAmount === 'income' ? totalIncomeStr : balanceStr)}}</text>
+          </view>
         </view>
       </view>
     </view>

@@ -3,6 +3,7 @@
  * 显示借出/借入记录列表，支持切换类型
  */
 const app = getApp()
+const { formatAmount } = require('../../utils/formatAmount')
 
 Page({
   /**
@@ -73,8 +74,13 @@ Page({
       })
 
       if (res.result.success) {
+        const data = res.result.data
         this.setData({
-          summary: res.result.data
+          summary: {
+            ...data,
+            lendReceivableStr: formatAmount(data.lendReceivable),
+            borrowRepayableStr: formatAmount(data.borrowRepayable)
+          }
         })
       }
     } catch (err) {
@@ -98,10 +104,13 @@ Page({
       })
 
       if (res.result.success) {
-        // 格式化日期为年月日
+        // 格式化日期为年月日，金额添加千位分隔符
         const loanList = (res.result.data || []).map(item => ({
           ...item,
-          loanDate: this.formatDate(item.loanDate)
+          loanDate: this.formatDate(item.loanDate),
+          amountStr: formatAmount(item.amount),
+          paidAmountStr: formatAmount(item.paidAmount),
+          remainingStr: formatAmount(item.amount - item.paidAmount)
         }))
         this.setData({
           loanList,

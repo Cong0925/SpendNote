@@ -1,4 +1,6 @@
 // pages/search/search.js
+const { formatAmount } = require('../../utils/formatAmount')
+
 Page({
   data: {
     statusBarHeight: 20,
@@ -134,9 +136,9 @@ Page({
       searched: true,
       loading: false,
       searchTotal: matchedBills.length,
-      searchIncomeStr: this.formatAmount(totalIncome),
-      searchExpenseStr: this.formatAmount(totalExpense),
-      searchBalanceStr: this.formatAmount(Math.abs(balance)),
+      searchIncomeStr: formatAmount(totalIncome),
+      searchExpenseStr: formatAmount(totalExpense),
+      searchBalanceStr: formatAmount(Math.abs(balance)),
       searchBalance: balance
     })
   },
@@ -194,9 +196,9 @@ Page({
     // 转换为数组并按日期倒序排列
     const groups = Object.values(groupMap).map(group => ({
       ...group,
-      incomeStr: this.formatAmount(group.income),
-      expenseStr: this.formatAmount(group.expense),
-      balanceStr: this.formatAmount(Math.abs(group.income - group.expense))
+      incomeStr: formatAmount(group.income),
+      expenseStr: formatAmount(group.expense),
+      balanceStr: formatAmount(Math.abs(group.income - group.expense))
     }))
 
     // 倒序排列（最新的在最上面）
@@ -205,16 +207,11 @@ Page({
     return groups
   },
 
-  // 格式化金额
-  formatAmount(amount) {
-    return (parseFloat(amount) || 0).toFixed(2)
-  },
-
   // 获取账单金额显示
   getBillAmountStr(bill) {
     const amount = parseFloat(bill.amount) || 0
     const prefix = bill.type === 'expense' ? '-' : '+'
-    return `${prefix}¥${amount.toFixed(2)}`
+    return `${prefix}¥${formatAmount(amount)}`
   },
 
   // 跳转到详情页

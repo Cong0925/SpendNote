@@ -3,6 +3,7 @@
  * 显示净资产、负债、总资产，以及账户列表和借款记账入口
  */
 const app = getApp()
+const { formatAmount } = require('../../utils/formatAmount')
 
 // 账户类型映射（英文 -> 中文）
 const ACCOUNT_TYPE_MAP = {
@@ -96,8 +97,14 @@ Page({
       })
 
       if (res.result.success) {
+        const data = res.result.data
         this.setData({
-          summary: res.result.data
+          summary: {
+            ...data,
+            netAssetStr: formatAmount(data.netAsset),
+            totalDebtStr: formatAmount(data.totalDebt),
+            totalAssetStr: formatAmount(data.totalAsset)
+          }
         })
       }
     } catch (err) {
@@ -121,7 +128,9 @@ Page({
         const accounts = (res.result.data || []).map(item => ({
           ...item,
           // 将英文类型转换为中文类型
-          type: ACCOUNT_TYPE_MAP[item.type] || item.type
+          type: ACCOUNT_TYPE_MAP[item.type] || item.type,
+          // 格式化余额
+          balanceStr: formatAmount(item.balance)
         }))
         const assetAccounts = accounts.filter(item => !item.isDebt)
         const debtAccounts = accounts.filter(item => item.isDebt)
@@ -149,8 +158,13 @@ Page({
       })
 
       if (res.result.success) {
+        const data = res.result.data
         this.setData({
-          loanSummary: res.result.data
+          loanSummary: {
+            ...data,
+            lendReceivableStr: formatAmount(data.lendReceivable),
+            borrowRepayableStr: formatAmount(data.borrowRepayable)
+          }
         })
       }
     } catch (err) {

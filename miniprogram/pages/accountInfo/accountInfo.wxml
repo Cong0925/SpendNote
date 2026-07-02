@@ -6,7 +6,7 @@
   <view class="balance-card {{account.isDebt ? 'debt-card' : 'asset-card'}}">
     <view class="balance-label">{{account.isDebt ? '应还' : '余额'}}</view>
     <view class="balance-value" bindtap="goToAccountDetail">
-      <text class="balance-amount">{{account.isDebt ? '￥-' : '￥'}}{{account.balance || 0}}</text>
+      <text class="balance-amount">{{account.isDebt ? '￥-' : '￥'}}{{account.balanceStr || '0.00'}}</text>
       <text class="edit-icon">✎</text>
     </view>
   </view>
@@ -15,11 +15,11 @@
   <view class="stats-row">
     <view class="stat-item">
       <text class="stat-label">入账</text>
-      <text class="stat-value income">￥{{stats.income || 0}}</text>
+      <text class="stat-value income">￥{{stats.incomeStr || '0.00'}}</text>
     </view>
     <view class="stat-item">
       <text class="stat-label">出账</text>
-      <text class="stat-value expense">￥{{stats.expense || 0}}</text>
+      <text class="stat-value expense">￥{{stats.expenseStr || '0.00'}}</text>
     </view>
   </view>
 
@@ -52,7 +52,7 @@
       </view>
       <view class="bill-right">
         <text class="bill-amount {{item.type === 'income' ? 'income-amount' : 'expense-amount'}}">
-          {{item.type === 'income' ? '+' : '-'}}￥{{item.amount}}
+          {{item.type === 'income' ? '+' : '-'}}￥{{item.amountStr}}
         </text>
         <text class="bill-date">{{item.date}}</text>
       </view>

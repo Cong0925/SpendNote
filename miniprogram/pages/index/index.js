@@ -1,4 +1,6 @@
 // pages/index/index.js
+const { formatAmountWithUnit, formatAmount: formatAmountFull } = require('../../utils/formatAmount')
+
 Page({
   data: {
     bills: [],
@@ -28,6 +30,8 @@ Page({
     // 数据
     totalExpenseStr: '0.00',
     totalIncomeStr: '0.00',
+    // 展开状态：记录当前展开的是哪个金额（expense/income/balance/null）
+    expandedAmount: null,
     balanceStr: '0.00',
     balance: 0,
     totalBills: 0,
@@ -212,12 +216,25 @@ Page({
         const balance = totalIncome - totalExpense
         const groupedBills = this.groupBillsByDate(bills, viewMode)
 
+        // hero-card 默认状态：带单位的金额
+        const expenseUnit = formatAmountWithUnit(totalExpense)
+        const incomeUnit = formatAmountWithUnit(totalIncome)
+        const balanceUnit = formatAmountWithUnit(Math.abs(balance))
+
         this.setData({
           bills,
           groupedBills,
-          totalExpenseStr: this.formatAmount(totalExpense),
-          totalIncomeStr: this.formatAmount(totalIncome),
-          balanceStr: this.formatAmount(Math.abs(balance)),
+          // hero-card 默认状态：带单位
+          totalExpenseValue: expenseUnit.value,
+          totalExpenseUnit: expenseUnit.unit,
+          totalIncomeValue: incomeUnit.value,
+          totalIncomeUnit: incomeUnit.unit,
+          balanceValue: balanceUnit.value,
+          balanceUnit: balanceUnit.unit,
+          // hero-card 展开状态 & group-summary：元为单位
+          totalExpenseStr: formatAmountFull(totalExpense),
+          totalIncomeStr: formatAmountFull(totalIncome),
+          balanceStr: formatAmountFull(Math.abs(balance)),
           balance,
           totalBills: bills.length,
           hasMore: bills.length >= 200,
@@ -326,12 +343,17 @@ Page({
       }
     })
 
-    const groups = Object.values(groupMap).map(group => ({
-      ...group,
-      incomeStr: this.formatAmount(group.income),
-      expenseStr: this.formatAmount(group.expense),
-      balanceStr: this.formatAmount(Math.abs(group.income - group.expense))
-    }))
+    const groups = Object.values(groupMap).map(group => {
+      const incomeUnit = formatAmountWithUnit(group.income)
+      const expenseUnit = formatAmountWithUnit(group.expense)
+      const balanceUnit = formatAmountWithUnit(Math.abs(group.income - group.expense))
+      return {
+        ...group,
+        incomeStr: incomeUnit.value + ' /' + incomeUnit.unit,
+        expenseStr: expenseUnit.value + ' /' + expenseUnit.unit,
+        balanceStr: balanceUnit.value + ' /' + balanceUnit.unit
+      }
+    })
 
     groups.sort((a, b) => b.date.localeCompare(a.date))
     return groups
@@ -376,18 +398,26 @@ Page({
       monthMap[monthKey].expense += bill.type === 'expense' ? bill.amount : 0
     })
 
-    const groups = Object.values(monthMap).map(month => ({
-      ...month,
-      incomeStr: this.formatAmount(month.income),
-      expenseStr: this.formatAmount(month.expense),
-      balanceStr: this.formatAmount(Math.abs(month.income - month.expense)),
-      children: Object.values(month.children).map(day => ({
-        ...day,
-        incomeStr: this.formatAmount(day.income),
-        expenseStr: this.formatAmount(day.expense),
-        balanceStr: this.formatAmount(Math.abs(day.income - day.expense))
-      })).sort((a, b) => b.date.localeCompare(a.date))
-    }))
+    const groups = Object.values(monthMap).map(month => {
+      const monthIncomeUnit = formatAmountWithUnit(month.income)
+      const monthExpenseUnit = formatAmountWithUnit(month.expense)
+      const monthBalanceUnit = formatAmountWithUnit(Math.abs(month.income - month.expense))
+      return {
+        ...month,
+        incomeStr: monthIncomeUnit.value + '/' + monthIncomeUnit.unit,
+        expenseStr: monthExpenseUnit.value + '/' + monthExpenseUnit.unit,
+        balanceStr: monthBalanceUnit.value + '/' + monthBalanceUnit.unit,
+        children: Object.values(month.children).map(day => {
+          const dayIncomeUnit = formatAmountWithUnit(day.income)
+          const dayExpenseUnit = formatAmountWithUnit(day.expense)
+          return {
+            ...day,
+            incomeStr: dayIncomeUnit.value + '/' + dayIncomeUnit.unit,
+            expenseStr: dayExpenseUnit.value + '/' + dayExpenseUnit.unit
+          }
+        }).sort((a, b) => b.date.localeCompare(a.date))
+      }
+    })
 
     groups.sort((a, b) => b.date.localeCompare(a.date))
     return groups
@@ -449,22 +479,32 @@ Page({
     })
 
     const formatChildren = (children) => {
-      return Object.values(children).map(child => ({
-        ...child,
-        incomeStr: this.formatAmount(child.income),
-        expenseStr: this.formatAmount(child.expense),
-        balanceStr: this.formatAmount(Math.abs(child.income - child.expense)),
-        children: child.children ? formatChildren(child.children) : undefined
-      })).sort((a, b) => b.date.localeCompare(a.date))
+      return Object.values(children).map(child => {
+        const childIncomeUnit = formatAmountWithUnit(child.income)
+        const childExpenseUnit = formatAmountWithUnit(child.expense)
+        const childBalanceUnit = formatAmountWithUnit(Math.abs(child.income - child.expense))
+        return {
+          ...child,
+          incomeStr: childIncomeUnit.value + '/' + childIncomeUnit.unit,
+          expenseStr: childExpenseUnit.value + '/' + childExpenseUnit.unit,
+          balanceStr: childBalanceUnit.value + '/' + childBalanceUnit.unit,
+          children: child.children ? formatChildren(child.children) : undefined
+        }
+      }).sort((a, b) => b.date.localeCompare(a.date))
     }
 
-    const groups = Object.values(quarterMap).map(quarter => ({
-      ...quarter,
-      incomeStr: this.formatAmount(quarter.income),
-      expenseStr: this.formatAmount(quarter.expense),
-      balanceStr: this.formatAmount(Math.abs(quarter.income - quarter.expense)),
-      children: formatChildren(quarter.children)
-    }))
+    const groups = Object.values(quarterMap).map(quarter => {
+      const quarterIncomeUnit = formatAmountWithUnit(quarter.income)
+      const quarterExpenseUnit = formatAmountWithUnit(quarter.expense)
+      const quarterBalanceUnit = formatAmountWithUnit(Math.abs(quarter.income - quarter.expense))
+      return {
+        ...quarter,
+        incomeStr: quarterIncomeUnit.value + '/' + quarterIncomeUnit.unit,
+        expenseStr: quarterExpenseUnit.value + '/' + quarterExpenseUnit.unit,
+        balanceStr: quarterBalanceUnit.value + '/' + quarterBalanceUnit.unit,
+        children: formatChildren(quarter.children)
+      }
+    })
 
     groups.sort((a, b) => b.date.localeCompare(a.date))
     return groups
@@ -524,28 +564,51 @@ Page({
     })
 
     const formatChildren = (children) => {
-      return Object.values(children).map(child => ({
-        ...child,
-        incomeStr: this.formatAmount(child.income),
-        expenseStr: this.formatAmount(child.expense),
-        balanceStr: this.formatAmount(Math.abs(child.income - child.expense)),
-        children: child.children ? formatChildren(child.children) : undefined
-      })).sort((a, b) => b.date.localeCompare(a.date))
+      return Object.values(children).map(child => {
+        const childIncomeUnit = formatAmountWithUnit(child.income)
+        const childExpenseUnit = formatAmountWithUnit(child.expense)
+        const childBalanceUnit = formatAmountWithUnit(Math.abs(child.income - child.expense))
+        return {
+          ...child,
+          incomeStr: childIncomeUnit.value + '/' + childIncomeUnit.unit,
+          expenseStr: childExpenseUnit.value + '/' + childExpenseUnit.unit,
+          balanceStr: childBalanceUnit.value + '/' + childBalanceUnit.unit,
+          children: child.children ? formatChildren(child.children) : undefined
+        }
+      }).sort((a, b) => b.date.localeCompare(a.date))
     }
 
-    const groups = Object.values(yearMap).map(year => ({
-      ...year,
-      incomeStr: this.formatAmount(year.income),
-      expenseStr: this.formatAmount(year.expense),
-      balanceStr: this.formatAmount(Math.abs(year.income - year.expense)),
-      children: formatChildren(year.children)
-    }))
+    const groups = Object.values(yearMap).map(year => {
+      const yearIncomeUnit = formatAmountWithUnit(year.income)
+      const yearExpenseUnit = formatAmountWithUnit(year.expense)
+      const yearBalanceUnit = formatAmountWithUnit(Math.abs(year.income - year.expense))
+      return {
+        ...year,
+        incomeStr: yearIncomeUnit.value + '/' + yearIncomeUnit.unit,
+        expenseStr: yearExpenseUnit.value + '/' + yearExpenseUnit.unit,
+        balanceStr: yearBalanceUnit.value + '/' + yearBalanceUnit.unit,
+        children: formatChildren(year.children)
+      }
+    })
 
     groups.sort((a, b) => b.date.localeCompare(a.date))
     return groups
   },
 
   // 跳转到搜索页
+  // 处理金额点击，展开/收起显示
+  toggleAmountExpand(e) {
+    const { type } = e.currentTarget.dataset
+    const { expandedAmount } = this.data
+
+    // 如果点击已展开的，则收起；否则展开点击的
+    if (expandedAmount === type) {
+      this.setData({ expandedAmount: null })
+    } else {
+      this.setData({ expandedAmount: type })
+    }
+  },
+
   goToSearch() {
     const { viewMode, rangeStartDate, rangeEndDate } = this.data
     wx.navigateTo({
@@ -553,14 +616,10 @@ Page({
     })
   },
 
-  formatAmount(amount) {
-    return (parseFloat(amount) || 0).toFixed(2)
-  },
-
   getBillAmountStr(bill) {
     const amount = parseFloat(bill.amount) || 0
     const prefix = bill.type === 'expense' ? '-' : '+'
-    return `${prefix}¥${amount.toFixed(2)}`
+    return `${prefix}¥${formatAmountFull(amount)}`
   },
 
   // 滑动相关

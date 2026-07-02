@@ -1,4 +1,6 @@
 // pages/mine/mine.js
+const { formatAmount } = require('../../utils/formatAmount')
+
 Page({
   data: {
     userInfo: null,
@@ -17,12 +19,6 @@ Page({
 
   onShow() {
     this.loadOverview()
-  },
-
-  // 格式化金额
-  formatAmount(amount) {
-    const num = parseFloat(amount) || 0
-    return num.toFixed(2)
   },
 
   // 加载用户信息
@@ -53,8 +49,8 @@ Page({
           totalBills: billCount,
           totalExpense: totalExpense,
           totalIncome: totalIncome,
-          totalExpenseStr: this.formatAmount(totalExpense),
-          totalIncomeStr: this.formatAmount(totalIncome)
+          totalExpenseStr: formatAmount(totalExpense),
+          totalIncomeStr: formatAmount(totalIncome)
         })
       }
     } catch (error) {
