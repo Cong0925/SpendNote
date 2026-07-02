@@ -44,7 +44,8 @@ Page({
 
     // 加载状态
     loadingHot: true,
-    loadingCategories: true
+    // 每个分类独立的加载状态 { 'state-owned': true, 'joint-stock': false, ... }
+    loadingCategoryBanks: {}
   },
 
   /**
@@ -111,7 +112,15 @@ Page({
    */
   async loadAllCategories() {
     const categoryBanks = {}
+    const loadingCategoryBanks = {}
 
+    // 先设置所有分类为加载中
+    CATEGORIES.forEach(cat => {
+      loadingCategoryBanks[cat.key] = true
+    })
+    this.setData({ loadingCategoryBanks })
+
+    // 逐个加载分类
     for (const category of CATEGORIES) {
       try {
         const res = await wx.cloud.callFunction({
@@ -140,10 +149,15 @@ Page({
           total: 0,
           hasMore: false
         }
+      } finally {
+        // 该分类加载完成，更新状态
+        loadingCategoryBanks[category.key] = false
+        this.setData({
+          categoryBanks: { ...categoryBanks },
+          loadingCategoryBanks: { ...loadingCategoryBanks }
+        })
       }
     }
-
-    this.setData({ categoryBanks, loadingCategories: false })
   },
 
   /**

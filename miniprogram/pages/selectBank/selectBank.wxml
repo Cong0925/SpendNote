@@ -101,31 +101,12 @@
       </view>
     </view>
 
-    <!-- 分类银行骨架屏 -->
-    <view class="section" wx:if="{{loadingCategories}}">
-      <view class="section-header">
-        <view class="section-title-wrap">
-          <text class="section-icon">🏦</text>
-          <text class="section-title">银行分类</text>
-        </view>
-      </view>
-      <view class="category-skeleton">
-        <view class="category-skeleton-item" wx:for="{{4}}" wx:key="*this">
-          <view class="skeleton-icon-circle"></view>
-          <view class="category-skeleton-info">
-            <view class="skeleton-text skeleton-name"></view>
-            <view class="skeleton-text skeleton-count"></view>
-          </view>
-        </view>
-      </view>
-    </view>
-
-    <!-- 分类银行真实内容 -->
+    <!-- 分类银行（每个分类独立加载） -->
     <view
       class="section"
       wx:for="{{categories}}"
       wx:key="key"
-      wx:if="{{!loadingCategories && categoryBanks[item.key] && categoryBanks[item.key].total > 0}}"
+      wx:if="{{loadingCategoryBanks[item.key] || (categoryBanks[item.key] && categoryBanks[item.key].total > 0)}}"
     >
       <view
         class="section-header"
@@ -135,14 +116,25 @@
         <view class="section-title-wrap">
           <text class="section-icon">{{item.icon}}</text>
           <text class="section-title">{{item.name}}</text>
-          <text class="section-count">({{categoryBanks[item.key].total}})</text>
+          <text class="section-count" wx:if="{{!loadingCategoryBanks[item.key]}}">({{categoryBanks[item.key].total}})</text>
         </view>
         <view class="expand-arrow {{expandedCategories[item.key] ? 'expanded' : ''}}">
           <image class="arrow-icon" src="{{expandedCategories[item.key] ? '/images/icons/arrow-down.png' : '/images/icons/arrow-right.png'}}" mode="aspectFit"></image>
         </view>
       </view>
 
-      <view class="category-list {{expandedCategories[item.key] ? 'expanded' : ''}}">
+      <!-- 内容骨架屏（该分类加载中） -->
+      <view class="category-skeleton" wx:if="{{loadingCategoryBanks[item.key]}}">
+        <view class="category-skeleton-item" wx:for="{{4}}" wx:key="*this">
+          <view class="skeleton-icon-circle"></view>
+          <view class="category-skeleton-info">
+            <view class="skeleton-text skeleton-name"></view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 真实内容（该分类加载完成） -->
+      <view class="category-list {{expandedCategories[item.key] ? 'expanded' : ''}}" wx:if="{{!loadingCategoryBanks[item.key] && categoryBanks[item.key]}}">
         <view
           class="category-item"
           wx:for="{{categoryBanks[item.key].banks}}"
