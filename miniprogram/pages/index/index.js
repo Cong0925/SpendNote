@@ -233,12 +233,15 @@ Page({
       })
 
       if (res.result.success) {
-        const bills = res.result.data.map(bill => ({
+        let bills = res.result.data.map(bill => ({
           ...bill,
           amount: parseFloat(bill.amount) || 0,
           amountStr: this.getBillAmountStr(bill),
           swiped: false
         }))
+
+        // 获取关联账户信息
+        bills = await this.fetchAccountInfoForBills(bills)
 
         let totalExpense = 0, totalIncome = 0
         bills.forEach(bill => {
@@ -279,6 +282,57 @@ Page({
     } finally {
       this.setData({ loading: false })
     }
+  },
+
+  /**
+   * 为账单列表批量获取关联账户信息
+   * @param {Array} bills - 账单列表
+   * @returns {Array} 添加了账户信息的账单列表
+   */
+  async fetchAccountInfoForBills(bills) {
+    // 收集所有不重复的 accountId
+    const accountIds = [...new Set(bills.filter(bill => bill.accountId).map(bill => bill.accountId))]
+
+    if (accountIds.length === 0) {
+      // 没有关联账户，标记为无账户
+      return bills.map(bill => ({
+        ...bill,
+        accountName: '无账户'
+      }))
+    }
+
+    try {
+      // 批量获取账户信息
+      const accountRes = await wx.cloud.callFunction({
+        name: 'accountFunctions',
+        data: {
+          action: 'list',
+          data: {}
+        }
+      })
+
+      if (accountRes.result.success) {
+        // 构建账户ID -> 账户名称的映射
+        const accountMap = {}
+        accountRes.result.data.forEach(account => {
+          accountMap[account._id] = account.name
+        })
+
+        // 为每个账单添加账户名称
+        return bills.map(bill => ({
+          ...bill,
+          accountName: bill.accountId ? (accountMap[bill.accountId] || '未知账户') : '无账户'
+        }))
+      }
+    } catch (error) {
+      console.error('获取账户信息失败:', error)
+    }
+
+    // 失败时标记为无账户
+    return bills.map(bill => ({
+      ...bill,
+      accountName: '无账户'
+    }))
   },
 
   // 按日期分组账单（支持多级嵌套）
