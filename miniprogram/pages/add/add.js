@@ -12,7 +12,9 @@ Page({
     accountId: '', // 关联账户ID
     accountName: '', // 关联账户名称
     categories: [],
+    loadingCategories: true, // 分类加载状态
     accountList: [], // 账户列表
+    loadingAccounts: false, // 账户列表加载状态
     loading: false,
     showAccountPicker: false // 显示账户选择弹窗
   },
@@ -70,6 +72,8 @@ Page({
 
   // 预加载两类分类（支出+收入），缓存到本地
   async preloadCategories() {
+    this.setData({ loadingCategories: true })
+
     try {
       // 先初始化分类
       await wx.cloud.callFunction({
@@ -108,7 +112,7 @@ Page({
       // 设置当前类型的分类
       const currentCategories = this._categoryCache[this.data.type]
       if (currentCategories) {
-        this.setData({ categories: currentCategories })
+        this.setData({ categories: currentCategories, loadingCategories: false })
       } else {
         this.setDefaultCategories()
       }
@@ -148,7 +152,7 @@ Page({
     this._categoryCache.income = incomeCategories
 
     const categories = this.data.type === 'expense' ? expenseCategories : incomeCategories
-    this.setData({ categories })
+    this.setData({ categories, loadingCategories: false })
   },
 
   // 按类型加载分类（降级方案，缓存未命中时使用）
@@ -228,6 +232,8 @@ Page({
 
   // 加载账户列表
   async loadAccountList() {
+    this.setData({ loadingAccounts: true })
+
     try {
       const res = await wx.cloud.callFunction({
         name: 'accountFunctions',
@@ -250,6 +256,8 @@ Page({
       }
     } catch (err) {
       console.error('加载账户列表失败：', err)
+    } finally {
+      this.setData({ loadingAccounts: false })
     }
   },
 

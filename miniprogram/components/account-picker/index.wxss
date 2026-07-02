@@ -148,3 +148,46 @@
   max-height: calc(70vh - 120rpx);
   overflow-y: auto;
 }
+
+/* ============ 骨架屏样式 ============ */
+.account-option.skeleton {
+  background: #fff;
+  pointer-events: none;
+}
+
+.skeleton-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 16rpx;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin-right: 24rpx;
+}
+
+.skeleton-text {
+  border-radius: 8rpx;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-name {
+  width: 160rpx;
+  height: 30rpx;
+  margin-bottom: 8rpx;
+}
+
+.skeleton-desc {
+  width: 200rpx;
+  height: 24rpx;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

@@ -30,7 +30,17 @@
   <!-- 分类选择 -->
   <view class="section animate-slideUp" style="animation-delay: 0.1s">
     <text class="section-title">选择分类</text>
-    <view class="category-grid">
+
+    <!-- 骨架屏加载状态 -->
+    <view class="category-grid" wx:if="{{loadingCategories}}">
+      <view class="category-item skeleton" wx:for="{{6}}" wx:key="*this">
+        <view class="category-icon-wrap skeleton-icon"></view>
+        <view class="skeleton-text"></view>
+      </view>
+    </view>
+
+    <!-- 真实分类列表 -->
+    <view class="category-grid" wx:else>
       <view
         class="category-item {{category === item.name ? 'active ' + type + '-active' : ''}}"
         wx:for="{{categories}}"
@@ -101,6 +111,7 @@
   show="{{showAccountPicker}}"
   accountList="{{accountList}}"
   selectedId="{{accountId}}"
+  loading="{{loadingAccounts}}"
   bind:close="onAccountPickerClose"
   bind:select="onAccountSelect"
 />

@@ -15,6 +15,11 @@ Component({
     selectedId: {
       type: String,
       value: ''
+    },
+    // 加载状态
+    loading: {
+      type: Boolean,
+      value: false
     }
   },
 

@@ -23,8 +23,19 @@
       </view>
     </view>
 
+    <!-- 骨架屏加载状态 -->
+    <view class="account-list" wx:if="{{loading && accountList.length === 0}}">
+      <view class="account-option skeleton" wx:for="{{4}}" wx:key="*this">
+        <view class="account-icon-wrap skeleton-icon"></view>
+        <view class="account-info">
+          <view class="skeleton-text skeleton-name"></view>
+          <view class="skeleton-text skeleton-desc"></view>
+        </view>
+      </view>
+    </view>
+
     <!-- 账户列表 -->
-    <scroll-view class="account-list" scroll-y>
+    <scroll-view class="account-list" scroll-y wx:else>
       <view
         class="account-option {{selectedId === item._id ? 'selected' : ''}}"
         wx:for="{{accountList}}"
