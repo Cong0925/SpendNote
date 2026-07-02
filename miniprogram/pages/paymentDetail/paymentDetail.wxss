@@ -7,7 +7,6 @@ page {
 
 .container {
   min-height: 100vh;
-  padding: 24rpx 32rpx;
 }
 
 /* ============ 加载状态 ============ */
@@ -272,6 +271,67 @@ page {
 
 .form-textarea:focus {
   border-color: var(--color-primary);
+}
+
+/* ============ 编辑模式图片列表 ============ */
+.edit-form .image-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.edit-form .image-item {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+}
+
+.edit-form .image-preview {
+  width: 100%;
+  height: 100%;
+}
+
+.edit-form .image-delete {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  width: 40rpx;
+  height: 40rpx;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-form .image-delete text {
+  color: #ffffff;
+  font-size: 24rpx;
+}
+
+.edit-form .image-add {
+  width: 150rpx;
+  height: 150rpx;
+  border: 2rpx dashed var(--color-border);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-card);
+}
+
+.edit-form .add-icon {
+  font-size: 48rpx;
+  color: var(--color-text-tertiary);
+  margin-bottom: 8rpx;
+}
+
+.edit-form .add-text {
+  font-size: 22rpx;
+  color: var(--color-text-tertiary);
 }
 
 /* ============ 动画效果 ============ */

@@ -8,8 +8,13 @@ page {
 .container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  padding-bottom: 120rpx;
+  height: 100vh;
+}
+
+.scroll-area {
+  flex: 1;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* ============ 顶部净资产区域 ============ */

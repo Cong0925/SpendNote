@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "记录详情",
-  "usingComponents": {}
+  "usingComponents": {
+    "account-picker": "/components/account-picker/index"
+  }
 }

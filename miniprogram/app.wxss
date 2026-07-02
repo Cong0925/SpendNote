@@ -51,7 +51,7 @@ page::-webkit-scrollbar {
 
 /* ========== 通用容器 ========== */
 .container {
-  padding: 24rpx 32rpx;
+  padding: 0 32rpx;
   display: flex;
   flex-direction: column;
   min-height: 100vh;

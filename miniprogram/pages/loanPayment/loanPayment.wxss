@@ -7,8 +7,6 @@ page {
 
 .container {
   min-height: 100vh;
-  padding: 24rpx 32rpx;
-  padding-bottom: 160rpx;
 }
 
 /* ============ 借款信息 ============ */
@@ -182,6 +180,48 @@ page {
 
 .form-textarea:focus {
   border-color: var(--color-primary);
+}
+
+/* ============ 详情卡片 ============ */
+.detail-card {
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  padding: 0 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: var(--shadow-sm);
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx 0;
+}
+
+.detail-label {
+  font-size: 28rpx;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.detail-value {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 28rpx;
+  color: var(--color-text);
+  font-weight: 500;
+  padding: 8rpx 16rpx;
+  border-radius: var(--radius-sm);
+}
+
+.detail-value:active {
+  background: var(--color-bg);
+}
+
+.detail-arrow {
+  font-size: 28rpx;
+  color: var(--color-text-light);
 }
 
 /* ============ 图片列表 ============ */

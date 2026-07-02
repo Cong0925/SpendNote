@@ -1,5 +1,6 @@
 <!--pages/mine/mine.wxml-->
 <view class="container">
+  <scroll-view class="scroll-area" scroll-y enhanced show-scrollbar="{{false}}">
   <!-- 用户信息卡片 -->
   <view class="profile-card animate-fadeIn">
     <view class="profile-bg"></view>
@@ -226,4 +227,5 @@
       </view>
     </view>
   </view>
+  </scroll-view>
 </view>

@@ -4,10 +4,16 @@ page {
 }
 
 .container {
-  padding: 32rpx;
-  padding-bottom: 160rpx;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.scroll-area {
+  flex: 1;
+  overflow: hidden;
   background: var(--color-bg);
-  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 /* ============ 用户卡片 ============ */

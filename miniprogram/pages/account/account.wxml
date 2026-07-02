@@ -2,6 +2,7 @@
   账户主页 - 与现有页面统一风格
 -->
 <view class="container">
+  <scroll-view class="scroll-area" scroll-y enhanced show-scrollbar="{{false}}">
   <!-- 顶部净资产区域 - 直接加载，不显示loading -->
   <view class="hero-card">
     <view class="header-title">净资产</view>
@@ -126,4 +127,5 @@
       </view>
     </block>
   </view>
+  </scroll-view>
 </view>

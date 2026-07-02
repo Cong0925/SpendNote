@@ -1,5 +1,6 @@
 <!--pages/stats/stats.wxml-->
 <view class="container">
+  <scroll-view class="scroll-area" scroll-y enhanced show-scrollbar="{{false}}">
   <!-- 使用自定义导航组件 -->
   <custom-nav
     title="统计"
@@ -125,4 +126,5 @@
       <view class="quarter-check" wx:if="{{quarterIndex === item.value}}">✓</view>
     </view>
   </view>
+  </scroll-view>
 </view>

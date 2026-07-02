@@ -4,10 +4,8 @@ page {
 }
 
 .container {
-  padding: 32rpx;
   background: var(--color-bg);
   min-height: 100vh;
-  padding-bottom: 60rpx;
 }
 
 /* ============ 类型切换：滑块分段控件 ============ */

@@ -7,8 +7,6 @@ page {
 
 .container {
   min-height: 100vh;
-  padding: 24rpx 32rpx;
-  padding-bottom: 160rpx;
 }
 
 /* ============ 加载状态 ============ */

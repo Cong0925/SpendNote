@@ -57,7 +57,7 @@
   </view>
 
   <!-- 正常内容 -->
-  <scroll-view scroll-y class="content-scroll" wx:if="{{!isSearching}}">
+  <scroll-view scroll-y class="content-scroll" wx:if="{{!isSearching}}" enhanced show-scrollbar="{{false}}">
     <!-- 热门银行骨架屏 -->
     <view class="section" wx:if="{{loadingHot}}">
       <view class="section-header">

@@ -47,7 +47,8 @@ Page({
       // 设置默认日期为今天
       const today = this.formatDate(new Date())
       this.setData({
-        'form.date': today
+        'form.date': today,
+        'form.accountName': '不关联账户'
       })
 
       // 更新页面标题

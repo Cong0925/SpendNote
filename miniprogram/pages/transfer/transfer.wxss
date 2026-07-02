@@ -7,7 +7,6 @@ page {
 
 .container {
   min-height: 100vh;
-  padding: 32rpx;
 }
 
 /* ============ 表单区域 ============ */

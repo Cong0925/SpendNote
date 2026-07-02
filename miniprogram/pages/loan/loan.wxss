@@ -6,8 +6,15 @@ page {
 }
 
 .container {
-  min-height: 100vh;
-  padding-bottom: 160rpx;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.scroll-area {
+  flex: 1;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* ============ 顶部区域 ============ */
@@ -15,7 +22,7 @@ page {
   background: linear-gradient(135deg, #2563EB 0%, #1E40AF 50%, #1E3A8A 100%);
   border-radius: var(--radius-xl);
   padding: 40rpx;
-  margin-bottom:30rpx;
+  margin-bottom: 30rpx;
   position: relative;
   overflow: hidden;
   box-shadow: 0 8rpx 32rpx rgba(37, 99, 235, 0.3);
@@ -43,19 +50,27 @@ page {
   border-radius: 50%;
 }
 
+/* ============ 内容布局 ============ */
+.hero-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
 /* ============ 类型切换 ============ */
 .type-tabs {
   display: inline-flex;
   background: rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-full);
   padding: 6rpx;
-  margin-bottom: 32rpx;
   position: relative;
   z-index: 1;
 }
 
 .type-tab {
-  padding: 16rpx 40rpx;
+  padding: 16rpx 30rpx;
   font-size: 28rpx;
   color: rgba(255, 255, 255, 0.8);
   border-radius: var(--radius-full);
@@ -73,21 +88,22 @@ page {
 /* ============ 金额显示 ============ */
 .amount-display {
   color: #ffffff;
+  text-align: right;
   position: relative;
   z-index: 1;
 }
 
 .amount-value {
-  font-size: 72rpx;
+  font-size: 48rpx;
   font-weight: 700;
   display: block;
-  margin-bottom: 12rpx;
-  letter-spacing: -3rpx;
+  margin-bottom: 8rpx;
+  letter-spacing: -2rpx;
   font-family: 'SF Pro Display', -apple-system, sans-serif;
 }
 
 .amount-label {
-  font-size: 26rpx;
+  font-size: 24rpx;
   opacity: 0.8;
   font-weight: 500;
 }

@@ -24,8 +24,15 @@ Page({
     editForm: {
       amount: '',
       date: '',
-      remark: ''
-    }
+      accountId: '',
+      accountName: '',
+      remark: '',
+      images: []
+    },
+    // 账户选择相关
+    showAccountPicker: false,
+    accountList: [],
+    loadingAccounts: false
   },
 
   /**
@@ -38,6 +45,7 @@ Page({
         loanId: options.loanId
       })
       this.loadData()
+      this.loadAccountList()
     }
   },
 
@@ -85,7 +93,10 @@ Page({
           editForm: {
             amount: payment.amount.toString(),
             date: this.formatDate(payment.date),
-            remark: payment.remark || ''
+            accountId: payment.accountId || '',
+            accountName: payment.accountName || '',
+            remark: payment.remark || '',
+            images: payment.images || []
           }
         })
       }
@@ -122,7 +133,10 @@ Page({
       editForm: {
         amount: this.data.paymentInfo.amount.toString(),
         date: this.data.paymentInfo.dateStr,
-        remark: this.data.paymentInfo.remark || ''
+        accountId: this.data.paymentInfo.accountId || '',
+        accountName: this.data.paymentInfo.accountName || '',
+        remark: this.data.paymentInfo.remark || '',
+        images: this.data.paymentInfo.images || []
       }
     })
   },
@@ -131,7 +145,7 @@ Page({
    * 保存编辑
    */
   async saveEdit() {
-    const { amount, date, remark } = this.data.editForm
+    const { amount, date, accountId, accountName, remark, images } = this.data.editForm
 
     // 参数校验
     const amountNum = parseFloat(amount)
@@ -165,7 +179,10 @@ Page({
             id: this.data.paymentId,
             amount: roundedAmount,
             date: date,
-            remark: remark
+            accountId: accountId || '',
+            accountName: accountName || '',
+            remark: remark || '',
+            images: images || []
           }
         }
       })
@@ -286,13 +303,101 @@ Page({
   },
 
   /**
+   * 加载账户列表
+   */
+  async loadAccountList() {
+    this.setData({ loadingAccounts: true })
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'accountFunctions',
+        data: {
+          action: 'list'
+        }
+      })
+      if (res.result.success) {
+        this.setData({
+          accountList: res.result.data || []
+        })
+      }
+    } catch (err) {
+      console.error('获取账户列表失败：', err)
+    } finally {
+      this.setData({ loadingAccounts: false })
+    }
+  },
+
+  /**
+   * 打开账户选择弹窗
+   */
+  openAccountPicker() {
+    this.setData({ showAccountPicker: true })
+  },
+
+  /**
+   * 关闭账户选择弹窗
+   */
+  onAccountPickerClose() {
+    this.setData({ showAccountPicker: false })
+  },
+
+  /**
+   * 账户选择
+   */
+  onAccountSelect(e) {
+    const { id, name } = e.detail
+    this.setData({
+      'editForm.accountId': id,
+      'editForm.accountName': name,
+      showAccountPicker: false
+    })
+  },
+
+  /**
+   * 选择图片
+   */
+  chooseImage() {
+    const remaining = 4 - this.data.editForm.images.length
+    if (remaining <= 0) {
+      wx.showToast({
+        title: '最多上传4张图片',
+        icon: 'none'
+      })
+      return
+    }
+
+    wx.chooseMedia({
+      count: remaining,
+      mediaType: ['image'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        const newImages = res.tempFiles.map(file => file.tempFilePath)
+        this.setData({
+          'editForm.images': [...this.data.editForm.images, ...newImages]
+        })
+      }
+    })
+  },
+
+  /**
+   * 删除图片
+   */
+  deleteImage(e) {
+    const { index } = e.currentTarget.dataset
+    const images = [...this.data.editForm.images]
+    images.splice(index, 1)
+    this.setData({
+      'editForm.images': images
+    })
+  },
+
+  /**
    * 预览图片
    */
   previewImage(e) {
-    const url = e.currentTarget.dataset.url
+    const { url } = e.currentTarget.dataset
     wx.previewImage({
       current: url,
-      urls: this.data.paymentInfo.images || []
+      urls: this.data.editForm.images
     })
   }
 })

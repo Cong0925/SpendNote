@@ -188,7 +188,9 @@ page {
 /* ============ 内容滚动区 ============ */
 .content-scroll {
   flex: 1;
-  margin-top:20rpx
+  margin-top: 20rpx;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* ============ 区块 ============ */
