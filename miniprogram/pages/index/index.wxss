@@ -635,33 +635,6 @@ page {
   margin: 0 16rpx;
 }
 
-/* ============ 浮动按钮 ============ */
-.fab-btn {
-  position: fixed;
-  right: 36rpx;
-  bottom: 160rpx;
-  width: 104rpx;
-  height: 104rpx;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6rpx 24rpx rgba(37, 99, 235, 0.4);
-  z-index: 100;
-}
-
-.fab-btn:active {
-  transform: scale(0.92);
-}
-
-.fab-icon {
-  font-size: 48rpx;
-  color: #ffffff;
-  font-weight: 300;
-  line-height: 1;
-}
-
 /* ============ 导航栏 ============ */
 .nav-bar {
   display: flex;

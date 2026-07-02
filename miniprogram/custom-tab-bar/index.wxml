@@ -1,0 +1,15 @@
+<view class="tab-bar">
+  <view class="tab-bar-item" wx:for="{{list}}" wx:key="pagePath" data-path="{{item.pagePath}}" data-index="{{index}}" data-iscenter="{{item.isCenter}}" bindtap="switchTab">
+    <!-- 中间凸起按钮 -->
+    <view class="center-btn" wx:if="{{item.isCenter}}">
+      <view class="center-btn-inner">
+        <text class="center-icon">+</text>
+      </view>
+    </view>
+    <!-- 普通导航项 -->
+    <block wx:else>
+      <image class="tab-bar-icon" src="{{selected === index ? item.selectedIconPath : item.iconPath}}" mode="aspectFit"></image>
+      <text class="tab-bar-text {{selected === index ? 'active' : ''}}">{{item.text}}</text>
+    </block>
+  </view>
+</view>

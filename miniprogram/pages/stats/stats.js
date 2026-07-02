@@ -57,6 +57,11 @@ Page({
       this.resetTemporaryStates()
     }
 
+    // 设置自定义 tabBar 选中状态
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 1 })
+    }
+
     // 加载数据
     this.loadStats()
   },

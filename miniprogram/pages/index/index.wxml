@@ -267,11 +267,6 @@
     </view>
   </scroll-view>
 
-  <!-- 记账按钮 -->
-  <view class="fab-btn" bindtap="goToAdd">
-    <text class="fab-icon">+</text>
-  </view>
-
   <!-- 季度弹窗 -->
   <view class="quarter-mask" wx:if="{{showQuarter}}" bindtap="hideQuarterPicker"></view>
   <view class="quarter-sheet {{showQuarter ? 'show' : ''}}">
