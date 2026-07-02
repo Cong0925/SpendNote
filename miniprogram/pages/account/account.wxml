@@ -19,7 +19,7 @@
 
   <!-- 借款记账 -->
   <view class="section">
-    <view class="section-title">借款记账</view>
+    <view class="section-title loan-title">借款记账</view>
 
     <view class="loan-item" bindtap="goToLoan">
       <view class="loan-left">

@@ -17,6 +17,12 @@ Page({
     showAccountPicker: false // 显示账户选择弹窗
   },
 
+  // 分类本地缓存（支出/收入各自独立缓存）
+  _categoryCache: {
+    expense: null,
+    income: null
+  },
+
   onLoad(options) {
     // 检查是否为修改模式
     if (options.billId) {
@@ -42,7 +48,8 @@ Page({
         this.loadAccountInfo(options.accountId)
       }
     }
-    this.loadCategories()
+    // 预加载两类分类（支出+收入），缓存到本地
+    this.preloadCategories()
     this.loadAccountList()
   },
 
@@ -57,8 +64,8 @@ Page({
     })
   },
 
-  // 加载分类
-  async loadCategories() {
+  // 预加载两类分类（支出+收入），缓存到本地
+  async preloadCategories() {
     try {
       // 先初始化分类
       await wx.cloud.callFunction({
@@ -68,24 +75,41 @@ Page({
         }
       })
 
-      // 获取分类列表
-      const res = await wx.cloud.callFunction({
-        name: 'billFunctions',
-        data: {
-          action: 'getCategories',
-          data: { type: this.data.type }
-        }
-      })
-
-      if (res.result.success) {
-        this.setData({
-          categories: res.result.data
+      // 并行加载两类分类
+      const [expenseRes, incomeRes] = await Promise.all([
+        wx.cloud.callFunction({
+          name: 'billFunctions',
+          data: {
+            action: 'getCategories',
+            data: { type: 'expense' }
+          }
+        }),
+        wx.cloud.callFunction({
+          name: 'billFunctions',
+          data: {
+            action: 'getCategories',
+            data: { type: 'income' }
+          }
         })
+      ])
+
+      // 缓存两类分类
+      if (expenseRes.result.success) {
+        this._categoryCache.expense = expenseRes.result.data
+      }
+      if (incomeRes.result.success) {
+        this._categoryCache.income = incomeRes.result.data
+      }
+
+      // 设置当前类型的分类
+      const currentCategories = this._categoryCache[this.data.type]
+      if (currentCategories) {
+        this.setData({ categories: currentCategories })
       } else {
         this.setDefaultCategories()
       }
     } catch (error) {
-      console.error('加载分类失败:', error)
+      console.error('预加载分类失败:', error)
       // 使用默认分类
       this.setDefaultCategories()
     }
@@ -115,11 +139,39 @@ Page({
       { name: '其他', icon: '📝', type: 'income', sort: 6 }
     ]
 
+    // 缓存默认分类
+    this._categoryCache.expense = expenseCategories
+    this._categoryCache.income = incomeCategories
+
     const categories = this.data.type === 'expense' ? expenseCategories : incomeCategories
     this.setData({ categories })
   },
 
-  // 切换类型
+  // 按类型加载分类（降级方案，缓存未命中时使用）
+  async loadCategoriesByType(type) {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'billFunctions',
+        data: {
+          action: 'getCategories',
+          data: { type: type }
+        }
+      })
+
+      if (res.result.success) {
+        // 缓存结果
+        this._categoryCache[type] = res.result.data
+        this.setData({ categories: res.result.data })
+      } else {
+        this.setDefaultCategories()
+      }
+    } catch (error) {
+      console.error('加载分类失败:', error)
+      this.setDefaultCategories()
+    }
+  },
+
+  // 切换类型（从本地缓存读取，无延迟）
   switchType(e) {
     const type = e.currentTarget.dataset.type
     this.setData({
@@ -129,7 +181,14 @@ Page({
       accountId: '',
       accountName: ''
     })
-    this.loadCategories()
+    // 从本地缓存读取分类（毫秒级切换）
+    const cachedCategories = this._categoryCache[type]
+    if (cachedCategories) {
+      this.setData({ categories: cachedCategories })
+    } else {
+      // 缓存未命中时，加载分类（降级方案）
+      this.loadCategoriesByType(type)
+    }
     this.loadAccountList()
   },
 
