@@ -8,6 +8,15 @@ const _ = db.command
 const LOANS_COLLECTION = 'loans'
 
 /**
+ * 精确四舍五入到两位小数，避免浮点数精度问题
+ * @param {number} num - 要处理的数字
+ * @returns {number} 四舍五入后的数字
+ */
+function roundNumber(num) {
+  return Math.round(num * 100) / 100
+}
+
+/**
  * 云函数入口
  * @param {Object} event - 事件参数
  * @param {string} event.action - 操作类型：add/update/delete/get/list/getSummary/updatePaid
@@ -232,15 +241,15 @@ async function getLoanSummary(openid) {
     .field({ amount: true, paidAmount: true })
     .get()
 
-  // 计算借出应收
-  const lendReceivable = lendResult.data.reduce((sum, item) => {
+  // 计算借出应收（精确处理浮点数精度）
+  const lendReceivable = roundNumber(lendResult.data.reduce((sum, item) => {
     return sum + (item.amount - (item.paidAmount || 0))
-  }, 0)
+  }, 0))
 
   // 计算借入应还
-  const borrowRepayable = borrowResult.data.reduce((sum, item) => {
+  const borrowRepayable = roundNumber(borrowResult.data.reduce((sum, item) => {
     return sum + (item.amount - (item.paidAmount || 0))
-  }, 0)
+  }, 0))
 
   return {
     success: true,
@@ -261,8 +270,13 @@ async function updatePaidAmount(openid, id, amount) {
     return { success: false, error: '缺少参数' }
   }
 
-  if (amount < 0) {
+  const amountNum = Number(amount)
+  if (isNaN(amountNum) || amountNum < 0) {
     return { success: false, error: '金额不能为负数' }
+  }
+
+  if (amountNum === 0) {
+    return { success: false, error: '金额不能为0' }
   }
 
   // 先获取当前记录
@@ -275,21 +289,21 @@ async function updatePaidAmount(openid, id, amount) {
   }
 
   const loan = loanResult.data[0]
-  const newPaidAmount = loan.paidAmount + amount
+  const newPaidAmount = loan.paidAmount + amountNum
 
-  // 检查是否超过总额
-  if (newPaidAmount > loan.amount) {
+  // 检查是否超过总额（精确比较）
+  if (roundNumber(newPaidAmount) > roundNumber(loan.amount)) {
     return { success: false, error: '已收/已还金额不能超过总额' }
   }
 
   // 更新状态
-  const newStatus = newPaidAmount >= loan.amount ? 'completed' : 'pending'
+  const newStatus = roundNumber(newPaidAmount) >= roundNumber(loan.amount) ? 'completed' : 'pending'
 
   const result = await db.collection(LOANS_COLLECTION)
     .where({ _id: id, _openid: openid })
     .update({
       data: {
-        paidAmount: newPaidAmount,
+        paidAmount: roundNumber(newPaidAmount),
         status: newStatus,
         updatedAt: db.serverDate()
       }
@@ -299,7 +313,7 @@ async function updatePaidAmount(openid, id, amount) {
     success: true,
     data: {
       updated: result.stats.updated,
-      paidAmount: newPaidAmount,
+      paidAmount: roundNumber(newPaidAmount),
       status: newStatus
     }
   }

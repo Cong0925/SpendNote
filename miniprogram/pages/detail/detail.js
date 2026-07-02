@@ -91,19 +91,27 @@ Page({
         if (res.confirm) {
           try {
             wx.showLoading({ title: '删除中...' })
-            await wx.cloud.callFunction({
+            const res = await wx.cloud.callFunction({
               name: 'billFunctions',
-              data: { action: 'deleteBill', billId }
+              data: { action: 'delete', data: { id: billId } }
             })
             wx.hideLoading()
-            wx.showToast({
-              title: '删除成功',
-              icon: 'success'
-            })
-            // 返回上一页（搜索页）
-            setTimeout(() => {
-              wx.navigateBack()
-            }, 1500)
+
+            if (res.result && res.result.success) {
+              wx.showToast({
+                title: '删除成功',
+                icon: 'success'
+              })
+              // 返回上一页
+              setTimeout(() => {
+                wx.navigateBack()
+              }, 1500)
+            } else {
+              wx.showToast({
+                title: (res.result && res.result.error) || '删除失败',
+                icon: 'none'
+              })
+            }
           } catch (error) {
             wx.hideLoading()
             wx.showToast({

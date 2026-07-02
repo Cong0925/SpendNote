@@ -795,13 +795,21 @@ Page({
         if (res.confirm) {
           try {
             wx.showLoading({ title: '删除中...' })
-            await wx.cloud.callFunction({
+            const res = await wx.cloud.callFunction({
               name: 'billFunctions',
-              data: { action: 'deleteBill', billId }
+              data: { action: 'delete', data: { id: billId } }
             })
             wx.hideLoading()
-            wx.showToast({ title: '删除成功', icon: 'success' })
-            this.loadBills()
+
+            if (res.result && res.result.success) {
+              wx.showToast({ title: '删除成功', icon: 'success' })
+              this.loadBills()
+            } else {
+              wx.showToast({
+                title: (res.result && res.result.error) || '删除失败',
+                icon: 'none'
+              })
+            }
           } catch (error) {
             wx.hideLoading()
             wx.showToast({ title: '删除失败', icon: 'none' })

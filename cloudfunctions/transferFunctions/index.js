@@ -51,12 +51,17 @@ async function addTransfer(openid, data) {
     return { success: false, error: '转出和转入账户不能相同' }
   }
 
+  const amountNum = Math.abs(Number(amount))
+  if (isNaN(amountNum) || amountNum <= 0) {
+    return { success: false, error: '金额必须大于0' }
+  }
+
   const now = db.serverDate()
   const transfer = {
     _openid: openid,
     fromAccountId,
     toAccountId,
-    amount: Math.abs(Number(amount)),
+    amount: amountNum,
     date,
     remark: remark || '',
     createdAt: now
@@ -64,9 +69,24 @@ async function addTransfer(openid, data) {
 
   const result = await db.collection(TRANSFERS_COLLECTION).add({ data: transfer })
 
-  // 更新账户余额
-  await updateAccountBalance(fromAccountId, -Number(amount))
-  await updateAccountBalance(toAccountId, Number(amount))
+  // 更新账户余额（转出扣减、转入增加）
+  try {
+    await updateAccountBalance(fromAccountId, -amountNum)
+  } catch (err) {
+    console.error('转账后更新转出账户余额失败，回滚已创建的转账记录：', err)
+    await db.collection(TRANSFERS_COLLECTION).doc(result._id).remove()
+    return { success: false, error: '转出账户余额更新失败，请重试' }
+  }
+
+  try {
+    await updateAccountBalance(toAccountId, amountNum)
+  } catch (err) {
+    console.error('转账后更新转入账户余额失败，回滚已创建的转账记录和转出账户余额：', err)
+    // 回滚：恢复转出账户余额 + 删除已创建的转账记录
+    await updateAccountBalance(fromAccountId, amountNum)
+    await db.collection(TRANSFERS_COLLECTION).doc(result._id).remove()
+    return { success: false, error: '转入账户余额更新失败，请重试' }
+  }
 
   return {
     success: true,
@@ -130,7 +150,7 @@ async function getTransfer(openid, id) {
 }
 
 /**
- * 删除转账记录
+ * 删除转账记录（含余额恢复）
  */
 async function deleteTransfer(openid, id) {
   if (!id) {
@@ -142,13 +162,17 @@ async function deleteTransfer(openid, id) {
     .where({ _id: id, _openid: openid })
     .get()
 
-  if (transferResult.data.length > 0) {
-    const transfer = transferResult.data[0]
-    // 恢复账户余额
-    await updateAccountBalance(transfer.fromAccountId, transfer.amount)
-    await updateAccountBalance(transfer.toAccountId, -transfer.amount)
+  if (transferResult.data.length === 0) {
+    return { success: false, error: '转账记录不存在' }
   }
 
+  const transfer = transferResult.data[0]
+
+  // 恢复账户余额（转出加回、转入减去）
+  await updateAccountBalance(transfer.fromAccountId, transfer.amount)
+  await updateAccountBalance(transfer.toAccountId, -transfer.amount)
+
+  // 余额恢复成功后，删除转账记录
   const result = await db.collection(TRANSFERS_COLLECTION)
     .where({ _id: id, _openid: openid })
     .remove()
@@ -161,18 +185,24 @@ async function deleteTransfer(openid, id) {
 
 /**
  * 更新账户余额
+ * @throws {Error} 余额更新失败时抛出异常
  */
 async function updateAccountBalance(accountId, amountChange) {
-  try {
-    await db.collection('accounts')
-      .doc(accountId)
-      .update({
-        data: {
-          balance: _.inc(amountChange),
-          updatedAt: db.serverDate()
-        }
-      })
-  } catch (err) {
-    console.error('更新账户余额失败：', err)
+  const amountNum = Number(amountChange)
+  if (isNaN(amountNum) || amountNum === 0) {
+    return
+  }
+
+  const result = await db.collection('accounts')
+    .doc(accountId)
+    .update({
+      data: {
+        balance: _.inc(amountNum),
+        updatedAt: db.serverDate()
+      }
+    })
+
+  if (result.stats.updated === 0) {
+    throw new Error(`账户 ${accountId} 不存在或更新失败`)
   }
 }
