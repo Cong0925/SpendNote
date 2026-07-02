@@ -41,7 +41,6 @@ Page({
     startX: 0,
     swipedIndex: -1,
     // 时间范围选择
-    isRange: true, // 启用时间范围选择
     rangeStartDate: '',
     rangeEndDate: '',
     rangeStartText: '',
@@ -151,16 +150,31 @@ Page({
 
     // 根据 viewMode 计算 dateDisplay（左上角显示文本）
     let dateDisplay = ''
+    let currentDate = this.data.currentDate
     if (viewMode === 'quarter') {
       const [y, m] = startDate.split('-')
       const quarter = Math.ceil(parseInt(m) / 3)
       dateDisplay = `${y} Q${quarter}`
+      // 季度模式：更新 currentDate 为季度第一天
+      currentDate = `${y}-${String(Math.ceil(parseInt(m) / 3) * 3 - 2).padStart(2, '0')}-01`
     } else {
       dateDisplay = this.getDisplayDate(startDate, viewMode)
+      // 根据 viewMode 更新 currentDate
+      if (viewMode === 'day') {
+        currentDate = startDate
+      } else if (viewMode === 'month') {
+        const [y, m] = startDate.split('-')
+        currentDate = `${y}-${m}`
+      } else if (viewMode === 'year') {
+        const [y] = startDate.split('-')
+        currentDate = y
+      }
     }
 
     this.setData({
       dateDisplay: dateDisplay,
+      currentDate: currentDate,
+      savedDate: currentDate.length === 10 ? currentDate : `${currentDate}-01`,
       rangeStartDate: startDate,
       rangeEndDate: endDate,
       rangeStartText: this.getDisplayDate(startDate, viewMode),
@@ -176,19 +190,12 @@ Page({
 
     this.setData({ loading: true })
 
-    const { currentDate, viewMode, isRange, rangeStartDate, rangeEndDate } = this.data
+    const { currentDate, viewMode, rangeStartDate, rangeEndDate } = this.data
 
     let start, end
-    if (isRange) {
-      // 使用时间范围
-      start = rangeStartDate
-      end = rangeEndDate
-    } else {
-      // 使用单一日期
-      const range = this.getDateRange(currentDate, viewMode)
-      start = range.start
-      end = range.end
-    }
+    // 使用时间范围
+    start = rangeStartDate
+    end = rangeEndDate
 
     try {
       const res = await wx.cloud.callFunction({

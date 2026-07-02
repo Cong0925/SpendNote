@@ -37,7 +37,6 @@ Page({
     loading: false,
     activeTab: 'expense',
     // 时间范围选择
-    isRange: true, // 启用时间范围选择
     rangeStartDate: '',
     rangeEndDate: '',
     rangeStartText: '',
@@ -133,7 +132,23 @@ Page({
     const { startDate, endDate } = e.detail
     const viewMode = this.data.viewMode
 
+    // 根据 viewMode 更新 currentDate
+    let currentDate = this.data.currentDate
+    if (viewMode === 'day') {
+      currentDate = startDate
+    } else if (viewMode === 'month') {
+      const [y, m] = startDate.split('-')
+      currentDate = `${y}-${m}`
+    } else if (viewMode === 'year') {
+      const [y] = startDate.split('-')
+      currentDate = y
+    } else if (viewMode === 'quarter') {
+      const [y, m] = startDate.split('-')
+      currentDate = `${y}-${String(Math.ceil(parseInt(m) / 3) * 3 - 2).padStart(2, '0')}-01`
+    }
+
     this.setData({
+      currentDate: currentDate,
       rangeStartDate: startDate,
       rangeEndDate: endDate,
       rangeStartText: this.getDisplayDate(startDate, viewMode),
@@ -208,10 +223,10 @@ Page({
     if (this.data.loading) return
     this.setData({ loading: true })
 
-    const { currentDate, viewMode, isRange, rangeStartDate, rangeEndDate } = this.data
+    const { currentDate, viewMode, rangeStartDate, rangeEndDate } = this.data
 
     let start, end
-    if (isRange && viewMode !== 'quarter') {
+    if (viewMode !== 'quarter') {
       // 使用时间范围
       start = rangeStartDate
       end = rangeEndDate

@@ -4,8 +4,6 @@ Component({
     date: { type: String, value: '' },
     dateText: { type: String, value: '' },
     viewMode: { type: String, value: 'month' },
-    // 时间范围选择
-    isRange: { type: Boolean, value: false },
     rangeStartDate: { type: String, value: '' },
     rangeEndDate: { type: String, value: '' },
     rangeStartText: { type: String, value: '' },
@@ -13,8 +11,6 @@ Component({
   },
   data: {
     statusBarHeight: 20,
-    monthValue: '',
-    yearValue: '',
     showQuarter: false,
     quarterIndex: 0,
     quarters: [
@@ -37,10 +33,7 @@ Component({
     'date, viewMode': function (date, viewMode) {
       if (!date) return
       const parts = date.split('-')
-      const update = {
-        yearValue: parts[0],
-        monthValue: parts.length >= 2 ? `${parts[0]}-${parts[1]}` : `${parts[0]}-01`
-      }
+      const update = {}
       if (viewMode === 'quarter' && parts.length >= 2) {
         const month = parseInt(parts[1])
         update.quarterIndex = Math.ceil(month / 3) - 1
@@ -64,15 +57,6 @@ Component({
     }
   },
   methods: {
-    onDateChange(e) {
-      this.triggerEvent('dateChange', { value: e.detail.value })
-    },
-    onMonthChange(e) {
-      this.triggerEvent('dateChange', { value: e.detail.value })
-    },
-    onYearChange(e) {
-      this.triggerEvent('dateChange', { value: e.detail.value })
-    },
     // 范围选择 - 开始日期变更
     onStartDateChange(e) {
       const rawValue = e.detail.value
