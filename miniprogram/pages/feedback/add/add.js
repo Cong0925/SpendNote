@@ -3,12 +3,28 @@ const app = getApp()
 
 Page({
   data: {
+    feedbackId: '', // 反馈ID（编辑模式）
+    isEdit: false, // 是否为编辑模式
     feedbackType: '',
     content: '',
     images: [],
     contact: '',
     canSubmit: false,
     submitting: false
+  },
+
+  onLoad(options) {
+    // 判断是否为编辑模式
+    if (options.id) {
+      this.setData({
+        feedbackId: options.id,
+        isEdit: true
+      })
+      // 加载反馈详情
+      this.loadFeedbackDetail(options.id)
+      // 设置页面标题
+      wx.setNavigationBarTitle({ title: '修改反馈' })
+    }
   },
 
   // 返回上一页
@@ -39,6 +55,46 @@ Page({
     const { feedbackType, content } = this.data
     const canSubmit = !!(feedbackType && content.trim())
     this.setData({ canSubmit })
+  },
+
+  // 加载反馈详情（编辑模式）
+  async loadFeedbackDetail(feedbackId) {
+    try {
+      wx.showLoading({ title: '加载中...' })
+
+      const res = await wx.cloud.callFunction({
+        name: 'feedbackFunctions',
+        data: {
+          action: 'getDetail',
+          data: { feedbackId }
+        }
+      })
+
+      wx.hideLoading()
+
+      if (res.result.success) {
+        const feedback = res.result.data
+        this.setData({
+          feedbackType: feedback.type,
+          content: feedback.content,
+          images: feedback.images || [],
+          contact: feedback.contact || ''
+        })
+        this.updateCanSubmit()
+      } else {
+        wx.showToast({ title: res.result.error || '加载失败', icon: 'none' })
+        setTimeout(() => {
+          wx.navigateBack()
+        }, 1500)
+      }
+    } catch (err) {
+      wx.hideLoading()
+      console.error('加载反馈详情失败：', err)
+      wx.showToast({ title: '加载失败', icon: 'none' })
+      setTimeout(() => {
+        wx.navigateBack()
+      }, 1500)
+    }
   },
 
   // 选择图片
@@ -117,23 +173,35 @@ Page({
     // 提交反馈
     wx.showLoading({ title: '提交中...' })
     try {
-      const res = await wx.cloud.callFunction({
-        name: 'feedbackFunctions',
-        data: {
-          action: 'create',
-          data: {
+      const { isEdit, feedbackId } = this.data
+      const action = isEdit ? 'update' : 'create'
+      const actionData = isEdit
+        ? {
+            feedbackId,
             type: feedbackType,
             content: content.trim(),
             images: uploadedImages,
             contact: contact.trim()
           }
+        : {
+            type: feedbackType,
+            content: content.trim(),
+            images: uploadedImages,
+            contact: contact.trim()
+          }
+
+      const res = await wx.cloud.callFunction({
+        name: 'feedbackFunctions',
+        data: {
+          action,
+          data: actionData
         }
       })
 
       wx.hideLoading()
 
       if (res.result.success) {
-        wx.showToast({ title: '提交成功', icon: 'success' })
+        wx.showToast({ title: isEdit ? '修改成功' : '提交成功', icon: 'success' })
         setTimeout(() => {
           wx.navigateBack()
         }, 1500)

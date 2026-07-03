@@ -18,8 +18,14 @@ exports.main = async (event, context) => {
   switch (action) {
     case 'getList':
       return await getList(wxContext.OPENID, data)
+    case 'getDetail':
+      return await getDetail(wxContext.OPENID, data)
     case 'create':
       return await create(wxContext.OPENID, data)
+    case 'update':
+      return await updateFeedback(wxContext.OPENID, data)
+    case 'delete':
+      return await deleteFeedback(wxContext.OPENID, data)
     case 'checkSafe':
       return await checkSafe(data.content)
     case 'sendPendingEmails':
@@ -103,6 +109,152 @@ async function create(openid, data) {
     return { success: true, data: { id: result._id } }
   } catch (err) {
     console.error('创建反馈失败：', err)
+    return { success: false, error: err.message }
+  }
+}
+
+// 删除反馈（物理删除）
+async function deleteFeedback(openid, data) {
+  try {
+    const { feedbackId } = data
+
+    // 验证参数
+    if (!feedbackId) {
+      return { success: false, error: '反馈ID不能为空' }
+    }
+
+    // 验证反馈是否存在且属于当前用户
+    const feedbackRes = await db.collection('feedbacks')
+      .doc(feedbackId)
+      .get()
+
+    if (!feedbackRes.data) {
+      return { success: false, error: '反馈记录不存在' }
+    }
+
+    if (feedbackRes.data._openid !== openid) {
+      return { success: false, error: '无权删除此反馈' }
+    }
+
+    // 物理删除反馈记录
+    await db.collection('feedbacks')
+      .doc(feedbackId)
+      .remove()
+
+    // 如果有图片，尝试删除云存储中的图片
+    if (feedbackRes.data.images && feedbackRes.data.images.length > 0) {
+      try {
+        await cloud.deleteFile({
+          fileList: feedbackRes.data.images
+        })
+      } catch (err) {
+        console.error('删除图片失败（不影响反馈删除）：', err)
+        // 图片删除失败不影响反馈删除
+      }
+    }
+
+    return { success: true, message: '删除成功' }
+  } catch (err) {
+    console.error('删除反馈失败：', err)
+    return { success: false, error: err.message }
+  }
+}
+
+// 更新反馈
+async function updateFeedback(openid, data) {
+  try {
+    const { feedbackId, type, content, images = [], contact = '' } = data
+
+    // 验证参数
+    if (!feedbackId) {
+      return { success: false, error: '反馈ID不能为空' }
+    }
+
+    // 验证必填字段
+    if (!type || !content) {
+      return { success: false, error: '请填写完整信息' }
+    }
+
+    // 验证类型
+    const validTypes = ['bug', 'feature', 'other']
+    if (!validTypes.includes(type)) {
+      return { success: false, error: '无效的反馈类型' }
+    }
+
+    // 验证内容长度
+    if (content.length > 500) {
+      return { success: false, error: '内容不能超过500字' }
+    }
+
+    // 验证图片数量
+    if (images.length > 3) {
+      return { success: false, error: '最多上传3张图片' }
+    }
+
+    // 验证反馈是否存在且属于当前用户
+    const feedbackRes = await db.collection('feedbacks')
+      .doc(feedbackId)
+      .get()
+
+    if (!feedbackRes.data) {
+      return { success: false, error: '反馈记录不存在' }
+    }
+
+    if (feedbackRes.data._openid !== openid) {
+      return { success: false, error: '无权修改此反馈' }
+    }
+
+    // 验证是否已上报（已上报不可修改）
+    if (feedbackRes.data.emailSent) {
+      return { success: false, error: '反馈已上报，无法修改' }
+    }
+
+    // 更新反馈记录
+    await db.collection('feedbacks')
+      .doc(feedbackId)
+      .update({
+        data: {
+          type,
+          content,
+          images,
+          contact,
+          updateTime: db.serverDate()
+        }
+      })
+
+    return { success: true, message: '修改成功' }
+  } catch (err) {
+    console.error('更新反馈失败：', err)
+    return { success: false, error: err.message }
+  }
+}
+
+// 获取单个反馈详情
+async function getDetail(openid, data) {
+  try {
+    const { feedbackId } = data
+
+    // 验证参数
+    if (!feedbackId) {
+      return { success: false, error: '反馈ID不能为空' }
+    }
+
+    // 获取反馈详情
+    const feedbackRes = await db.collection('feedbacks')
+      .doc(feedbackId)
+      .get()
+
+    if (!feedbackRes.data) {
+      return { success: false, error: '反馈记录不存在' }
+    }
+
+    if (feedbackRes.data._openid !== openid) {
+      return { success: false, error: '无权查看此反馈' }
+    }
+
+    return { success: true, data: feedbackRes.data }
+  } catch (err) {
+    console.error('获取反馈详情失败：', err)
     return { success: false, error: err.message }
   }
 }

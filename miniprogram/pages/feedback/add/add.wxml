@@ -118,10 +118,10 @@
   <view class="bottom-bar">
     <view class="bottom-content">
       <button class="submit-btn {{canSubmit ? '' : 'disabled'}}" bindtap="onSubmit" disabled="{{!canSubmit || submitting}}">
-        <text class="btn-text" wx:if="{{!submitting}}">提交反馈</text>
+        <text class="btn-text" wx:if="{{!submitting}}">{{isEdit ? '保存修改' : '提交反馈'}}</text>
         <view class="btn-loading" wx:if="{{submitting}}">
           <view class="loading-spinner"></view>
-          <text class="loading-text">提交中...</text>
+          <text class="loading-text">{{isEdit ? '保存中...' : '提交中...'}}</text>
         </view>
       </button>
     </view>

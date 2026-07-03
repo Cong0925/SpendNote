@@ -31,6 +31,13 @@ Page({
     wx.navigateTo({ url: '/pages/feedback/add/add' })
   },
 
+  // 跳转到修改反馈页面
+  editFeedback(e) {
+    const { id } = e.currentTarget.dataset
+    this.needRefresh = true
+    wx.navigateTo({ url: `/pages/feedback/add/add?id=${id}` })
+  },
+
   // 刷新列表
   refreshList() {
     this.setData({
@@ -95,12 +102,16 @@ Page({
     // 格式化时间
     const createTimeText = this.formatTime(item.createTime)
 
+    // 判断是否已发送（已上报）
+    const isReported = item.emailSent === true
+
     return {
       ...item,
       typeName: typeInfo.name,
       typeIcon: typeInfo.icon,
       shortId,
-      createTimeText
+      createTimeText,
+      isReported
     }
   },
 
@@ -145,6 +156,60 @@ Page({
     wx.previewImage({
       current: url,
       urls: urls
+    })
+  },
+
+  // 删除反馈
+  deleteFeedback(e) {
+    const { id, index } = e.currentTarget.dataset
+
+    wx.showModal({
+      title: '确认删除',
+      content: '确定要删除这条反馈吗？删除后无法恢复。',
+      confirmText: '删除',
+      confirmColor: '#dc2626',
+      success: async (res) => {
+        if (res.confirm) {
+          try {
+            wx.showLoading({ title: '删除中...' })
+
+            const result = await wx.cloud.callFunction({
+              name: 'feedbackFunctions',
+              data: {
+                action: 'delete',
+                data: { feedbackId: id }
+              }
+            })
+
+            if (result.result.success) {
+              // 从列表中移除
+              const newList = [...this.data.feedbackList]
+              newList.splice(index, 1)
+              this.setData({
+                feedbackList: newList
+              })
+
+              wx.showToast({
+                title: '删除成功',
+                icon: 'success'
+              })
+            } else {
+              wx.showToast({
+                title: result.result.error || '删除失败',
+                icon: 'none'
+              })
+            }
+          } catch (err) {
+            console.error('删除反馈失败：', err)
+            wx.showToast({
+              title: '删除失败，请重试',
+              icon: 'none'
+            })
+          } finally {
+            wx.hideLoading()
+          }
+        }
+      }
     })
   },
 

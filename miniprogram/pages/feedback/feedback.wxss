@@ -169,6 +169,112 @@
   font-size: 24rpx;
 }
 
+/* 操作按钮容器 */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+/* 修改按钮 */
+.edit-btn {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #eff6ff;
+  transition: all 0.2s ease;
+}
+
+.edit-btn:active {
+  background: #dbeafe;
+  transform: scale(0.9);
+}
+
+.edit-icon {
+  font-size: 28rpx;
+}
+
+/* 删除按钮 */
+.delete-btn {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fef2f2;
+  transition: all 0.2s ease;
+}
+
+.delete-btn:active {
+  background: #fee2e2;
+  transform: scale(0.9);
+}
+
+.delete-icon {
+  font-size: 28rpx;
+}
+
+/* 已上报标签 */
+.reported-badge {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.reported-icon {
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+.reported-text {
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+/* 温馨提示卡片 */
+.tip-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 16rpx 20rpx;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border-radius: 16rpx;
+  margin-top: 32rpx;
+  margin-bottom: 32rpx;
+  border: 1rpx solid #fcd34d;
+}
+
+.tip-icon {
+  font-size: 32rpx;
+  flex-shrink: 0;
+}
+
+.tip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.tip-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #92400e;
+}
+
+.tip-text {
+  font-size: 24rpx;
+  color: #a16207;
+  line-height: 1.6;
+}
+
 /* 内容 */
 .feedback-content {
   font-size: 28rpx;

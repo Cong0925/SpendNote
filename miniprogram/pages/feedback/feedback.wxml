@@ -12,14 +12,37 @@
         <text class="empty-desc">遇到问题或有好的建议？点击下方按钮提交反馈</text>
       </view>
 
+      <!-- 温馨提示 -->
+      <view class="tip-card" wx:if="{{feedbackList.length > 0}}">
+        <view class="tip-icon">💡</view>
+        <view class="tip-content">
+          <text class="tip-title">温馨提示</text>
+          <text class="tip-text">反馈每天定时上报至管理员邮箱，上报后将无法删除。如需删除，请在当天内操作。</text>
+        </view>
+      </view>
+
       <!-- 反馈列表 -->
       <view class="feedback-list">
         <view class="feedback-item" wx:for="{{feedbackList}}" wx:key="_id" style="animation-delay: {{index * 0.1}}s">
-          <!-- 顶部：类型 -->
+          <!-- 顶部：类型和操作按钮 -->
           <view class="feedback-header">
             <view class="feedback-type-badge {{item.type}}">
               <text class="type-icon">{{item.typeIcon}}</text>
               <text class="type-text">{{item.typeName}}</text>
+            </view>
+            <!-- 未上报：显示操作按钮 -->
+            <view class="action-buttons" wx:if="{{!item.isReported}}">
+              <view class="edit-btn" catchtap="editFeedback" data-id="{{item._id}}">
+                <text class="edit-icon">✏️</text>
+              </view>
+              <view class="delete-btn" catchtap="deleteFeedback" data-id="{{item._id}}" data-index="{{index}}">
+                <text class="delete-icon">🗑️</text>
+              </view>
+            </view>
+            <!-- 已上报：显示已上报标签 -->
+            <view class="reported-badge" wx:else>
+              <text class="reported-icon">✓</text>
+              <text class="reported-text">已上报</text>
             </view>
           </view>
 
