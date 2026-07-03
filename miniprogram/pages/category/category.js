@@ -30,6 +30,8 @@ Page({
     dragOffset: 0, // 拖拽偏移量
     startY: 0, // FAB按钮拖拽起始Y坐标
     itemHeight: 0, // 列表项高度
+    // 每个元素的视觉偏移量数组
+    itemOffsets: [],
     // 内置图标列表
     builtinIcons: [
       { name: '餐饮', icon: '🍜' },
@@ -416,17 +418,20 @@ Page({
     query.select('.category-item').boundingClientRect()
     query.exec((res) => {
       if (res[0]) {
+        const itemHeight = res[0].height
+        const itemCount = this.data.currentCategories.length
         this.setData({
-          itemHeight: res[0].height
+          itemHeight: itemHeight,
+          dragIndex: index,
+          dragOffset: 0,
+          itemOffsets: new Array(itemCount).fill(0)
         })
       }
     })
 
     // 禁用页面滚动
     this.setData({
-      scrollDisabled: true,
-      dragIndex: index,
-      dragOffset: 0
+      scrollDisabled: true
     })
   },
 
@@ -436,40 +441,73 @@ Page({
 
     const touch = e.touches[0]
     const itemHeight = this.data.itemHeight
+    const dragIndex = this.data.dragIndex
+    const totalItems = this.data.currentCategories.length
 
-    // 计算手指总偏移量
+    // 计算手指总偏移量（基于起始位置）
     const totalOffset = touch.clientY - this.dragStartY
 
-    // 计算目标索引（基于原始索引）
-    const moveCount = Math.round(totalOffset / itemHeight)
-    const targetIndex = Math.max(0, Math.min(
-      this.data.currentCategories.length - 1,
-      this.originalIndex + moveCount
-    ))
+    // 限制在列表范围内
+    const maxOffset = (totalItems - 1 - dragIndex) * itemHeight
+    const minOffset = -dragIndex * itemHeight
+    const clampedOffset = Math.max(minOffset, Math.min(maxOffset, totalOffset))
 
-    // 更新拖拽偏移量（基于原始位置）
-    this.setData({ dragOffset: totalOffset })
+    // 计算拖拽目标位置
+    const targetIndex = Math.round(dragIndex + clampedOffset / itemHeight)
+    const clampedTarget = Math.max(0, Math.min(totalItems - 1, targetIndex))
 
-    // 如果目标位置 != 当前位置，直接交换到目标位置
-    const currentIndex = this.data.dragIndex
-    if (targetIndex !== currentIndex) {
-      this.swapCategories(currentIndex, targetIndex)
-      this.setData({ dragIndex: targetIndex })
+    // 计算每个元素的视觉偏移量（不修改数组）
+    const offsets = new Array(totalItems).fill(0)
+    for (let i = 0; i < totalItems; i++) {
+      if (i === dragIndex) {
+        // 被拖拽的元素：跟随手指
+        offsets[i] = clampedOffset
+      } else if (dragIndex < clampedTarget) {
+        // 向下拖拽：被越过的元素上移
+        if (i > dragIndex && i <= clampedTarget) {
+          offsets[i] = -itemHeight
+        }
+      } else if (dragIndex > clampedTarget) {
+        // 向上拖拽：被越过的元素下移
+        if (i >= clampedTarget && i < dragIndex) {
+          offsets[i] = itemHeight
+        }
+      }
     }
+
+    this.setData({
+      dragOffset: clampedOffset,
+      itemOffsets: offsets
+    })
   },
 
   // 列表项拖拽结束
   onDragEnd(e) {
     if (this.data.dragIndex === -1) return
 
-    // 保存排序后的列表
+    const dragIndex = this.data.dragIndex
+    const itemHeight = this.data.itemHeight
+
+    // 计算最终目标位置
+    const moveCount = Math.round(this.data.dragOffset / itemHeight)
+    const targetIndex = Math.max(0, Math.min(
+      this.data.currentCategories.length - 1,
+      dragIndex + moveCount
+    ))
+
+    // 真正重排数组
+    if (targetIndex !== dragIndex) {
+      this.swapCategories(dragIndex, targetIndex)
+    }
+
+    // 保存排序并恢复状态
     this.saveCategoryOrder()
 
-    // 恢复页面滚动
     this.setData({
       scrollDisabled: false,
       dragIndex: -1,
-      dragOffset: 0
+      dragOffset: 0,
+      itemOffsets: []
     })
 
     this.originalIndex = null

@@ -51,7 +51,7 @@
           class="category-item {{dragIndex === index ? 'dragging' : ''}}"
           wx:for="{{currentCategories}}"
           wx:key="_id"
-          style="{{dragIndex === index ? 'transform: translateY(' + dragOffset + 'px); z-index: 100;' : ''}}"
+          style="{{dragIndex >= 0 ? 'transform: translateY(' + itemOffsets[index] + 'px); z-index: ' + (dragIndex === index ? '100' : '1') + ';' : ''}}"
         >
           <view
             class="drag-handle"
