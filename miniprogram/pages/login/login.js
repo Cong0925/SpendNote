@@ -5,9 +5,33 @@ Page({
   data: {
     avatarUrl: '',
     nickName: '',
-    isAgreed: false,
+    isAgreed: true, // 默认勾选协议
     canLogin: false,
     isLoading: false
+  },
+
+  // 生成随机4位数
+  generateRandomNumber() {
+    return Math.floor(1000 + Math.random() * 9000)
+  },
+
+  // 生成默认昵称：微信用户 + 随机4位数
+  generateDefaultNickname() {
+    const randomNumber = this.generateRandomNumber()
+    return `微信用户${randomNumber}`
+  },
+
+  // 页面显示时初始化
+  onShow() {
+    // 初始化默认昵称
+    if (!this.data.nickName) {
+      const defaultNickname = this.generateDefaultNickname()
+      this.setData({
+        nickName: defaultNickname
+      })
+    }
+    // 更新登录按钮状态
+    this.updateCanLogin()
   },
 
   // 选择头像回调
