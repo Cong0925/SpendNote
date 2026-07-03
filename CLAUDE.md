@@ -10,6 +10,9 @@
 ```
 SpendNote/
 ├── CLAUDE.md
+├── README.md
+├── .claude/
+│   └── settings.json
 └── ...
 ```
 
@@ -22,3 +25,4 @@ SpendNote/
 
 ## Notes
 - 项目创建于 2026-07-03
+- GitHub 仓库: https://github.com/Cong0925/SpendNote
