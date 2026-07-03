@@ -13,7 +13,13 @@
   </view>
 
   <!-- 分类列表 -->
-  <scroll-view class="content-scroll" scroll-y>
+  <scroll-view
+    class="content-scroll"
+    scroll-y
+    scroll-top="{{scrollTop}}"
+    style="{{scrollDisabled ? 'overflow: hidden;' : ''}}"
+    bindscroll="onScroll"
+  >
     <view class="content-wrapper">
       <!-- 骨架屏加载中 -->
       <view class="skeleton-list" wx:if="{{loading}}">
@@ -57,8 +63,15 @@
     </view>
   </scroll-view>
 
-  <!-- 新增按钮 -->
-  <view class="fab-btn" bindtap="showAddModal">
+  <!-- 可拖拽新增按钮 -->
+  <view
+    class="fab-btn {{isDragging ? 'dragging' : ''}}"
+    style="left: {{fabPosition.x}}px; top: {{fabPosition.y}}px;"
+    bindtouchstart="onFabTouchStart"
+    bindtouchmove="onFabTouchMove"
+    bindtouchend="onFabTouchEnd"
+    catchtap="showAddModal"
+  >
     <text class="fab-icon">+</text>
   </view>
 

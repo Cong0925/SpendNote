@@ -14,6 +14,17 @@ Page({
       icon: ''
     },
     selectedIcon: '',
+    // 可拖拽按钮位置（默认右下角）
+    fabPosition: {
+      x: 0,
+      y: 0
+    },
+    // 拖拽状态
+    isDragging: false,
+    // 滚动状态
+    scrollDisabled: false,
+    // 滚动位置
+    scrollTop: 0,
     // 内置图标列表
     builtinIcons: [
       { name: '餐饮', icon: '🍜' },
@@ -51,6 +62,7 @@ Page({
 
   onLoad() {
     this.loadCategories()
+    this.loadFabPosition()
   },
 
   // 切换tab
@@ -58,6 +70,13 @@ Page({
     const tab = e.currentTarget.dataset.tab
     this.setData({ activeTab: tab })
     this.updateCurrentCategories()
+  },
+
+  // 记录滚动位置
+  onScroll(e) {
+    if (!this.data.scrollDisabled) {
+      this.setData({ scrollTop: e.detail.scrollTop })
+    }
   },
 
   // 更新当前显示的分类列表
@@ -288,5 +307,93 @@ Page({
         }
       }
     })
+  },
+
+  // 加载新增按钮位置
+  loadFabPosition() {
+    try {
+      const position = wx.getStorageSync('category_fab_position')
+      if (position && position.x !== undefined && position.y !== undefined) {
+        this.setData({ fabPosition: position })
+      } else {
+        // 默认位置：右下角
+        const systemInfo = wx.getSystemInfoSync()
+        const screenWidth = systemInfo.windowWidth
+        const screenHeight = systemInfo.windowHeight
+        // 按钮宽度100rpx = 50px，右边距40rpx = 20px，底部距离120rpx = 60px
+        const buttonWidthPx = 50
+        const rightMarginPx = 20
+        const bottomMarginPx = 60
+        const defaultX = screenWidth - buttonWidthPx - rightMarginPx
+        const defaultY = screenHeight - buttonWidthPx - bottomMarginPx
+        this.setData({
+          fabPosition: { x: defaultX, y: defaultY }
+        })
+      }
+    } catch (err) {
+      console.error('读取按钮位置失败：', err)
+      // 出错时使用默认位置
+      this.setData({
+        fabPosition: { x: 280, y: 500 }
+      })
+    }
+  },
+
+  // 新增按钮触摸开始
+  onFabTouchStart(e) {
+    // 记录起始位置
+    this.startX = e.touches[0].clientX - this.data.fabPosition.x
+    this.startY = e.touches[0].clientY - this.data.fabPosition.y
+    // 记录当前滚动位置
+    this.currentScrollTop = this.data.scrollTop || 0
+    this.setData({
+      isDragging: true,
+      scrollDisabled: true
+    })
+  },
+
+  // 新增按钮触摸移动
+  onFabTouchMove(e) {
+    if (!this.data.isDragging) return
+
+    const x = e.touches[0].clientX - this.startX
+    const y = e.touches[0].clientY - this.startY
+
+    // 限制在屏幕范围内
+    const systemInfo = wx.getSystemInfoSync()
+    const screenWidth = systemInfo.windowWidth
+    const screenHeight = systemInfo.windowHeight
+    const buttonWidth = 50 // 按钮宽度50px
+
+    // 计算边界
+    const minX = 0
+    const maxX = screenWidth - buttonWidth
+    const minY = 0
+    const maxY = screenHeight - buttonWidth
+
+    // 限制范围
+    const limitedX = Math.max(minX, Math.min(maxX, x))
+    const limitedY = Math.max(minY, Math.min(maxY, y))
+
+    this.setData({
+      fabPosition: { x: limitedX, y: limitedY }
+    })
+  },
+
+  // 新增按钮触摸结束
+  onFabTouchEnd(e) {
+    if (!this.data.isDragging) return
+
+    this.setData({
+      isDragging: false,
+      scrollDisabled: false
+    })
+
+    // 保存位置到本地存储
+    try {
+      wx.setStorageSync('category_fab_position', this.data.fabPosition)
+    } catch (err) {
+      console.error('保存按钮位置失败：', err)
+    }
   }
 })

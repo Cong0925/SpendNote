@@ -250,11 +250,9 @@
   font-size: 24rpx;
 }
 
-/* 新增按钮 */
+/* 可拖拽新增按钮 */
 .fab-btn {
   position: fixed;
-  right: 40rpx;
-  bottom: 120rpx;
   width: 100rpx;
   height: 100rpx;
   background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
@@ -263,7 +261,13 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 8rpx 24rpx rgba(37, 99, 235, 0.4);
-  z-index: 100;
+  z-index: 99;
+  transition: transform 0.1s ease;
+}
+
+.fab-btn.dragging {
+  transform: scale(1.1);
+  box-shadow: 0 12rpx 32rpx rgba(37, 99, 235, 0.5);
 }
 
 .fab-btn:active {
