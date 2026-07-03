@@ -5,9 +5,9 @@ Page({
   data: {
     avatarUrl: '',
     nickName: '',
-    isLoading: false,
     isAgreed: false,
-    canLogin: false
+    canLogin: false,
+    isLoading: false
   },
 
   // 选择头像回调
@@ -19,6 +19,7 @@ Page({
   // 输入昵称
   onInputNickname(e) {
     this.setData({ nickName: e.detail.value })
+    this.updateCanLogin()
   },
 
   // 清除昵称
@@ -42,10 +43,7 @@ Page({
 
   // 登录
   async onLogin() {
-    const { avatarUrl, nickName, isLoading, isAgreed } = this.data
-
-    // 防止重复点击
-    if (isLoading) return
+    const { avatarUrl, nickName, isAgreed } = this.data
 
     if (!nickName || !nickName.trim()) {
       wx.showToast({ title: '请输入昵称', icon: 'none' })
@@ -70,8 +68,8 @@ Page({
       return
     }
 
+    // 显示加载遮罩
     this.setData({ isLoading: true })
-    wx.showLoading({ title: '登录中...' })
 
     try {
       // 1. 获取openid
@@ -109,20 +107,13 @@ Page({
       wx.setStorageSync('userInfo', userInfo)
       app.globalData.userInfo = userInfo
 
-      wx.hideLoading()
-      wx.showToast({ title: '登录成功', icon: 'success' })
-
       // 5. 跳转到主页
-      setTimeout(() => {
-        wx.switchTab({ url: '/pages/index/index' })
-      }, 1000)
+      wx.switchTab({ url: '/pages/index/index' })
 
     } catch (err) {
-      wx.hideLoading()
+      this.setData({ isLoading: false })
       console.error('登录失败：', err)
       wx.showToast({ title: '登录失败，请重试', icon: 'none' })
-    } finally {
-      this.setData({ isLoading: false })
     }
   },
 

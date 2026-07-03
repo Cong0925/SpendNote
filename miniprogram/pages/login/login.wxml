@@ -63,12 +63,9 @@
       <button
         class="login-btn {{!canLogin ? 'disabled' : ''}}"
         bindtap="onLogin"
-        disabled="{{!canLogin || isLoading}}"
+        disabled="{{!canLogin}}"
       >
-        <text class="btn-text" wx:if="{{!isLoading}}">登录</text>
-        <view class="btn-loading" wx:if="{{isLoading}}">
-          <view class="loading-spinner"></view>
-        </view>
+        <text class="btn-text">登录</text>
       </button>
     </view>
 
@@ -83,6 +80,14 @@
         <text class="agreement-text">与</text>
         <text class="link-text" catchtap="onViewPrivacy"> 《隐私政策》</text>
       </view>
+    </view>
+  </view>
+
+  <!-- 加载遮罩 -->
+  <view class="loading-mask" wx:if="{{isLoading}}">
+    <view class="loading-content">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">登录中...</text>
     </view>
   </view>
 </view>
