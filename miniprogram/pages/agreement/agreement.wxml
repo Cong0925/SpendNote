@@ -1,0 +1,141 @@
+<!-- pages/agreement/agreement.wxml -->
+<view class="agreement-page">
+ 
+  <!-- 内容区 -->
+  <scroll-view class="content-scroll" scroll-y>
+    <view class="content-wrapper">
+      <!-- 更新时间卡片 -->
+      <view class="update-card">
+        <view class="update-icon">
+          <text class="icon-text">📋</text>
+        </view>
+        <view class="update-info">
+          <text class="update-title">SpendNote 用户协议</text>
+          <text class="update-time">更新于 2026年7月3日 · 生效于 2026年7月3日</text>
+        </view>
+      </view>
+
+      <!-- 协议内容 -->
+      <view class="agreement-content">
+        <!-- 第一章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">01</view>
+            <text class="chapter-title">服务条款</text>
+          </view>
+          <view class="chapter-body">
+            <text class="paragraph">欢迎使用 SpendNote（以下简称"本应用"）。本应用由 SpendNote 团队（以下简称"我们"）开发和运营。</text>
+            <text class="paragraph">在使用本应用之前，请您仔细阅读并充分理解本协议的全部内容。如您不同意本协议的任何条款，请立即停止使用本应用。</text>
+            <text class="paragraph">本应用提供个人记账、账单管理、统计分析、账户管理、借贷记录等功能服务。我们有权根据业务发展情况变更、中断或终止部分或全部服务。</text>
+          </view>
+        </view>
+
+        <!-- 第二章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">02</view>
+            <text class="chapter-title">账号注册与管理</text>
+          </view>
+          <view class="chapter-body">
+            <text class="sub-title">注册条件</text>
+            <text class="paragraph">您确认在注册和使用本应用时，您是具有完全民事行为能力的自然人。如您为未成年人，请在监护人的陪同下阅读本协议，并在征得监护人同意后使用本应用。</text>
+            <text class="sub-title">账号安全</text>
+            <text class="paragraph">您的账号由您负责保管，您应当对账号下的所有行为负责。如发现账号存在安全风险，请立即联系我们。</text>
+            <text class="sub-title">账号注销</text>
+            <text class="paragraph">您可以通过"我的"页面申请注销账号。账号注销后，我们将删除您的个人信息和数据，法律法规另有规定的除外。</text>
+          </view>
+        </view>
+
+        <!-- 第三章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">03</view>
+            <text class="chapter-title">用户行为规范</text>
+          </view>
+          <view class="chapter-body">
+            <text class="paragraph">您在使用本应用时，应当遵守中华人民共和国相关法律法规，不得利用本应用从事违法违规行为，包括但不限于：</text>
+            <view class="list-item">
+              <view class="list-dot"></view>
+              <text class="list-text">发布、传播违法信息</text>
+            </view>
+            <view class="list-item">
+              <view class="list-dot"></view>
+              <text class="list-text">侵犯他人合法权益</text>
+            </view>
+            <view class="list-item">
+              <view class="list-dot"></view>
+              <text class="list-text">干扰本应用正常运行</text>
+            </view>
+            <view class="list-item">
+              <view class="list-dot"></view>
+              <text class="list-text">利用本应用从事商业活动</text>
+            </view>
+            <view class="list-item">
+              <view class="list-dot"></view>
+              <text class="list-text">其他违反法律法规或本协议的行为</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 第四章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">04</view>
+            <text class="chapter-title">知识产权</text>
+          </view>
+          <view class="chapter-body">
+            <text class="paragraph">本应用的所有权、知识产权（包括但不限于软件、技术、程序、网页、文字、图片、界面设计等）均归我们所有。</text>
+            <text class="paragraph">您在本应用中创建的账单、账户、借贷记录等数据，其所有权归您所有。我们仅在提供服务的必要范围内使用您的数据。</text>
+          </view>
+        </view>
+
+        <!-- 第五章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">05</view>
+            <text class="chapter-title">免责声明</text>
+          </view>
+          <view class="chapter-body">
+            <text class="paragraph">本应用提供的记账、统计分析等功能仅供参考，不构成任何投资建议或财务指导。</text>
+            <text class="paragraph">您应自行承担使用本应用所产生的风险，包括但不限于数据丢失、设备损坏等。</text>
+            <text class="paragraph">因不可抗力、网络故障、第三方服务等原因导致的服务中断或数据丢失，我们不承担责任。</text>
+          </view>
+        </view>
+
+        <!-- 第六章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">06</view>
+            <text class="chapter-title">协议修改</text>
+          </view>
+          <view class="chapter-body">
+            <text class="paragraph">我们有权根据业务发展需要修改本协议，并通过应用内通知或公告的方式告知您。如您继续使用本应用，即视为同意修改后的协议。</text>
+          </view>
+        </view>
+
+        <!-- 第七章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">07</view>
+            <text class="chapter-title">争议解决</text>
+          </view>
+          <view class="chapter-body">
+            <text class="paragraph">本协议的签订、履行、解释及争议解决均适用中华人民共和国法律。如发生争议，双方应友好协商解决；协商不成的，任何一方均有权向有管辖权的人民法院提起诉讼。</text>
+          </view>
+        </view>
+
+        <!-- 第八章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">08</view>
+            <text class="chapter-title">联系我们</text>
+          </view>
+          <view class="chapter-body">
+            <text class="paragraph">如果您对本协议有任何疑问，请通过以下方式联系我们：</text>
+            <text class="highlight-text">进入小程序-> 我的-> 问题反馈-> 填写内容</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

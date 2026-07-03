@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/login/login",
     "pages/index/index",
     "pages/add/add",
     "pages/stats/stats",
@@ -16,7 +17,9 @@
     "pages/paymentDetail/paymentDetail",
     "pages/loanPayment/loanPayment",
     "pages/accountInfo/accountInfo",
-    "pages/transfer/transfer"
+    "pages/transfer/transfer",
+    "pages/agreement/agreement",
+    "pages/privacy/privacy"
   ],
   "usingComponents": {
     "van-datetime-picker": "@vant/weapp/datetime-picker/index",

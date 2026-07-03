@@ -1,0 +1,328 @@
+/* pages/privacy/privacy.wxss */
+
+.privacy-page {
+  min-height: 100vh;
+  background: #f7f8fa;
+}
+
+/* ==================== 导航栏 ==================== */
+.nav-bar {
+  background: #fff;
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-back {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-icon {
+  font-size: 36rpx;
+  color: #1a1d26;
+}
+
+.nav-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #1a1d26;
+}
+
+.nav-placeholder {
+  width: 64rpx;
+}
+
+/* ==================== 内容滚动区 ==================== */
+.content-scroll {
+  height: calc(100vh - 100rpx);
+}
+
+.content-wrapper {
+  padding: 32rpx;
+}
+
+/* ==================== 更新时间卡片 ==================== */
+.update-card {
+  background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+  border-radius: 24rpx;
+  padding: 40rpx;
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.25);
+}
+
+.update-icon {
+  width: 80rpx;
+  height: 80rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-text {
+  font-size: 40rpx;
+}
+
+.update-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.update-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #fff;
+}
+
+.update-time {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ==================== 引言卡片 ==================== */
+.intro-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  border-left: 6rpx solid #07c160;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.intro-text {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.8;
+}
+
+/* ==================== 隐私政策内容 ==================== */
+.privacy-content {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 40rpx 32rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+/* ==================== 章节 ==================== */
+.chapter {
+  margin-bottom: 48rpx;
+}
+
+.chapter:last-child {
+  margin-bottom: 0;
+}
+
+.chapter-header {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 28rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid #f5f5f5;
+}
+
+.chapter-number {
+  width: 56rpx;
+  height: 56rpx;
+  background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #fff;
+}
+
+.chapter-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1d26;
+}
+
+.chapter-body {
+  padding-left: 12rpx;
+}
+
+.sub-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+  margin-top: 24rpx;
+}
+
+.sub-title:first-child {
+  margin-top: 0;
+}
+
+.paragraph {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.8;
+  margin-bottom: 16rpx;
+  text-indent: 2em;
+}
+
+.paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.highlight-text {
+  display: block;
+  font-size: 28rpx;
+  color: #07c160;
+  font-weight: 500;
+  margin-top: 16rpx;
+  text-indent: 2em;
+}
+
+/* ==================== 信息收集项 ==================== */
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  padding: 20rpx;
+  background: #f8faf9;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.info-icon {
+  width: 56rpx;
+  height: 56rpx;
+  background: #fff;
+  border-radius: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  flex: 1;
+}
+
+.info-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.info-desc {
+  font-size: 24rpx;
+  color: #8c8c8c;
+}
+
+/* ==================== 使用目的 ==================== */
+.purpose-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  padding: 20rpx;
+  background: #f8faf9;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.purpose-icon {
+  width: 56rpx;
+  height: 56rpx;
+  background: #fff;
+  border-radius: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.purpose-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  flex: 1;
+}
+
+.purpose-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.purpose-desc {
+  font-size: 24rpx;
+  color: #8c8c8c;
+}
+
+/* ==================== 用户权利 ==================== */
+.right-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.right-item:last-child {
+  border-bottom: none;
+}
+
+.right-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #07c160;
+  min-width: 120rpx;
+}
+
+.right-desc {
+  font-size: 26rpx;
+  color: #666;
+  flex: 1;
+}
+
+/* ==================== 列表 ==================== */
+.list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  margin-bottom: 12rpx;
+  padding-left: 2em;
+}
+
+.list-dot {
+  width: 10rpx;
+  height: 10rpx;
+  background: #07c160;
+  border-radius: 50%;
+  margin-top: 14rpx;
+}
+
+.list-text {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+}

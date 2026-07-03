@@ -15,7 +15,9 @@ App({
         'pages/stats/stats',
         'pages/account/account',
         'pages/mine/mine'
-      ]
+      ],
+      // 用户信息
+      userInfo: null
     };
     if (!wx.cloud) {
       console.error("请使用 2.2.3 或以上的基础库以使用云能力");
@@ -25,6 +27,40 @@ App({
         traceUser: true,
       });
     }
+
+    // 检查登录状态
+    this.checkLoginStatus();
+  },
+
+  /**
+   * 检查登录状态
+   */
+  checkLoginStatus() {
+    const userInfo = wx.getStorageSync('userInfo');
+    if (userInfo) {
+      this.globalData.userInfo = userInfo;
+    }
+  },
+
+  /**
+   * 获取用户信息（带缓存）
+   * @returns {Object|null} 用户信息或null
+   */
+  async getUserInfo() {
+    // 优先从内存获取
+    if (this.globalData.userInfo) {
+      return this.globalData.userInfo;
+    }
+
+    // 从本地存储获取
+    const userInfo = wx.getStorageSync('userInfo');
+    if (userInfo) {
+      this.globalData.userInfo = userInfo;
+      return userInfo;
+    }
+
+    // 需要登录
+    return null;
   },
 
   /**

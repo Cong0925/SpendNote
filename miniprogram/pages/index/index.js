@@ -1,5 +1,6 @@
 // pages/index/index.js
 const { formatAmountWithUnit, formatAmount: formatAmountFull } = require('../../utils/formatAmount')
+const app = getApp()
 
 Page({
   data: {
@@ -44,16 +45,16 @@ Page({
     rangeStartDate: '',
     rangeEndDate: '',
     rangeStartText: '',
-    rangeEndText: ''
+    rangeEndText: '',
+    // 登录状态
+    isLoggedIn: false
   },
 
   onLoad() {
-    this.initDate()
+    this.checkLogin()
   },
 
   onShow() {
-    const app = getApp()
-
     // 检测是否发生了 Tab 切换
     if (app.checkTabBarChange('pages/index/index')) {
       // 发生了 Tab 切换，重置临时状态
@@ -65,7 +66,25 @@ Page({
       this.getTabBar().setData({ selected: 0 })
     }
 
-    // 加载数据
+    // 检查登录状态
+    this.checkLogin()
+  },
+
+  /**
+   * 检查登录状态
+   */
+  async checkLogin() {
+    const userInfo = await app.getUserInfo()
+
+    if (!userInfo) {
+      // 未登录，跳转到登录页
+      wx.redirectTo({ url: '/pages/login/login' })
+      return
+    }
+
+    // 已登录
+    this.setData({ isLoggedIn: true })
+    this.initDate()
     this.loadBills()
   },
 
