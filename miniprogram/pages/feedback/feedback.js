@@ -5,7 +5,8 @@ Page({
     loading: false,
     hasMore: true,
     page: 1,
-    pageSize: 20
+    pageSize: 20,
+    showSkeleton: true  // 骨架屏显示状态
   },
 
   onLoad() {
@@ -43,7 +44,8 @@ Page({
     this.setData({
       feedbackList: [],
       page: 1,
-      hasMore: true
+      hasMore: true,
+      showSkeleton: true  // 刷新时显示骨架屏
     })
     this.loadFeedbackList()
   },
@@ -82,7 +84,10 @@ Page({
       console.error('加载反馈列表失败：', err)
       wx.showToast({ title: '加载失败', icon: 'none' })
     } finally {
-      this.setData({ loading: false })
+      this.setData({
+        loading: false,
+        showSkeleton: false  // 数据加载完成后隐藏骨架屏
+      })
     }
   },
 
