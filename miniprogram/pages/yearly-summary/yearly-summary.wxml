@@ -5,104 +5,128 @@
     <view class="content-wrapper">
       <!-- 骨架屏 -->
       <view class="skeleton" wx:if="{{loading}}">
-        <!-- 年度统计卡片骨架 -->
-        <view class="stats-card skeleton-card">
-          <!-- 收入骨架 -->
-          <view class="stat-item">
-            <view class="skeleton-icon"></view>
-            <view class="stat-info">
-              <view class="skeleton-text skeleton-text-small"></view>
-              <view class="skeleton-text skeleton-text-medium"></view>
-            </view>
-          </view>
-          <!-- 支出骨架 -->
-          <view class="stat-item">
-            <view class="skeleton-icon"></view>
-            <view class="stat-info">
-              <view class="skeleton-text skeleton-text-small"></view>
-              <view class="skeleton-text skeleton-text-medium"></view>
-            </view>
-          </view>
-          <!-- 总笔数骨架 -->
-          <view class="stat-item">
-            <view class="skeleton-icon"></view>
-            <view class="stat-info">
-              <view class="skeleton-text skeleton-text-small"></view>
-              <view class="skeleton-text skeleton-text-medium"></view>
-            </view>
-          </view>
-        </view>
-
-        <!-- 使用信息卡片骨架 -->
-        <view class="info-card skeleton-card">
-          <view class="info-item">
-            <view class="skeleton-circle"></view>
-            <view class="skeleton-text skeleton-text-small"></view>
-            <view class="skeleton-text skeleton-text-medium"></view>
-          </view>
-          <view class="info-divider"></view>
-          <view class="info-item">
-            <view class="skeleton-circle"></view>
-            <view class="skeleton-text skeleton-text-small"></view>
-            <view class="skeleton-text skeleton-text-medium"></view>
-          </view>
-        </view>
-
-        <!-- 鼓励卡片骨架 -->
-        <view class="encourage-card skeleton-card">
-          <view class="skeleton-circle-large"></view>
-          <view class="skeleton-text skeleton-text-long"></view>
-          <view class="skeleton-text skeleton-text-medium"></view>
-        </view>
+        <view class="skeleton-card"></view>
+        <view class="skeleton-card"></view>
+        <view class="skeleton-card"></view>
       </view>
 
       <!-- 实际内容 -->
       <view class="actual-content" wx:else>
-        <!-- 年度统计卡片 -->
-        <view class="stats-card">
-          <!-- 收入 -->
-          <view class="stat-item income">
-            <view class="stat-icon">💰</view>
-            <view class="stat-info">
+        <!-- 年度标题 -->
+        <view class="year-header">
+          <text class="year-text">{{year}}年度报告</text>
+          <text class="year-sub">你的记账数据一览</text>
+        </view>
+
+        <!-- 年度总览卡片 -->
+        <view class="overview-card">
+          <view class="card-header">
+            <text class="card-title">💰 年度总览</text>
+          </view>
+          <view class="overview-stats">
+            <view class="stat-block income">
               <text class="stat-label">总收入</text>
-              <text class="stat-value">¥ {{totalIncomeStr}}</text>
+              <text class="stat-value">¥{{totalIncomeStr}}</text>
             </view>
-          </view>
-
-          <!-- 支出 -->
-          <view class="stat-item expense">
-            <view class="stat-icon">📤</view>
-            <view class="stat-info">
+            <view class="stat-block expense">
               <text class="stat-label">总支出</text>
-              <text class="stat-value">¥ {{totalExpenseStr}}</text>
+              <text class="stat-value">¥{{totalExpenseStr}}</text>
+            </view>
+            <view class="stat-block total">
+              <text class="stat-label">总笔数</text>
+              <text class="stat-value">{{totalCount}}笔</text>
             </view>
           </view>
+        </view>
 
-          <!-- 总笔数 -->
-          <view class="stat-item total">
-            <view class="stat-icon">📝</view>
-            <view class="stat-info">
-              <text class="stat-label">总记账笔数</text>
-              <text class="stat-value">{{totalCount}} 笔</text>
+        <!-- 消费分析卡片 -->
+        <view class="analysis-card">
+          <view class="card-header">
+            <text class="card-title">📊 消费分析</text>
+          </view>
+          <view class="analysis-grid">
+            <view class="analysis-item">
+              <view class="analysis-icon">📅</view>
+              <view class="analysis-content">
+                <text class="analysis-label">日均消费</text>
+                <text class="analysis-value">¥{{dailyAvgExpense}}</text>
+              </view>
+            </view>
+            <view class="analysis-item">
+              <view class="analysis-icon">💰</view>
+              <view class="analysis-content">
+                <text class="analysis-label">日均收入</text>
+                <text class="analysis-value">¥{{dailyAvgIncome}}</text>
+              </view>
+            </view>
+            <view class="analysis-item">
+              <view class="analysis-icon">🏦</view>
+              <view class="analysis-content">
+                <text class="analysis-label">储蓄率</text>
+                <text class="analysis-value">{{savingsRate}}%</text>
+              </view>
+            </view>
+            <view class="analysis-item">
+              <text class="analysis-icon">📝</text>
+              <view class="analysis-content">
+                <text class="analysis-label">记账频率</text>
+                <text class="analysis-value">{{avgBillsPerDay}}笔/天</text>
+              </view>
             </view>
           </view>
         </view>
 
         <!-- 使用信息卡片 -->
-        <view class="info-card">
-          <view class="info-item">
-            <view class="info-icon">📅</view>
-            <view class="info-content">
-              <text class="info-label">使用天数</text>
-              <text class="info-value">{{usageDays}} 天</text>
+        <view class="usage-card">
+          <view class="card-header">
+            <text class="card-title">⏱️ 使用情况</text>
+          </view>
+          <view class="usage-content">
+            <view class="usage-item">
+              <view class="usage-icon">📅</view>
+              <view class="usage-info">
+                <text class="usage-label">使用天数</text>
+                <text class="usage-value">{{usageDays}}天</text>
+              </view>
+            </view>
+            <view class="usage-divider"></view>
+            <view class="usage-item">
+              <view class="usage-icon">✅</view>
+              <view class="usage-info">
+                <text class="usage-label">记账天数</text>
+                <text class="usage-value">{{bookkeepingDays}}天</text>
+              </view>
+            </view>
+            <view class="usage-divider"></view>
+            <view class="usage-item">
+              <view class="usage-icon">📈</view>
+              <view class="usage-info">
+                <text class="usage-label">记账率</text>
+                <text class="usage-value">{{bookkeepingRate}}%</text>
+              </view>
             </view>
           </view>
-          <view class="info-divider"></view>
-          <view class="info-item">
-            <view class="info-icon">📊</view>
-            <view class="info-content">
-              <text class="info-label">记账天数</text>
-              <text class="info-value">{{bookkeepingDays}} 天</text>
+        </view>
+
+        <!-- 支出分类排行 -->
+        <view class="rank-card" wx:if="{{expenseRankList.length > 0}}">
+          <view class="card-header">
+            <text class="card-title">🏆 支出分类排行</text>
+          </view>
+          <view class="rank-list">
+            <view class="rank-item" wx:for="{{expenseRankList}}" wx:key="name">
+              <view class="rank-num {{index < 3 ? 'top' : ''}}">{{index + 1}}</view>
+              <view class="rank-icon">{{item.icon}}</view>
+              <view class="rank-info">
+                <text class="rank-name">{{item.name}}</text>
+                <view class="rank-bar-bg">
+                  <view class="rank-bar-fill" style="width: {{item.percent}}%"></view>
+                </view>
+              </view>
+              <view class="rank-amount">
+                <text class="rank-value">¥{{item.amountStr}}</text>
+                <text class="rank-percent">{{item.percent}}%</text>
+              </view>
             </view>
           </view>
         </view>

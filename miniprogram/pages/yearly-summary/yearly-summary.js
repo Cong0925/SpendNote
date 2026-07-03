@@ -12,7 +12,15 @@ Page({
     loading: false,
     // 格式化后的金额字符串
     totalIncomeStr: '0.00',
-    totalExpenseStr: '0.00'
+    totalExpenseStr: '0.00',
+    // 新增分析数据
+    dailyAvgExpense: '0.00',
+    dailyAvgIncome: '0.00',
+    savingsRate: 0,
+    avgBillsPerDay: 0,
+    bookkeepingRate: 0,
+    // 支出分类排行
+    expenseRankList: []
   },
 
   onLoad() {
@@ -29,7 +37,7 @@ Page({
     try {
       const { year } = this.data
 
-      // 获取所有账单（不使用日期范围查询，因为date字段是字符串格式）
+      // 获取所有账单
       const allBillsRes = await wx.cloud.callFunction({
         name: 'billFunctions',
         data: {
@@ -45,6 +53,7 @@ Page({
       let totalExpense = 0
       let totalCount = 0
       const bookkeepingDates = new Set()
+      const expenseByCategory = {}
 
       // 过滤当年数据
       if (allBillsRes.result.success && allBillsRes.result.data) {
@@ -63,6 +72,14 @@ Page({
             // 计算支出
             if (bill.type === 'expense') {
               totalExpense += (bill.amount || 0)
+
+              // 统计支出分类
+              const category = bill.category || '其他'
+              const icon = bill.icon || '📦'
+              if (!expenseByCategory[category]) {
+                expenseByCategory[category] = { name: category, icon, amount: 0 }
+              }
+              expenseByCategory[category].amount += (bill.amount || 0)
             }
 
             // 记录记账日期
@@ -73,6 +90,33 @@ Page({
         })
       }
 
+      // 计算日均消费/收入
+      const usageDays = this.data.usageDays || 1
+      const dailyAvgExpense = (totalExpense / usageDays).toFixed(2)
+      const dailyAvgIncome = (totalIncome / usageDays).toFixed(2)
+
+      // 计算储蓄率
+      let savingsRate = 0
+      if (totalIncome > 0) {
+        savingsRate = Math.round(((totalIncome - totalExpense) / totalIncome) * 100)
+      }
+
+      // 计算记账频率
+      const avgBillsPerDay = (totalCount / usageDays).toFixed(1)
+
+      // 计算记账率
+      const bookkeepingRate = Math.round((bookkeepingDates.size / usageDays) * 100)
+
+      // 处理支出分类排行
+      const expenseRankList = Object.values(expenseByCategory)
+        .sort((a, b) => b.amount - a.amount)
+        .slice(0, 5) // 只取前5名
+        .map(item => ({
+          ...item,
+          amountStr: item.amount.toFixed(2),
+          percent: totalExpense > 0 ? Math.round((item.amount / totalExpense) * 100) : 0
+        }))
+
       this.setData({
         totalIncome,
         totalExpense,
@@ -80,6 +124,12 @@ Page({
         bookkeepingDays: bookkeepingDates.size,
         totalIncomeStr: this.formatAmount(totalIncome),
         totalExpenseStr: this.formatAmount(totalExpense),
+        dailyAvgExpense,
+        dailyAvgIncome,
+        savingsRate,
+        avgBillsPerDay,
+        bookkeepingRate,
+        expenseRankList,
         loading: false
       })
     } catch (err) {
@@ -101,7 +151,6 @@ Page({
 
         this.setData({ usageDays })
       } else {
-        // 如果没有注册时间，使用默认值
         this.setData({ usageDays: 1 })
       }
     } catch (err) {
