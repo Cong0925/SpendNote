@@ -301,5 +301,30 @@ Page({
       content: '一款轻量、纯净的记账小程序\n\n版本：v1.0.0\n\n数据安全：所有数据存储在微信云开发，安全可靠',
       showCancel: false
     })
+  },
+
+  // 退出登录
+  onLogout() {
+    wx.showModal({
+      title: '退出登录',
+      content: '确定要退出登录吗？',
+      confirmColor: '#e57373',
+      success: (res) => {
+        if (res.confirm) {
+          // 清除本地缓存
+          wx.removeStorageSync('userInfo')
+          // 清除全局用户信息
+          const app = getApp()
+          app.globalData.userInfo = null
+          // 跳转到登录页
+          wx.redirectTo({ url: '/pages/login/login' })
+        }
+      }
+    })
+  },
+
+  // 跳转到问题反馈页面
+  goToFeedback() {
+    wx.navigateTo({ url: '/pages/feedback/feedback' })
   }
 })

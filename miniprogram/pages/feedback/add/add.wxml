@@ -1,0 +1,129 @@
+<!-- pages/feedback/add/add.wxml -->
+<view class="add-feedback-page">
+
+  <!-- 表单内容 -->
+  <scroll-view class="content-scroll" scroll-y>
+    <view class="form-wrapper">
+      <!-- 问题类型 -->
+      <view class="form-section">
+        <view class="section-header">
+          <text class="section-title">问题类型</text>
+          <text class="section-required">*</text>
+        </view>
+        <view class="type-options">
+          <view
+            class="type-option {{feedbackType === 'bug' ? 'active' : ''}}"
+            bindtap="selectType"
+            data-type="bug"
+          >
+            <view class="type-icon-wrapper bug">
+              <text class="type-icon">🐛</text>
+            </view>
+            <text class="type-name">问题反馈</text>
+            <text class="type-desc">功能异常或错误</text>
+          </view>
+          <view
+            class="type-option {{feedbackType === 'feature' ? 'active' : ''}}"
+            bindtap="selectType"
+            data-type="feature"
+          >
+            <view class="type-icon-wrapper feature">
+              <text class="type-icon">💡</text>
+            </view>
+            <text class="type-name">功能建议</text>
+            <text class="type-desc">新功能或改进</text>
+          </view>
+          <view
+            class="type-option {{feedbackType === 'other' ? 'active' : ''}}"
+            bindtap="selectType"
+            data-type="other"
+          >
+            <view class="type-icon-wrapper other">
+              <text class="type-icon">📝</text>
+            </view>
+            <text class="type-name">其他</text>
+            <text class="type-desc">其他问题或建议</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 问题描述 -->
+      <view class="form-section">
+        <view class="section-header">
+          <text class="section-title">问题描述</text>
+          <text class="section-required">*</text>
+        </view>
+        <view class="textarea-wrapper">
+          <textarea
+            class="content-textarea"
+            placeholder="请详细描述您遇到的问题或建议..."
+            placeholder-class="placeholder-style"
+            value="{{content}}"
+            bindinput="onInputContent"
+            maxlength="500"
+          ></textarea>
+          <view class="textarea-footer">
+            <text class="word-count {{content.length > 450 ? 'warning' : ''}}">{{content.length}}/500</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 截图上传 -->
+      <view class="form-section">
+        <view class="section-header">
+          <text class="section-title">截图</text>
+          <text class="section-optional">可选</text>
+        </view>
+        <text class="section-desc">上传截图有助于我们更快定位问题，最多3张</text>
+        <view class="image-list">
+          <view class="image-item" wx:for="{{images}}" wx:key="index">
+            <image class="preview-image" src="{{item}}" mode="aspectFill"></image>
+            <view class="delete-btn" bindtap="deleteImage" data-index="{{index}}">
+              <text class="delete-icon">×</text>
+            </view>
+          </view>
+          <view class="add-image-btn" wx:if="{{images.length < 3}}" bindtap="chooseImage">
+            <view class="add-icon-wrapper">
+              <text class="add-icon">+</text>
+            </view>
+            <text class="add-text">添加图片</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 联系方式 -->
+      <view class="form-section">
+        <view class="section-header">
+          <text class="section-title">联系方式</text>
+          <text class="section-optional">可选</text>
+        </view>
+        <text class="section-desc">方便我们联系您了解详情</text>
+        <view class="input-wrapper">
+          <view class="input-icon">
+            <text class="icon-text">📱</text>
+          </view>
+          <input
+            class="contact-input"
+            placeholder="请输入手机号或邮箱"
+            placeholder-class="placeholder-style"
+            value="{{contact}}"
+            bindinput="onInputContact"
+          />
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部提交按钮 -->
+  <view class="bottom-bar">
+    <view class="bottom-content">
+      <button class="submit-btn {{canSubmit ? '' : 'disabled'}}" bindtap="onSubmit" disabled="{{!canSubmit || submitting}}">
+        <text class="btn-text" wx:if="{{!submitting}}">提交反馈</text>
+        <view class="btn-loading" wx:if="{{submitting}}">
+          <view class="loading-spinner"></view>
+          <text class="loading-text">提交中...</text>
+        </view>
+      </button>
+    </view>
+  </view>
+</view>

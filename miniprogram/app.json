@@ -19,7 +19,9 @@
     "pages/accountInfo/accountInfo",
     "pages/transfer/transfer",
     "pages/agreement/agreement",
-    "pages/privacy/privacy"
+    "pages/privacy/privacy",
+    "pages/feedback/feedback",
+    "pages/feedback/add/add"
   ],
   "usingComponents": {
     "van-datetime-picker": "@vant/weapp/datetime-picker/index",
