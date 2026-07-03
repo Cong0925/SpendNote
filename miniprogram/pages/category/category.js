@@ -536,7 +536,7 @@ Page({
   // 保存分类排序
   async saveCategoryOrder() {
     const categories = this.data.currentCategories
-    const categoryIds = categories.map(item => item._id)
+    const ids = categories.map(item => item._id)
 
     try {
       await wx.cloud.callFunction({
@@ -544,7 +544,7 @@ Page({
         data: {
           action: 'updateSort',
           data: {
-            categoryIds: categoryIds,
+            ids: ids,
             type: this.data.activeTab
           }
         }

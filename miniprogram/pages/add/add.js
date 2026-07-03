@@ -59,6 +59,14 @@ Page({
     this.loadAccountList()
   },
 
+  // 页面显示时重新加载分类（确保获取最新排序）
+  onShow() {
+    // 清除本地缓存，重新获取最新分类排序
+    this._categoryCache.expense = null
+    this._categoryCache.income = null
+    this.preloadCategories()
+  },
+
   // 设置当前日期
   setCurrentDate() {
     const now = new Date()
