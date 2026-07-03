@@ -30,6 +30,9 @@ App({
 
     // 检查登录状态
     this.checkLoginStatus();
+
+    // 初始化默认分类（新用户首次使用时）
+    this.initDefaultCategories();
   },
 
   /**
@@ -61,6 +64,28 @@ App({
 
     // 需要登录
     return null;
+  },
+
+  /**
+   * 初始化默认分类（新用户首次使用时调用）
+   */
+  async initDefaultCategories() {
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'categoryFunctions',
+        data: {
+          action: 'initDefaultCategories'
+        }
+      });
+
+      if (res.result.success) {
+        console.log('默认分类初始化完成：', res.result.message);
+      } else {
+        console.error('默认分类初始化失败：', res.result.error);
+      }
+    } catch (err) {
+      console.error('调用初始化分类函数失败：', err);
+    }
   },
 
   /**

@@ -20,6 +20,8 @@ exports.main = async (event, context) => {
       return await moveCategory(wxContext.OPENID, data)
     case 'updateSort':
       return await updateSort(wxContext.OPENID, data)
+    case 'initDefaultCategories':
+      return await initDefaultCategories(wxContext.OPENID)
     default:
       return { success: false, error: '未知操作' }
   }
@@ -262,6 +264,71 @@ async function updateSort(openid, data) {
     return { success: true, message: '排序更新成功' }
   } catch (err) {
     console.error('更新分类排序失败：', err)
+    return { success: false, error: err.message }
+  }
+}
+
+// 初始化默认分类（新用户首次使用时调用）
+async function initDefaultCategories(openid) {
+  try {
+    // 检查是否已有分类，避免重复初始化
+    const existingRes = await db.collection('categories')
+      .where({ _openid: openid })
+      .count()
+
+    if (existingRes.total > 0) {
+      return { success: true, message: '分类已存在，跳过初始化' }
+    }
+
+    // 默认支出分类
+    const expenseCategories = [
+      { name: '餐饮', icon: '🍜', type: 'expense', sort: 1 },
+      { name: '交通', icon: '🚗', type: 'expense', sort: 2 },
+      { name: '购物', icon: '🛒', type: 'expense', sort: 3 },
+      { name: '娱乐', icon: '🎬', type: 'expense', sort: 4 },
+      { name: '居住', icon: '💡', type: 'expense', sort: 5 },
+      { name: '通讯', icon: '📱', type: 'expense', sort: 6 },
+      { name: '医疗', icon: '🏥', type: 'expense', sort: 7 },
+      { name: '教育', icon: '📚', type: 'expense', sort: 8 },
+      { name: '服饰', icon: '👕', type: 'expense', sort: 9 },
+      { name: '其他', icon: '💰', type: 'expense', sort: 10 }
+    ]
+
+    // 默认收入分类
+    const incomeCategories = [
+      { name: '工资', icon: '💵', type: 'income', sort: 1 },
+      { name: '奖金', icon: '💰', type: 'income', sort: 2 },
+      { name: '红包', icon: '🎁', type: 'income', sort: 3 },
+      { name: '投资', icon: '💹', type: 'income', sort: 4 },
+      { name: '兼职', icon: '💼', type: 'income', sort: 5 },
+      { name: '其他', icon: '📝', type: 'income', sort: 6 }
+    ]
+
+    // 合并所有默认分类
+    const allCategories = [...expenseCategories, ...incomeCategories]
+
+    // 批量添加到数据库
+    const addPromises = allCategories.map(category => {
+      return db.collection('categories').add({
+        data: {
+          _openid: openid,
+          name: category.name,
+          type: category.type,
+          icon: category.icon,
+          sort: category.sort,
+          isBuiltin: true,
+          createTime: db.serverDate(),
+          updateTime: db.serverDate()
+        }
+      })
+    })
+
+    await Promise.all(addPromises)
+
+    console.log(`初始化默认分类成功，共添加 ${allCategories.length} 个分类`)
+    return { success: true, message: '初始化默认分类成功' }
+  } catch (err) {
+    console.error('初始化默认分类失败：', err)
     return { success: false, error: err.message }
   }
 }
