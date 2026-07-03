@@ -1,93 +1,117 @@
 <!-- pages/login/login.wxml -->
 <view class="login-page">
-  <!-- 背景装饰 -->
-  <view class="bg-decoration">
-    <view class="gradient-orb orb-1"></view>
-    <view class="gradient-orb orb-2"></view>
-    <view class="gradient-orb orb-3"></view>
+  <!-- 极简背景 -->
+  <view class="minimal-bg">
+    <view class="bg-gradient"></view>
+    <!-- 装饰线条 -->
+    <view class="decor-line line-1"></view>
+    <view class="decor-line line-2"></view>
+    <view class="decor-line line-3"></view>
   </view>
 
   <!-- 主内容区 -->
-  <view class="content-wrapper">
-    <!-- 品牌标识 -->
+  <view class="content-area">
+    <!-- 顶部留白区域 -->
+    <view class="top-space"></view>
+
+    <!-- 品牌区域 -->
     <view class="brand-section">
+      <view class="brand-mark">
+        <view class="mark-line mark-left"></view>
+        <text class="mark-text">S</text>
+        <view class="mark-line mark-right"></view>
+      </view>
       <text class="brand-name">SpendNote</text>
       <text class="brand-slogan">轻松记账，智慧生活</text>
     </view>
 
-    <!-- 头像区域 -->
-    <view class="avatar-section">
-      <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-        <view class="avatar-container">
-          <image
-            class="avatar-img"
-            src="{{avatarUrl || '/images/default-avatar.png'}}"
-            mode="aspectFill"
-          ></image>
-          <view class="avatar-overlay">
-            <view class="camera-icon">
-              <text class="icon-text">📷</text>
+    <!-- 表单卡片 -->
+    <view class="form-card">
+      <!-- 头像区域 -->
+      <view class="avatar-area">
+        <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <view class="avatar-wrapper">
+            <view class="avatar-border">
+              <view class="avatar-inner">
+                <image
+                  class="avatar-img"
+                  src="{{avatarUrl || '/images/default-avatar.png'}}"
+                  mode="aspectFill"
+                ></image>
+                <!-- 选择提示 -->
+                <view class="avatar-hover" wx:if="{{!avatarUrl}}">
+                  <text class="hover-text">选择</text>
+                </view>
+              </view>
             </view>
           </view>
-          <!-- 选择提示 -->
-          <view class="avatar-badge" wx:if="{{!avatarUrl}}">
-            <text class="badge-text">选择头像</text>
+          <text class="avatar-label">{{avatarUrl ? '更换头像' : '点击选择头像'}}</text>
+        </button>
+      </view>
+
+      <!-- 输入区域 -->
+      <view class="input-area">
+        <view class="input-label">你的昵称</view>
+        <view class="input-container">
+          <input
+            class="nickname-input"
+            type="nickname"
+            placeholder="输入昵称"
+            placeholder-class="placeholder-style"
+            value="{{nickName}}"
+            bindinput="onInputNickname"
+            bindblur="onInputNickname"
+          />
+          <view class="input-clear" wx:if="{{nickName}}" bindtap="onClearNickname">
+            <text class="clear-icon">×</text>
           </view>
         </view>
-      </button>
-    </view>
-
-    <!-- 昵称输入区 -->
-    <view class="input-section">
-      <view class="input-wrapper">
-        <view class="input-icon">
-          <text class="icon-text">👤</text>
+        <view class="input-line">
+          <view class="line-progress" wx:if="{{nickName}}"></view>
         </view>
-        <input
-          class="nickname-input"
-          type="nickname"
-          placeholder="请输入您的昵称"
-          placeholder-class="placeholder-style"
-          value="{{nickName}}"
-          bindinput="onInputNickname"
-          bindblur="onInputNickname"
-        />
-        <view class="input-clear" wx:if="{{nickName}}" bindtap="onClearNickname">
-          <text class="icon-text">✕</text>
+      </view>
+
+      <!-- 登录按钮 -->
+      <view class="button-area">
+        <button
+          class="login-btn {{!canLogin ? 'disabled' : ''}}"
+          bindtap="onLogin"
+          disabled="{{!canLogin}}"
+        >
+          <text class="btn-text">登录</text>
+          <view class="btn-hover"></view>
+        </button>
+      </view>
+
+      <!-- 协议 -->
+      <view class="agreement-area">
+        <view class="checkbox-wrapper" bindtap="toggleAgreement">
+          <view class="checkbox {{isAgreed ? 'checked' : ''}}">
+            <view class="check-mark" wx:if="{{isAgreed}}"></view>
+          </view>
+          <view class="agreement-content">
+            <text class="agreement-text">已阅读并同意</text>
+            <text class="link" catchtap="onViewAgreement">《用户协议》</text>
+            <text class="agreement-text">和</text>
+            <text class="link" catchtap="onViewPrivacy">《隐私政策》</text>
+          </view>
         </view>
       </view>
     </view>
 
-    <!-- 登录按钮 -->
-    <view class="button-section">
-      <button
-        class="login-btn {{!canLogin ? 'disabled' : ''}}"
-        bindtap="onLogin"
-        disabled="{{!canLogin}}"
-      >
-        <text class="btn-text">登录</text>
-      </button>
-    </view>
-
-    <!-- 勾选协议 -->
-    <view class="agreement-section">
-      <view class="checkbox-wrapper" bindtap="toggleAgreement">
-        <view class="checkbox {{isAgreed ? 'checked' : ''}}">
-          <view class="check-mark" wx:if="{{isAgreed}}"></view>
-        </view>
-        <text class="agreement-text">已阅读并同意</text>
-        <text class="link-text" catchtap="onViewAgreement"> 《用户协议》</text>
-        <text class="agreement-text">与</text>
-        <text class="link-text" catchtap="onViewPrivacy"> 《隐私政策》</text>
-      </view>
-    </view>
+    <!-- 底部留白 -->
+    <view class="bottom-space"></view>
   </view>
 
-  <!-- 加载遮罩 -->
-  <view class="loading-mask" wx:if="{{isLoading}}">
-    <view class="loading-content">
-      <view class="loading-spinner"></view>
-      <text class="loading-text">登录中...</text>
+  <!-- 加载状态 -->
+  <view class="loading-overlay" wx:if="{{isLoading}}">
+    <view class="loading-box">
+      <view class="loading-dots">
+        <view class="dot dot-1"></view>
+        <view class="dot dot-2"></view>
+        <view class="dot dot-3"></view>
+      </view>
+      <text class="loading-text">登录中</text>
     </view>
   </view>
 </view>
