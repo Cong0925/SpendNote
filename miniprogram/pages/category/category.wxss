@@ -191,6 +191,35 @@
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
 }
 
+.category-item.dragging {
+  background: #f8fafc;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
+}
+
+.drag-handle {
+  width: 48rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+  cursor: grab;
+}
+
+.drag-icon {
+  font-size: 28rpx;
+  color: #999;
+  letter-spacing: 2rpx;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.drag-handle:active .drag-icon {
+  color: #2563eb;
+}
+
 .category-icon {
   width: 80rpx;
   height: 80rpx;

@@ -47,7 +47,21 @@
 
       <!-- 分类列表 -->
       <view class="category-list" wx:if="{{!loading && currentCategories.length > 0}}">
-        <view class="category-item" wx:for="{{currentCategories}}" wx:key="_id">
+        <view
+          class="category-item {{dragIndex === index ? 'dragging' : ''}}"
+          wx:for="{{currentCategories}}"
+          wx:key="_id"
+          style="{{dragIndex === index ? 'transform: translateY(' + dragOffset + 'px); z-index: 100;' : ''}}"
+        >
+          <view
+            class="drag-handle"
+            catchtouchstart="onDragStart"
+            catchtouchmove="onDragMove"
+            catchtouchend="onDragEnd"
+            data-index="{{index}}"
+          >
+            <text class="drag-icon">⋮⋮</text>
+          </view>
           <view class="category-icon">{{item.icon}}</view>
           <text class="category-name">{{item.name}}</text>
           <view class="category-actions">

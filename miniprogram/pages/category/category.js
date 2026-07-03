@@ -25,6 +25,11 @@ Page({
     scrollDisabled: false,
     // 滚动位置
     scrollTop: 0,
+    // 列表拖拽排序状态
+    dragIndex: -1, // 当前拖拽的项索引
+    dragOffset: 0, // 拖拽偏移量
+    startY: 0, // FAB按钮拖拽起始Y坐标
+    itemHeight: 0, // 列表项高度
     // 内置图标列表
     builtinIcons: [
       { name: '餐饮', icon: '🍜' },
@@ -394,6 +399,121 @@ Page({
       wx.setStorageSync('category_fab_position', this.data.fabPosition)
     } catch (err) {
       console.error('保存按钮位置失败：', err)
+    }
+  },
+
+  // 列表项拖拽开始
+  onDragStart(e) {
+    const index = e.currentTarget.dataset.index
+    const touch = e.touches[0]
+
+    // 记录起始位置和原始索引
+    this.dragStartY = touch.clientY
+    this.originalIndex = index
+
+    // 计算列表项高度
+    const query = wx.createSelectorQuery()
+    query.select('.category-item').boundingClientRect()
+    query.exec((res) => {
+      if (res[0]) {
+        this.setData({
+          itemHeight: res[0].height
+        })
+      }
+    })
+
+    // 禁用页面滚动
+    this.setData({
+      scrollDisabled: true,
+      dragIndex: index,
+      dragOffset: 0
+    })
+  },
+
+  // 列表项拖拽移动
+  onDragMove(e) {
+    if (this.data.dragIndex === -1) return
+
+    const touch = e.touches[0]
+    const itemHeight = this.data.itemHeight
+
+    // 计算手指总偏移量
+    const totalOffset = touch.clientY - this.dragStartY
+
+    // 计算目标索引（基于原始索引）
+    const moveCount = Math.round(totalOffset / itemHeight)
+    const targetIndex = Math.max(0, Math.min(
+      this.data.currentCategories.length - 1,
+      this.originalIndex + moveCount
+    ))
+
+    // 更新拖拽偏移量（基于原始位置）
+    this.setData({ dragOffset: totalOffset })
+
+    // 如果目标位置 != 当前位置，直接交换到目标位置
+    const currentIndex = this.data.dragIndex
+    if (targetIndex !== currentIndex) {
+      this.swapCategories(currentIndex, targetIndex)
+      this.setData({ dragIndex: targetIndex })
+    }
+  },
+
+  // 列表项拖拽结束
+  onDragEnd(e) {
+    if (this.data.dragIndex === -1) return
+
+    // 保存排序后的列表
+    this.saveCategoryOrder()
+
+    // 恢复页面滚动
+    this.setData({
+      scrollDisabled: false,
+      dragIndex: -1,
+      dragOffset: 0
+    })
+
+    this.originalIndex = null
+  },
+
+  // 交换分类位置
+  swapCategories(fromIndex, toIndex) {
+    const categories = [...this.data.currentCategories]
+    const item = categories.splice(fromIndex, 1)[0]
+    categories.splice(toIndex, 0, item)
+
+    // 更新对应类型的分类列表
+    if (this.data.activeTab === 'expense') {
+      this.setData({
+        expenseCategories: categories,
+        currentCategories: categories
+      })
+    } else {
+      this.setData({
+        incomeCategories: categories,
+        currentCategories: categories
+      })
+    }
+  },
+
+  // 保存分类排序
+  async saveCategoryOrder() {
+    const categories = this.data.currentCategories
+    const categoryIds = categories.map(item => item._id)
+
+    try {
+      await wx.cloud.callFunction({
+        name: 'categoryFunctions',
+        data: {
+          action: 'updateSort',
+          data: {
+            categoryIds: categoryIds,
+            type: this.data.activeTab
+          }
+        }
+      })
+    } catch (err) {
+      console.error('保存分类排序失败：', err)
+      wx.showToast({ title: '保存排序失败', icon: 'none' })
     }
   }
 })
