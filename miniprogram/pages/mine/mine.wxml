@@ -5,15 +5,16 @@
   <view class="profile-card animate-fadeIn">
     <view class="profile-bg"></view>
     <view class="profile-content">
-      <view class="user-avatar" bindtap="getUserProfile">
-        <image wx:if="{{userInfo && userInfo.avatarUrl}}" src="{{userInfo.avatarUrl}}" class="avatar-img" />
-        <view wx:else class="avatar-placeholder">
+      <view class="user-avatar">
+        <image wx:if="{{userInfo && userInfo.avatarUrl}}" src="{{userInfo.avatarUrl}}" class="avatar-img" bindtap="onChangeAvatar" />
+        <view wx:else class="avatar-placeholder" bindtap="onChangeAvatar">
           <text>👤</text>
         </view>
       </view>
-      <view class="user-info">
-        <text class="user-name">{{userInfo.nickName || '点击登录'}}</text>
+      <view class="user-info" catchtap="noop">
+        <text class="user-name" bindtap="onChangeNickname">{{userInfo.nickName || '点击登录'}}</text>
         <text class="user-desc">记录每一笔，生活更清晰</text>
+        <text class="edit-hint" bindtap="onChangeNickname">点击修改 ›</text>
       </view>
       <!-- 退出按钮 -->
       <view class="logout-btn" bindtap="onLogout">

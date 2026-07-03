@@ -90,5 +90,45 @@ exports.main = async (event, context) => {
     }
   }
 
+  // 修改头像
+  if (action === 'updateAvatar') {
+    const { avatarUrl } = event
+    try {
+      await db.collection('users')
+        .where({ _openid: wxContext.OPENID })
+        .update({
+          data: {
+            avatarUrl: avatarUrl,
+            updateTime: db.serverDate()
+          }
+        })
+
+      return { success: true }
+    } catch (err) {
+      console.error('修改头像失败：', err)
+      return { success: false, error: err }
+    }
+  }
+
+  // 修改昵称
+  if (action === 'updateNickname') {
+    const { nickName } = event
+    try {
+      await db.collection('users')
+        .where({ _openid: wxContext.OPENID })
+        .update({
+          data: {
+            nickName: nickName,
+            updateTime: db.serverDate()
+          }
+        })
+
+      return { success: true }
+    } catch (err) {
+      console.error('修改昵称失败：', err)
+      return { success: false, error: err }
+    }
+  }
+
   return { success: false, error: '未知操作' }
 }

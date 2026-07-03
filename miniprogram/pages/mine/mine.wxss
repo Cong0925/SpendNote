@@ -91,10 +91,41 @@ page {
   font-size: 52rpx;
 }
 
+/* 头像编辑遮罩 */
+.avatar-edit-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.user-avatar:active .avatar-edit-mask {
+  opacity: 1;
+}
+
+.avatar-edit-icon {
+  font-size: 40rpx;
+}
+
 .user-info {
   display: flex;
   flex-direction: column;
   flex: 1;
+}
+
+/* 修改提示 */
+.edit-hint {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 8rpx;
 }
 
 /* ============ 退出按钮 ============ */

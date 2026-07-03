@@ -156,6 +156,110 @@ Page({
     })
   },
 
+  // 修改头像
+  onChangeAvatar() {
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: ['album', 'camera'],
+      success: async (res) => {
+        const tempFilePath = res.tempFiles[0].tempFilePath
+        wx.showLoading({ title: '上传中...' })
+
+        try {
+          const userInfo = this.data.userInfo
+          const openid = userInfo.openid
+
+          // 上传到云存储
+          const cloudPath = `user-avatars/${openid}/${Date.now()}.png`
+          const uploadRes = await wx.cloud.uploadFile({
+            cloudPath,
+            filePath: tempFilePath
+          })
+
+          const newAvatarUrl = uploadRes.fileID
+
+          // 更新云数据库
+          await wx.cloud.callFunction({
+            name: 'user',
+            data: {
+              action: 'updateAvatar',
+              avatarUrl: newAvatarUrl
+            }
+          })
+
+          // 更新本地缓存
+          userInfo.avatarUrl = newAvatarUrl
+          wx.setStorageSync('userInfo', userInfo)
+          app.globalData.userInfo = userInfo
+
+          this.setData({ userInfo })
+          wx.hideLoading()
+          wx.showToast({ title: '头像已更新', icon: 'success' })
+        } catch (err) {
+          wx.hideLoading()
+          console.error('修改头像失败:', err)
+          wx.showToast({ title: '修改失败，请重试', icon: 'none' })
+        }
+      }
+    })
+  },
+
+  // 修改昵称
+  onChangeNickname() {
+    const currentNickname = this.data.userInfo?.nickName || ''
+
+    wx.showModal({
+      title: '修改昵称',
+      editable: true,
+      placeholderText: '请输入新昵称',
+      content: currentNickname,
+      success: async (res) => {
+        if (res.confirm && res.content) {
+          const newNickname = res.content.trim()
+
+          // 验证昵称
+          if (!newNickname) {
+            wx.showToast({ title: '昵称不能为空', icon: 'none' })
+            return
+          }
+
+          if (newNickname.length > 12) {
+            wx.showToast({ title: '昵称不能超过12个字符', icon: 'none' })
+            return
+          }
+
+          wx.showLoading({ title: '修改中...' })
+
+          try {
+            // 更新云数据库
+            await wx.cloud.callFunction({
+              name: 'user',
+              data: {
+                action: 'updateNickname',
+                nickName: newNickname
+              }
+            })
+
+            // 更新本地缓存
+            const userInfo = this.data.userInfo
+            userInfo.nickName = newNickname
+            wx.setStorageSync('userInfo', userInfo)
+            app.globalData.userInfo = userInfo
+
+            this.setData({ userInfo })
+            wx.hideLoading()
+            wx.showToast({ title: '昵称已更新', icon: 'success' })
+          } catch (err) {
+            wx.hideLoading()
+            console.error('修改昵称失败:', err)
+            wx.showToast({ title: '修改失败，请重试', icon: 'none' })
+          }
+        }
+      }
+    })
+  },
+
   // 导出数据
   async exportData() {
     wx.showLoading({ title: '导出中...' })
