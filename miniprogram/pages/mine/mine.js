@@ -1,14 +1,18 @@
 // pages/mine/mine.js
 const { formatAmount } = require('../../utils/formatAmount')
+const app = getApp()
 
 Page({
   data: {
     userInfo: null,
+    year: 2026,
     totalBills: 0,
     totalExpense: 0,
     totalIncome: 0,
     totalExpenseStr: '0.00',
     totalIncomeStr: '0.00',
+    usageDays: 0,
+    bookkeepingDays: 0,
     loading: false,
     // 数据统计
     dataStats: null,
@@ -17,6 +21,8 @@ Page({
   },
 
   onLoad() {
+    const currentYear = new Date().getFullYear()
+    this.setData({ year: currentYear })
     this.loadUserInfo()
     this.loadOverview()
   },
@@ -63,25 +69,71 @@ Page({
     this.setData({ loading: true })
 
     try {
-      const res = await wx.cloud.callFunction({
+      const { year } = this.data
+
+      // 获取所有账单（不使用日期范围查询，因为date字段是字符串格式）
+      const allBillsRes = await wx.cloud.callFunction({
         name: 'billFunctions',
         data: {
-          action: 'getStats',
-          data: {}
+          action: 'list',
+          data: {
+            page: 1,
+            pageSize: 1000
+          }
         }
       })
 
-      if (res.result.success) {
-        const { totalExpense, totalIncome, billCount } = res.result.data
+      let totalIncome = 0
+      let totalExpense = 0
+      let totalCount = 0
+      const bookkeepingDates = new Set()
 
-        this.setData({
-          totalBills: billCount,
-          totalExpense: totalExpense,
-          totalIncome: totalIncome,
-          totalExpenseStr: formatAmount(totalExpense),
-          totalIncomeStr: formatAmount(totalIncome)
+      // 过滤当年数据
+      if (allBillsRes.result.success && allBillsRes.result.data) {
+        const allBills = allBillsRes.result.data
+
+        allBills.forEach(bill => {
+          // 检查是否是当年数据
+          if (bill.date && bill.date.startsWith(String(year))) {
+            totalCount++
+
+            // 计算收入
+            if (bill.type === 'income') {
+              totalIncome += (bill.amount || 0)
+            }
+
+            // 计算支出
+            if (bill.type === 'expense') {
+              totalExpense += (bill.amount || 0)
+            }
+
+            // 记录记账日期
+            if (bill.date) {
+              bookkeepingDates.add(bill.date)
+            }
+          }
         })
       }
+
+      // 计算使用天数
+      let usageDays = 1
+      const userInfo = app.globalData.userInfo
+      if (userInfo && userInfo.createTime) {
+        const createTime = new Date(userInfo.createTime)
+        const now = new Date()
+        const diffTime = now.getTime() - createTime.getTime()
+        usageDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1
+      }
+
+      this.setData({
+        totalBills: totalCount,
+        totalExpense: totalExpense,
+        totalIncome: totalIncome,
+        totalExpenseStr: formatAmount(totalExpense),
+        totalIncomeStr: formatAmount(totalIncome),
+        usageDays: usageDays,
+        bookkeepingDays: bookkeepingDates.size
+      })
     } catch (error) {
       console.error('加载总览失败:', error)
     } finally {
@@ -326,5 +378,20 @@ Page({
   // 跳转到问题反馈页面
   goToFeedback() {
     wx.navigateTo({ url: '/pages/feedback/feedback' })
+  },
+
+  // 跳转到年度总结页面
+  goToYearlySummary() {
+    wx.navigateTo({ url: '/pages/yearly-summary/yearly-summary' })
+  },
+
+  // 跳转到分类管理页面
+  goToCategory() {
+    wx.navigateTo({ url: '/pages/category/category' })
+  },
+
+  // 跳转到使用帮助页面
+  goToHelp() {
+    wx.navigateTo({ url: '/pages/help/help' })
   }
 })

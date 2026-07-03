@@ -21,7 +21,10 @@
     "pages/agreement/agreement",
     "pages/privacy/privacy",
     "pages/feedback/feedback",
-    "pages/feedback/add/add"
+    "pages/feedback/add/add",
+    "pages/category/category",
+    "pages/yearly-summary/yearly-summary",
+    "pages/help/help"
   ],
   "usingComponents": {
     "van-datetime-picker": "@vant/weapp/datetime-picker/index",

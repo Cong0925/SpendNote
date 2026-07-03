@@ -22,10 +22,11 @@
     </view>
   </view>
 
-  <!-- 数据总览 -->
-  <view class="overview-card animate-slideUp" style="animation-delay: 0.1s">
+  <!-- 年度总结 -->
+  <view class="overview-card animate-slideUp" style="animation-delay: 0.1s" bindtap="goToYearlySummary">
     <view class="overview-header">
-      <text class="overview-title">数据总览</text>
+      <text class="overview-title">📊 {{year}}年度总结</text>
+      <text class="overview-arrow">›</text>
     </view>
     <view class="overview-stats">
       <view class="stat-item">
@@ -52,10 +53,30 @@
         <text class="stat-label">总收入</text>
       </view>
     </view>
+    <!-- 使用天数 -->
+    <view class="usage-info">
+      <view class="usage-item">
+        <text class="usage-label">使用天数</text>
+        <text class="usage-value">{{usageDays}}天</text>
+      </view>
+      <view class="usage-divider"></view>
+      <view class="usage-item">
+        <text class="usage-label">记账天数</text>
+        <text class="usage-value">{{bookkeepingDays}}天</text>
+      </view>
+    </view>
   </view>
 
   <!-- 功能菜单 -->
   <view class="menu-card animate-slideUp" style="animation-delay: 0.15s">
+    <view class="menu-item" bindtap="goToCategory">
+      <view class="menu-icon-wrap">
+        <text class="menu-icon">📂</text>
+      </view>
+      <text class="menu-text">分类管理</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-divider"></view>
     <view class="menu-item" bindtap="exportData">
       <view class="menu-icon-wrap">
         <text class="menu-icon">📤</text>
@@ -69,6 +90,14 @@
         <text class="menu-icon">💬</text>
       </view>
       <text class="menu-text">问题反馈</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-divider"></view>
+    <view class="menu-item" bindtap="goToHelp">
+      <view class="menu-icon-wrap">
+        <text class="menu-icon">📖</text>
+      </view>
+      <text class="menu-text">使用帮助</text>
       <text class="menu-arrow">›</text>
     </view>
     <view class="menu-divider"></view>

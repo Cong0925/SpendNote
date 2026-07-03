@@ -75,44 +75,28 @@ Page({
     this.setData({ loadingCategories: true })
 
     try {
-      // 先初始化分类
-      await wx.cloud.callFunction({
-        name: 'billFunctions',
+      // 从 categoryFunctions 获取分类（统一数据源）
+      const res = await wx.cloud.callFunction({
+        name: 'categoryFunctions',
         data: {
-          action: 'initCategories'
+          action: 'getList'
         }
       })
 
-      // 并行加载两类分类
-      const [expenseRes, incomeRes] = await Promise.all([
-        wx.cloud.callFunction({
-          name: 'billFunctions',
-          data: {
-            action: 'getCategories',
-            data: { type: 'expense' }
-          }
-        }),
-        wx.cloud.callFunction({
-          name: 'billFunctions',
-          data: {
-            action: 'getCategories',
-            data: { type: 'income' }
-          }
-        })
-      ])
+      if (res.result.success) {
+        const { expense, income } = res.result.data
 
-      // 缓存两类分类
-      if (expenseRes.result.success) {
-        this._categoryCache.expense = expenseRes.result.data
-      }
-      if (incomeRes.result.success) {
-        this._categoryCache.income = incomeRes.result.data
-      }
+        // 缓存两类分类
+        this._categoryCache.expense = expense || []
+        this._categoryCache.income = income || []
 
-      // 设置当前类型的分类
-      const currentCategories = this._categoryCache[this.data.type]
-      if (currentCategories) {
-        this.setData({ categories: currentCategories, loadingCategories: false })
+        // 设置当前类型的分类
+        const currentCategories = this._categoryCache[this.data.type]
+        if (currentCategories && currentCategories.length > 0) {
+          this.setData({ categories: currentCategories, loadingCategories: false })
+        } else {
+          this.setDefaultCategories()
+        }
       } else {
         this.setDefaultCategories()
       }
@@ -158,18 +142,21 @@ Page({
   // 按类型加载分类（降级方案，缓存未命中时使用）
   async loadCategoriesByType(type) {
     try {
+      // 从 categoryFunctions 获取分类（统一数据源）
       const res = await wx.cloud.callFunction({
-        name: 'billFunctions',
+        name: 'categoryFunctions',
         data: {
-          action: 'getCategories',
-          data: { type: type }
+          action: 'getList'
         }
       })
 
       if (res.result.success) {
+        const { expense, income } = res.result.data
+        const categories = type === 'expense' ? expense : income
+
         // 缓存结果
-        this._categoryCache[type] = res.result.data
-        this.setData({ categories: res.result.data })
+        this._categoryCache[type] = categories || []
+        this.setData({ categories: categories || [] })
       } else {
         this.setDefaultCategories()
       }
