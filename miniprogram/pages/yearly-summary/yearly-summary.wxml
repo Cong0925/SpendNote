@@ -3,62 +3,118 @@
   <!-- 内容区 -->
   <scroll-view class="content-scroll" scroll-y>
     <view class="content-wrapper">
-      <!-- 年度统计卡片 -->
-      <view class="stats-card">
-        <!-- 收入 -->
-        <view class="stat-item income">
-          <view class="stat-icon">💰</view>
-          <view class="stat-info">
-            <text class="stat-label">总收入</text>
-            <text class="stat-value">¥ {{totalIncomeStr}}</text>
+      <!-- 骨架屏 -->
+      <view class="skeleton" wx:if="{{loading}}">
+        <!-- 年度统计卡片骨架 -->
+        <view class="stats-card skeleton-card">
+          <!-- 收入骨架 -->
+          <view class="stat-item">
+            <view class="skeleton-icon"></view>
+            <view class="stat-info">
+              <view class="skeleton-text skeleton-text-small"></view>
+              <view class="skeleton-text skeleton-text-medium"></view>
+            </view>
+          </view>
+          <!-- 支出骨架 -->
+          <view class="stat-item">
+            <view class="skeleton-icon"></view>
+            <view class="stat-info">
+              <view class="skeleton-text skeleton-text-small"></view>
+              <view class="skeleton-text skeleton-text-medium"></view>
+            </view>
+          </view>
+          <!-- 总笔数骨架 -->
+          <view class="stat-item">
+            <view class="skeleton-icon"></view>
+            <view class="stat-info">
+              <view class="skeleton-text skeleton-text-small"></view>
+              <view class="skeleton-text skeleton-text-medium"></view>
+            </view>
           </view>
         </view>
 
-        <!-- 支出 -->
-        <view class="stat-item expense">
-          <view class="stat-icon">📤</view>
-          <view class="stat-info">
-            <text class="stat-label">总支出</text>
-            <text class="stat-value">¥ {{totalExpenseStr}}</text>
+        <!-- 使用信息卡片骨架 -->
+        <view class="info-card skeleton-card">
+          <view class="info-item">
+            <view class="skeleton-circle"></view>
+            <view class="skeleton-text skeleton-text-small"></view>
+            <view class="skeleton-text skeleton-text-medium"></view>
+          </view>
+          <view class="info-divider"></view>
+          <view class="info-item">
+            <view class="skeleton-circle"></view>
+            <view class="skeleton-text skeleton-text-small"></view>
+            <view class="skeleton-text skeleton-text-medium"></view>
           </view>
         </view>
 
-        <!-- 总笔数 -->
-        <view class="stat-item total">
-          <view class="stat-icon">📝</view>
-          <view class="stat-info">
-            <text class="stat-label">总记账笔数</text>
-            <text class="stat-value">{{totalCount}} 笔</text>
-          </view>
+        <!-- 鼓励卡片骨架 -->
+        <view class="encourage-card skeleton-card">
+          <view class="skeleton-circle-large"></view>
+          <view class="skeleton-text skeleton-text-long"></view>
+          <view class="skeleton-text skeleton-text-medium"></view>
         </view>
       </view>
 
-      <!-- 使用信息卡片 -->
-      <view class="info-card">
-        <view class="info-item">
-          <view class="info-icon">📅</view>
-          <view class="info-content">
-            <text class="info-label">使用天数</text>
-            <text class="info-value">{{usageDays}} 天</text>
+      <!-- 实际内容 -->
+      <view class="actual-content" wx:else>
+        <!-- 年度统计卡片 -->
+        <view class="stats-card">
+          <!-- 收入 -->
+          <view class="stat-item income">
+            <view class="stat-icon">💰</view>
+            <view class="stat-info">
+              <text class="stat-label">总收入</text>
+              <text class="stat-value">¥ {{totalIncomeStr}}</text>
+            </view>
           </view>
-        </view>
-        <view class="info-divider"></view>
-        <view class="info-item">
-          <view class="info-icon">📊</view>
-          <view class="info-content">
-            <text class="info-label">记账天数</text>
-            <text class="info-value">{{bookkeepingDays}} 天</text>
-          </view>
-        </view>
-      </view>
 
-      <!-- 鼓励语 -->
-      <view class="encourage-card">
-        <view class="encourage-icon">🎉</view>
-        <text class="encourage-text" wx:if="{{totalCount >= 100}}">太棒了！你已经记账{{totalCount}}笔，继续保持！</text>
-        <text class="encourage-text" wx:elif="{{totalCount >= 50}}">不错哦！你已经记账{{totalCount}}笔，继续加油！</text>
-        <text class="encourage-text" wx:elif="{{totalCount >= 10}}">好的开始！你已经记账{{totalCount}}笔，坚持就是胜利！</text>
-        <text class="encourage-text" wx:else>开始记账吧！养成良好的记账习惯，让生活更清晰。</text>
+          <!-- 支出 -->
+          <view class="stat-item expense">
+            <view class="stat-icon">📤</view>
+            <view class="stat-info">
+              <text class="stat-label">总支出</text>
+              <text class="stat-value">¥ {{totalExpenseStr}}</text>
+            </view>
+          </view>
+
+          <!-- 总笔数 -->
+          <view class="stat-item total">
+            <view class="stat-icon">📝</view>
+            <view class="stat-info">
+              <text class="stat-label">总记账笔数</text>
+              <text class="stat-value">{{totalCount}} 笔</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 使用信息卡片 -->
+        <view class="info-card">
+          <view class="info-item">
+            <view class="info-icon">📅</view>
+            <view class="info-content">
+              <text class="info-label">使用天数</text>
+              <text class="info-value">{{usageDays}} 天</text>
+            </view>
+          </view>
+          <view class="info-divider"></view>
+          <view class="info-item">
+            <view class="info-icon">📊</view>
+            <view class="info-content">
+              <text class="info-label">记账天数</text>
+              <text class="info-value">{{bookkeepingDays}} 天</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 鼓励语 -->
+        <view class="encourage-card">
+          <view class="encourage-icon">🎉</view>
+          <text class="encourage-text" wx:if="{{totalCount >= 100}}">太棒了！你已经记账{{totalCount}}笔，继续保持！</text>
+          <text class="encourage-text" wx:elif="{{totalCount >= 50}}">不错哦！你已经记账{{totalCount}}笔，继续加油！</text>
+          <text class="encourage-text" wx:elif="{{totalCount >= 10}}">好的开始！你已经记账{{totalCount}}笔，坚持就是胜利！</text>
+          <text class="encourage-text" wx:else>开始记账吧！养成良好的记账习惯，让生活更清晰。</text>
+        </view>
       </view>
     </view>
   </scroll-view>
