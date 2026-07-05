@@ -102,11 +102,11 @@
       <text class="menu-arrow">›</text>
     </view>
     <view class="menu-divider"></view>
-    <view class="menu-item" bindtap="showAbout">
+    <view class="menu-item" bindtap="goToRating">
       <view class="menu-icon-wrap">
-        <text class="menu-icon">ℹ️</text>
+        <text class="menu-icon">⭐</text>
       </view>
-      <text class="menu-text">关于我们</text>
+      <text class="menu-text">给个好评</text>
       <text class="menu-arrow">›</text>
     </view>
     <view class="menu-divider"></view>

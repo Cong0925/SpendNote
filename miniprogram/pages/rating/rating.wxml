@@ -1,0 +1,220 @@
+<!--pages/rating/rating.wxml - Optimized Rating Display -->
+<view class="rating-page">
+  <scroll-view class="scroll-area" scroll-y enhanced show-scrollbar="{{false}}">
+
+    <!-- 评分区域 - 只在未评价时显示 -->
+    <view class="rating-card" wx:if="{{!hasSubmitted}}">
+      <view class="rating-header">请为 SpendNote 评分</view>
+      <view class="star-row">
+        <view
+          wx:for="{{[1,2,3,4,5]}}"
+          wx:key="*this"
+          class="star-item"
+          catchtap="onTapStar"
+          data-star="{{item}}"
+        >
+          <text class="star {{item <= userRating ? 'active' : ''}}">★</text>
+        </view>
+      </view>
+      <view class="rating-hint">{{ratingText}}</view>
+    </view>
+
+    <!-- 标签选择 - 只在未评价时显示 -->
+    <view class="section-card" wx:if="{{!hasSubmitted}}">
+      <view class="section-title">选择亮点标签</view>
+      <view class="tags-wrap">
+        <view
+          wx:for="{{tags}}"
+          wx:key="id"
+          class="tag-chip {{selectedTags.includes(item.id) ? 'active' : ''}}"
+          catchtap="onTapTag"
+          data-id="{{item.id}}"
+          data-text="{{item.text}}"
+        >
+          <text class="tag-icon">{{item.icon}}</text>
+          <text class="tag-text">{{item.text}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 评论输入 - 只在未评价时显示 -->
+    <view class="section-card" wx:if="{{!hasSubmitted}}">
+      <view class="section-title">写下你的评价</view>
+      <view class="input-area">
+        <textarea
+          class="comment-input"
+          placeholder="点击上方标签可快速添加到评价..."
+          maxlength="200"
+          bindinput="onCommentInput"
+          value="{{comment}}"
+        />
+        <view class="input-footer">
+          <text class="char-count">{{comment.length}}/200</text>
+        </view>
+      </view>
+
+      <!-- 图片上传 -->
+      <view class="image-section">
+        <view class="image-list">
+          <view wx:for="{{uploadedImages}}" wx:key="index" class="image-item">
+            <image src="{{item}}" mode="aspectFill" class="image-thumb" bindtap="onPreviewImage" data-url="{{item}}" />
+            <view class="image-delete" catchtap="onDeleteImage" data-index="{{index}}">×</view>
+          </view>
+          <view class="image-add" wx:if="{{uploadedImages.length < 3}}" bindtap="onChooseImage">
+            <text class="add-icon">+</text>
+            <text class="add-text">添加图片</text>
+          </view>
+        </view>
+        <text class="image-hint">最多上传 3 张图片（可选）</text>
+      </view>
+    </view>
+
+    <!-- 提交按钮 - 只在未评价时显示 -->
+    <view class="submit-wrap" wx:if="{{!hasSubmitted}}">
+      <button
+        class="submit-btn {{userRating > 0 ? 'active' : ''}}"
+        bindtap="onSubmit"
+        disabled="{{!userRating || isSubmitting}}"
+      >
+        <text wx:if="{{!isSubmitting}}">提交评价</text>
+        <text wx:else>提交中...</text>
+      </button>
+    </view>
+
+    <!-- 评价成功提示 - 提交后显示 -->
+    <view class="success-card" wx:if="{{hasSubmitted}}">
+      <view class="success-icon">✨</view>
+      <view class="success-text">感谢您的评价</view>
+      <view class="modify-link" bindtap="onModifyRating">
+        <text>修改我的评价</text>
+      </view>
+    </view>
+
+    <!-- 评分统计展示 - 已评价后显示 -->
+    <view class="stats-showcase" wx:if="{{hasSubmitted && totalCount > 0}}">
+      <view class="stats-main">
+        <view class="stats-score">
+          <text class="score-num">{{avgRating}}</text>
+          <text class="score-unit">分</text>
+        </view>
+        <view class="stats-stars">
+          <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" class="star {{item <= avgRating ? 'active' : ''}}">★</text>
+        </view>
+        <view class="stats-count">共 {{totalCount}} 人评价</view>
+      </view>
+      <view class="stats-bar">
+        <view class="bar-item">
+          <text class="bar-label">好评</text>
+          <view class="bar-track">
+            <view class="bar-fill good" style="width: {{totalCount > 0 ? goodCount / totalCount * 100 : 0}}%"></view>
+          </view>
+          <text class="bar-num">{{goodCount}}</text>
+        </view>
+        <view class="bar-item">
+          <text class="bar-label">中评</text>
+          <view class="bar-track">
+            <view class="bar-fill mid" style="width: {{totalCount > 0 ? midCount / totalCount * 100 : 0}}%"></view>
+          </view>
+          <text class="bar-num">{{midCount}}</text>
+        </view>
+        <view class="bar-item">
+          <text class="bar-label">差评</text>
+          <view class="bar-track">
+            <view class="bar-fill bad" style="width: {{totalCount > 0 ? badCount / totalCount * 100 : 0}}%"></view>
+          </view>
+          <text class="bar-num">{{badCount}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 筛选栏 - 已评价后显示 -->
+    <view class="filter-section" wx:if="{{hasSubmitted}}">
+      <scroll-view class="filter-scroll" scroll-x enable-flex>
+        <view class="filter-chip {{currentFilter === 'all' ? 'active' : ''}}" bindtap="onFilterChange" data-filter="all">
+          <text>全部</text>
+          <view class="filter-num">{{totalCount}}</view>
+        </view>
+        <view class="filter-chip {{currentFilter === 'good' ? 'active' : ''}}" bindtap="onFilterChange" data-filter="good">
+          <text>👍 好评</text>
+          <view class="filter-num">{{goodCount}}</view>
+        </view>
+        <view class="filter-chip {{currentFilter === 'mid' ? 'active' : ''}}" bindtap="onFilterChange" data-filter="mid">
+          <text>😐 中评</text>
+          <view class="filter-num">{{midCount}}</view>
+        </view>
+        <view class="filter-chip {{currentFilter === 'bad' ? 'active' : ''}}" bindtap="onFilterChange" data-filter="bad">
+          <text>👎 差评</text>
+          <view class="filter-num">{{badCount}}</view>
+        </view>
+        <view class="filter-chip {{currentFilter === 'hasImage' ? 'active' : ''}}" bindtap="onFilterChange" data-filter="hasImage">
+          <text>🖼️ 有图</text>
+          <view class="filter-num">{{hasImageCount}}</view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 评价列表 -->
+    <view class="review-list" wx:if="{{hasSubmitted}}">
+      <view wx:for="{{filteredReviews}}" wx:key="_id" class="review-card {{item.isMine ? 'my-review' : ''}}">
+        <!-- 卡片头部 -->
+        <view class="card-header">
+          <view class="header-left">
+            <view class="user-avatar">
+              <text>👤</text>
+            </view>
+            <view class="user-info">
+              <text class="user-name">{{item.isMine ? '我' : '匿名用户'}}</text>
+              <text class="review-time">{{item.createTimeStr}}</text>
+            </view>
+          </view>
+          <view class="header-right">
+            <view class="rating-badge {{item.rating >= 4 ? 'good' : item.rating === 3 ? 'mid' : 'bad'}}">
+              <text>{{item.rating}}分</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 星星评级 -->
+        <view class="card-stars">
+          <text wx:for="{{[1,2,3,4,5]}}" wx:for-item="star" wx:for-index="starIdx" wx:key="starIdx" class="star {{star <= item.rating ? 'active' : ''}}">★</text>
+          <text class="star-text">{{item.rating >= 4 ? '好评' : item.rating === 3 ? '中评' : '差评'}}</text>
+        </view>
+
+        <!-- 标签 -->
+        <view class="card-tags" wx:if="{{item.selectedTags && item.selectedTags.length > 0}}">
+          <view wx:for="{{item.selectedTags}}" wx:for-item="tagId" wx:for-index="tagIdx" wx:key="tagIdx" class="tag-item">
+            <text class="tag-icon">{{getTagIcon(tagId)}}</text>
+            <text class="tag-text">{{getTagText(tagId)}}</text>
+          </view>
+        </view>
+
+        <!-- 评价内容 -->
+        <view class="card-content" wx:if="{{item.comment}}">
+          <text>{{item.comment}}</text>
+        </view>
+
+        <!-- 图片 -->
+        <view class="card-images" wx:if="{{item.images && item.images.length > 0}}">
+          <image wx:for="{{item.images}}" wx:for-item="img" wx:for-index="imgIdx" wx:key="imgIdx" src="{{img}}" class="review-image" mode="aspectFill" bindtap="onPreviewReviewImage" data-url="{{img}}" />
+        </view>
+
+        <!-- 自己的评价标识 -->
+        <view class="my-review-tag" wx:if="{{item.isMine}}">
+          <text>我的评价</text>
+        </view>
+      </view>
+
+      <!-- 加载更多 -->
+      <view class="load-more" wx:if="{{hasMore}}" bindtap="onLoadMore">
+        <text>加载更多</text>
+      </view>
+
+      <!-- 暂无评价 -->
+      <view class="empty-state" wx:if="{{!loading && filteredReviews.length === 0}}">
+        <view class="empty-icon">📭</view>
+        <view class="empty-text">暂无{{currentFilter === 'good' ? '好评' : currentFilter === 'mid' ? '中评' : currentFilter === 'bad' ? '差评' : currentFilter === 'hasImage' ? '带图' : ''}}评价</view>
+      </view>
+    </view>
+
+  </scroll-view>
+</view>

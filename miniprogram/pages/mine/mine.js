@@ -450,13 +450,9 @@ Page({
     }
   },
 
-  // 关于我们
-  showAbout() {
-    wx.showModal({
-      title: '关于 SpendNote',
-      content: '一款轻量、纯净的记账小程序\n\n版本：v1.0.0\n\n数据安全：所有数据存储在微信云开发，安全可靠',
-      showCancel: false
-    })
+  // 跳转到评分页面
+  goToRating() {
+    wx.navigateTo({ url: '/pages/rating/rating' })
   },
 
   // 退出登录

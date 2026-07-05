@@ -24,7 +24,8 @@
     "pages/feedback/add/add",
     "pages/category/category",
     "pages/yearly-summary/yearly-summary",
-    "pages/help/help"
+    "pages/help/help",
+    "pages/rating/rating"
   ],
   "usingComponents": {
     "van-datetime-picker": "@vant/weapp/datetime-picker/index",
