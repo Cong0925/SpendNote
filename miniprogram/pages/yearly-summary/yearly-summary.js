@@ -20,7 +20,10 @@ Page({
     avgBillsPerDay: 0,
     bookkeepingRate: 0,
     // 支出分类排行
-    expenseRankList: []
+    expenseRankList: [],
+    // 年度选择器
+    showYearPicker: false,
+    yearList: []
   },
 
   onLoad() {
@@ -28,6 +31,7 @@ Page({
     this.setData({ year: currentYear })
     this.loadYearlyData()
     this.calculateUsageDays()
+    this.loadYearList()
   },
 
   // 加载年度数据
@@ -37,101 +41,37 @@ Page({
     try {
       const { year } = this.data
 
-      // 获取所有账单
-      const allBillsRes = await wx.cloud.callFunction({
-        name: 'billFunctions',
+      // 调用云函数获取年度数据
+      const res = await wx.cloud.callFunction({
+        name: 'yearlySummary',
         data: {
-          action: 'list',
-          data: {
-            page: 1,
-            pageSize: 1000
-          }
+          action: 'getYearData',
+          year
         }
       })
 
-      let totalIncome = 0
-      let totalExpense = 0
-      let totalCount = 0
-      const bookkeepingDates = new Set()
-      const expenseByCategory = {}
-
-      // 过滤当年数据
-      if (allBillsRes.result.success && allBillsRes.result.data) {
-        const allBills = allBillsRes.result.data
-
-        allBills.forEach(bill => {
-          // 检查是否是当年数据
-          if (bill.date && bill.date.startsWith(String(year))) {
-            totalCount++
-
-            // 计算收入
-            if (bill.type === 'income') {
-              totalIncome += (bill.amount || 0)
-            }
-
-            // 计算支出
-            if (bill.type === 'expense') {
-              totalExpense += (bill.amount || 0)
-
-              // 统计支出分类
-              const category = bill.category || '其他'
-              const icon = bill.icon || '📦'
-              if (!expenseByCategory[category]) {
-                expenseByCategory[category] = { name: category, icon, amount: 0 }
-              }
-              expenseByCategory[category].amount += (bill.amount || 0)
-            }
-
-            // 记录记账日期
-            if (bill.date) {
-              bookkeepingDates.add(bill.date)
-            }
-          }
+      if (res.result.success) {
+        const data = res.result.data
+        this.setData({
+          totalIncome: data.totalIncome || 0,
+          totalExpense: data.totalExpense || 0,
+          totalCount: data.totalCount || 0,
+          bookkeepingDays: data.bookkeepingDays || 0,
+          totalIncomeStr: this.formatAmount(data.totalIncome),
+          totalExpenseStr: this.formatAmount(data.totalExpense),
+          dailyAvgExpense: data.dailyAvgExpense || '0.00',
+          dailyAvgIncome: data.dailyAvgIncome || '0.00',
+          savingsRate: data.savingsRate || 0,
+          avgBillsPerDay: data.avgBillsPerDay || 0,
+          bookkeepingRate: data.bookkeepingRate || 0,
+          expenseRankList: data.expenseRankList || [],
+          loading: false
         })
+      } else {
+        console.error('获取年度数据失败：', res.result.error)
+        wx.showToast({ title: '加载失败', icon: 'none' })
+        this.setData({ loading: false })
       }
-
-      // 计算日均消费/收入
-      const usageDays = this.data.usageDays || 1
-      const dailyAvgExpense = (totalExpense / usageDays).toFixed(2)
-      const dailyAvgIncome = (totalIncome / usageDays).toFixed(2)
-
-      // 计算储蓄率
-      let savingsRate = 0
-      if (totalIncome > 0) {
-        savingsRate = Math.round(((totalIncome - totalExpense) / totalIncome) * 100)
-      }
-
-      // 计算记账频率
-      const avgBillsPerDay = (totalCount / usageDays).toFixed(1)
-
-      // 计算记账率
-      const bookkeepingRate = Math.round((bookkeepingDates.size / usageDays) * 100)
-
-      // 处理支出分类排行
-      const expenseRankList = Object.values(expenseByCategory)
-        .sort((a, b) => b.amount - a.amount)
-        .slice(0, 5) // 只取前5名
-        .map(item => ({
-          ...item,
-          amountStr: item.amount.toFixed(2),
-          percent: totalExpense > 0 ? Math.round((item.amount / totalExpense) * 100) : 0
-        }))
-
-      this.setData({
-        totalIncome,
-        totalExpense,
-        totalCount,
-        bookkeepingDays: bookkeepingDates.size,
-        totalIncomeStr: this.formatAmount(totalIncome),
-        totalExpenseStr: this.formatAmount(totalExpense),
-        dailyAvgExpense,
-        dailyAvgIncome,
-        savingsRate,
-        avgBillsPerDay,
-        bookkeepingRate,
-        expenseRankList,
-        loading: false
-      })
     } catch (err) {
       console.error('加载年度数据失败：', err)
       wx.showToast({ title: '加载失败', icon: 'none' })
@@ -170,5 +110,85 @@ Page({
       return '0.00'
     }
     return Number(amount).toFixed(2)
+  },
+
+  // 加载年度列表
+  async loadYearList() {
+    try {
+      console.log('开始加载年度列表...')
+      const res = await wx.cloud.callFunction({
+        name: 'yearlySummary',
+        data: {
+          action: 'getYearList'
+        }
+      })
+
+      console.log('年度列表返回结果：', res.result)
+
+      if (res.result.success) {
+        console.log('获取到的年度数据：', res.result.data)
+        this.setData({ yearList: res.result.data })
+      } else {
+        console.error('获取年度列表失败：', res.result.error)
+      }
+    } catch (err) {
+      console.error('加载年度列表失败：', err)
+    }
+  },
+
+  // 显示年度选择器
+  async onShowYearPicker() {
+    // 先刷新年度列表，再显示弹窗
+    await this.loadYearList()
+    this.setData({ showYearPicker: true })
+  },
+
+  // 关闭年度选择器
+  onCloseYearPicker() {
+    this.setData({ showYearPicker: false })
+  },
+
+  // 选择年度
+  async onSelectYear(e) {
+    const { year } = e.detail
+    this.setData({
+      year,
+      showYearPicker: false,
+      loading: true
+    })
+
+    try {
+      // 检查该年度是否有数据
+      const yearItem = this.data.yearList.find(item => item.year === year)
+
+      if (yearItem && !yearItem.hasSummary) {
+        // 没有年度总结，尝试生成
+        wx.showLoading({ title: '生成年度总结中...' })
+
+        const generateRes = await wx.cloud.callFunction({
+          name: 'yearlySummary',
+          data: {
+            action: 'generate',
+            year
+          }
+        })
+
+        wx.hideLoading()
+
+        if (!generateRes.result.success) {
+          wx.showToast({ title: '生成失败', icon: 'none' })
+        }
+      }
+
+      // 重新加载年度列表和数据
+      await Promise.all([
+        this.loadYearList(),
+        this.loadYearlyData()
+      ])
+    } catch (err) {
+      console.error('选择年度失败：', err)
+      wx.hideLoading()
+      wx.showToast({ title: '操作失败', icon: 'none' })
+    }
   }
 })

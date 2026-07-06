@@ -14,8 +14,18 @@
       <view class="actual-content" wx:else>
         <!-- 年度标题 -->
         <view class="year-header">
-          <text class="year-text">{{year}}年度报告</text>
-          <text class="year-sub">你的记账数据一览</text>
+          <view class="year-badge">
+            <text class="year-num">{{year}}</text>
+          </view>
+          <view class="year-info">
+            <text class="year-text">年度报告</text>
+            <text class="year-sub">你的记账数据一览</text>
+          </view>
+          <view class="year-deco" bindtap="onShowYearPicker">
+            <view class="deco-dot"></view>
+            <view class="deco-dot"></view>
+            <view class="deco-dot"></view>
+          </view>
         </view>
 
         <!-- 年度总览卡片 -->
@@ -142,4 +152,13 @@
       </view>
     </view>
   </scroll-view>
+
+  <!-- 年度选择器弹窗 -->
+  <year-picker
+    show="{{showYearPicker}}"
+    currentYear="{{year}}"
+    yearList="{{yearList}}"
+    bind:close="onCloseYearPicker"
+    bind:select="onSelectYear"
+  />
 </view>

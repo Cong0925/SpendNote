@@ -1,4 +1,6 @@
 {
-  "usingComponents": {},
+  "usingComponents": {
+    "year-picker": "/components/year-picker/index"
+  },
   "navigationBarTitleText": "年度总结"
 }

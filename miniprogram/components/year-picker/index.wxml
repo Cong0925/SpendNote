@@ -1,0 +1,47 @@
+<!-- 年度选择器底部弹窗 -->
+<view class="year-picker-mask" wx:if="{{show}}" bindtap="onClose" catchtouchmove="preventMove"></view>
+<view class="year-picker-container {{show ? 'show' : ''}}">
+  <!-- 顶部拖拽条 -->
+  <view class="picker-header">
+    <view class="drag-bar"></view>
+    <text class="picker-title">选择年度</text>
+    <view class="close-btn" bindtap="onClose">
+      <text class="close-icon">×</text>
+    </view>
+  </view>
+
+  <!-- 年度列表 -->
+  <scroll-view class="year-list" scroll-y>
+    <view
+      class="year-item {{item.year === currentYear ? 'active' : ''}}"
+      wx:for="{{yearList}}"
+      wx:key="year"
+      bindtap="onSelectYear"
+      data-year="{{item.year}}"
+    >
+      <view class="year-left">
+        <view class="year-badge {{item.year === currentYear ? 'active' : ''}}">
+          <text class="year-num">{{item.year}}</text>
+        </view>
+        <view class="year-info">
+          <text class="year-label">{{item.year}}年度报告</text>
+          <text class="year-desc">{{item.desc}}</text>
+        </view>
+      </view>
+      <view class="year-right">
+        <view class="check-icon" wx:if="{{item.year === currentYear}}">
+          <text>✓</text>
+        </view>
+        <view class="arrow-icon" wx:else>
+          <text>›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{yearList.length === 0}}">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无历史年度数据</text>
+    </view>
+  </scroll-view>
+</view>
