@@ -11,7 +11,7 @@ const ratingsCollection = db.collection('ratings')
 
 exports.main = async (event, context) => {
   const { OPENID } = cloud.getWXContext()
-  const { action, rating, selectedTags, comment, images, page = 1, pageSize = 10 } = event
+  const { action, rating, selectedTags, comment, images, ratingId, page = 1, pageSize = 10 } = event
 
   try {
     switch (action) {
@@ -21,8 +21,20 @@ exports.main = async (event, context) => {
       case 'submitRating':
         return await submitRating(OPENID, { rating, selectedTags, comment, images })
 
+      case 'updateRating':
+        return await updateRating(OPENID, { ratingId, rating, selectedTags, comment, images })
+
+      case 'deleteRating':
+        return await deleteRating(OPENID, ratingId)
+
       case 'listRatings':
-        return await listRatings(page, pageSize)
+        return await listRatings(OPENID, page, pageSize)
+
+      case 'likeRating':
+        return await likeRating(OPENID, ratingId)
+
+      case 'dislikeRating':
+        return await dislikeRating(OPENID, ratingId)
 
       default:
         return { success: false, error: '未知操作' }
@@ -51,7 +63,7 @@ async function getMyRating(openid) {
   }
 }
 
-// 提交或更新评价（每用户只能评一次，可修改）
+// 提交评价（每用户只能评一次）
 async function submitRating(openid, data) {
   try {
     const { rating, selectedTags, comment, images } = data
@@ -71,6 +83,11 @@ async function submitRating(openid, data) {
       .limit(1)
       .get()
 
+    if (existing.data.length > 0) {
+      return { success: false, error: '您已评价过，请使用修改功能' }
+    }
+
+    // 新增评价
     const now = new Date()
     const ratingData = {
       openid,
@@ -78,19 +95,15 @@ async function submitRating(openid, data) {
       selectedTags: selectedTags || [],
       comment: comment || '',
       images: images || [],
+      likes: 0,
+      dislikes: 0,
+      likedBy: [],
+      dislikedBy: [],
+      createTime: now,
       updateTime: now
     }
 
-    if (existing.data.length > 0) {
-      // 更新已有评价
-      await ratingsCollection.doc(existing.data[0]._id).update({
-        data: ratingData
-      })
-    } else {
-      // 新增评价
-      ratingData.createTime = now
-      await ratingsCollection.add({ data: ratingData })
-    }
+    await ratingsCollection.add({ data: ratingData })
 
     return { success: true }
   } catch (error) {
@@ -99,10 +112,70 @@ async function submitRating(openid, data) {
   }
 }
 
-// 获取评价列表（分页，显示所有用户的评价）
-async function listRatings(page, pageSize) {
+// 更新评价
+async function updateRating(openid, data) {
   try {
-    const { OPENID } = cloud.getWXContext()
+    const { ratingId, rating, selectedTags, comment, images } = data
+
+    // 验证数据
+    if (!rating || rating < 1 || rating > 5) {
+      return { success: false, error: '评分无效' }
+    }
+
+    if (comment && comment.length > 200) {
+      return { success: false, error: '评价内容过长' }
+    }
+
+    // 验证是否是自己的评价
+    const existing = await ratingsCollection.doc(ratingId).get()
+    if (!existing.data || existing.data.openid !== openid) {
+      return { success: false, error: '无权修改此评价' }
+    }
+
+    // 更新评价
+    await ratingsCollection.doc(ratingId).update({
+      data: {
+        rating,
+        selectedTags: selectedTags || [],
+        comment: comment || '',
+        images: images || [],
+        updateTime: new Date()
+      }
+    })
+
+    return { success: true }
+  } catch (error) {
+    console.error('更新评价失败:', error)
+    return { success: false, error: '更新失败' }
+  }
+}
+
+// 删除评价
+async function deleteRating(openid, ratingId) {
+  try {
+    if (!ratingId) {
+      return { success: false, error: '评价ID无效' }
+    }
+
+    // 验证是否是自己的评价
+    const existing = await ratingsCollection.doc(ratingId).get()
+    if (!existing.data || existing.data.openid !== openid) {
+      return { success: false, error: '无权删除此评价' }
+    }
+
+    // 删除评价
+    await ratingsCollection.doc(ratingId).remove()
+
+    return { success: true }
+  } catch (error) {
+    console.error('删除评价失败:', error)
+    return { success: false, error: '删除失败' }
+  }
+}
+
+// 获取评价列表（分页，我的评价置顶）
+async function listRatings(openid, page, pageSize) {
+  try {
     const skip = (page - 1) * pageSize
 
     // 获取总数（显示所有评价）
@@ -139,19 +212,29 @@ async function listRatings(page, pageSize) {
       })
     }
 
-    // 移除 openid 和其他敏感信息，标记自己的评价
-    const safeList = listRes.data.map(item => ({
+    // 处理列表数据，标记自己的评价和点赞/踩状态
+    let safeList = listRes.data.map(item => ({
       _id: item._id,
       rating: item.rating,
       selectedTags: item.selectedTags,
       comment: item.comment,
       images: item.images,
       createTime: item.createTime,
-      isMine: item.openid === OPENID,
-      // 使用默认头像和昵称
+      likes: item.likes || 0,
+      dislikes: item.dislikes || 0,
+      isMine: item.openid === openid,
+      isLiked: (item.likedBy || []).includes(openid),
+      isDisliked: (item.dislikedBy || []).includes(openid),
       avatarUrl: '',
       nickName: '用户'
     }))
+
+    // 将我的评价置顶
+    const myReview = safeList.find(item => item.isMine)
+    if (myReview) {
+      safeList = safeList.filter(item => !item.isMine)
+      safeList.unshift(myReview)
+    }
 
     return {
       success: true,
@@ -168,5 +251,93 @@ async function listRatings(page, pageSize) {
   } catch (error) {
     console.error('获取评价列表失败:', error)
     return { success: false, error: '获取失败' }
+  }
+}
+
+// 点赞评价
+async function likeRating(openid, ratingId) {
+  try {
+    if (!ratingId) {
+      return { success: false, error: '评价ID无效' }
+    }
+
+    const ratingDoc = await ratingsCollection.doc(ratingId).get()
+    if (!ratingDoc.data) {
+      return { success: false, error: '评价不存在' }
+    }
+
+    const rating = ratingDoc.data
+    const likedBy = rating.likedBy || []
+    const dislikedBy = rating.dislikedBy || []
+    const isLiked = likedBy.includes(openid)
+
+    let updateData = {}
+
+    if (isLiked) {
+      // 取消点赞
+      updateData = {
+        likes: _.inc(-1),
+        likedBy: _.pull(openid)
+      }
+    } else {
+      // 点赞（同时取消踩）
+      updateData = {
+        likes: _.inc(1),
+        likedBy: _.push(openid),
+        dislikes: dislikedBy.includes(openid) ? _.inc(-1) : _.inc(0),
+        dislikedBy: _.pull(openid)
+      }
+    }
+
+    await ratingsCollection.doc(ratingId).update({ data: updateData })
+
+    return { success: true, isLiked: !isLiked }
+  } catch (error) {
+    console.error('点赞失败:', error)
+    return { success: false, error: '点赞失败' }
+  }
+}
+
+// 踩评价
+async function dislikeRating(openid, ratingId) {
+  try {
+    if (!ratingId) {
+      return { success: false, error: '评价ID无效' }
+    }
+
+    const ratingDoc = await ratingsCollection.doc(ratingId).get()
+    if (!ratingDoc.data) {
+      return { success: false, error: '评价不存在' }
+    }
+
+    const rating = ratingDoc.data
+    const likedBy = rating.likedBy || []
+    const dislikedBy = rating.dislikedBy || []
+    const isDisliked = dislikedBy.includes(openid)
+
+    let updateData = {}
+
+    if (isDisliked) {
+      // 取消踩
+      updateData = {
+        dislikes: _.inc(-1),
+        dislikedBy: _.pull(openid)
+      }
+    } else {
+      // 踩（同时取消点赞）
+      updateData = {
+        dislikes: _.inc(1),
+        dislikedBy: _.push(openid),
+        likes: likedBy.includes(openid) ? _.inc(-1) : _.inc(0),
+        likedBy: _.pull(openid)
+      }
+    }
+
+    await ratingsCollection.doc(ratingId).update({ data: updateData })
+
+    return { success: true, isDisliked: !isDisliked }
+  } catch (error) {
+    console.error('踩失败:', error)
+    return { success: false, error: '踩失败' }
   }
 }

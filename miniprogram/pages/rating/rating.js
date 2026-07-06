@@ -8,24 +8,27 @@ const ratingTexts = {
 }
 
 const tagList = [
-  { id: 'ui', icon: '🎨', text: '界面美观' },
-  { id: 'easy', icon: '✨', text: '操作简单' },
-  { id: 'feature', icon: '🚀', text: '功能实用' },
-  { id: 'speed', icon: '⚡', text: '运行流畅' },
-  { id: 'safe', icon: '🔒', text: '数据安全' },
-  { id: 'free', icon: '🆓', text: '完全免费' }
+  { id: 'ui', icon: '🎨', text: '界面美观', desc: '界面设计精美，配色舒适，看着就很舒服！' },
+  { id: 'easy', icon: '✨', text: '操作简单', desc: '操作简单易上手，功能一目了然，非常方便！' },
+  { id: 'feature', icon: '🚀', text: '功能实用', desc: '功能实用又齐全，记账需求都能满足！' },
+  { id: 'speed', icon: '⚡', text: '运行流畅', desc: '运行流畅不卡顿，使用体验非常顺畅！' },
+  { id: 'safe', icon: '🔒', text: '数据安全', desc: '数据安全有保障，隐私保护做得很好！' },
+  { id: 'free', icon: '🆓', text: '完全免费', desc: '完全免费无广告，良心软件必须支持！' }
 ]
 
 Page({
   data: {
     hasSubmitted: false,
+    isEditing: false,
     userRating: 0,
     ratingText: '',
-    tags: tagList,
+    ratingTexts: ratingTexts,
+    tags: [],
     selectedTags: [],
     comment: '',
     uploadedImages: [],
     isSubmitting: false,
+    myRating: null,
     reviews: [],
     filteredReviews: [],
     totalCount: 0,
@@ -42,7 +45,33 @@ Page({
   },
 
   onLoad() {
-    this.loadExistingRating()
+    this.initTags()
+    this.loadData()
+  },
+
+  // 初始化标签列表，添加选中状态
+  initTags() {
+    const tags = tagList.map(tag => ({
+      ...tag,
+      isActive: false
+    }))
+    this.setData({ tags })
+  },
+
+  // 更新标签选中状态
+  updateTagsActiveState() {
+    const { selectedTags } = this.data
+    const tags = tagList.map(tag => ({
+      ...tag,
+      isActive: selectedTags.includes(tag.id)
+    }))
+    this.setData({ tags })
+  },
+
+  // 加载数据
+  async loadData() {
+    await this.loadExistingRating()
+    await this.loadReviews()
   },
 
   onShow() {
@@ -65,19 +94,31 @@ Page({
         const existing = res.result.data
         this.setData({
           hasSubmitted: true,
+          myRating: existing,
           userRating: existing.rating,
           ratingText: ratingTexts[existing.rating] || '',
           selectedTags: existing.selectedTags || [],
           comment: existing.comment || '',
-          uploadedImages: existing.images || []
+          uploadedImages: this.fixImagePaths(existing.images)
         })
-        this.loadReviews()
+        this.updateTagsActiveState()
       } else {
-        this.setData({ hasSubmitted: false })
+        this.setData({
+          hasSubmitted: false,
+          myRating: null,
+          userRating: 0,
+          ratingText: '',
+          selectedTags: [],
+          comment: '',
+          uploadedImages: []
+        })
       }
     } catch (error) {
       console.error('加载已有评价失败:', error)
-      this.setData({ hasSubmitted: false })
+      this.setData({
+        hasSubmitted: false,
+        myRating: null
+      })
     }
   },
 
@@ -102,10 +143,41 @@ Page({
 
         const formattedList = list.map(item => ({
           ...item,
+          images: this.fixImagePaths(item.images),
           createTimeStr: this.formatTime(item.createTime)
         }))
 
-        const allReviews = append ? [...this.data.reviews, ...formattedList] : formattedList
+        let allReviews = append ? [...this.data.reviews, ...formattedList] : formattedList
+
+        // 确保我的评价始终在列表顶部（去重）
+        const { myRating } = this.data
+        if (myRating) {
+          const myReviewInList = allReviews.find(item => item.isMine)
+          if (!myReviewInList) {
+            // 如果当前列表中没有我的评价，添加到顶部
+            const myReview = {
+              _id: myRating._id,
+              rating: myRating.rating,
+              selectedTags: myRating.selectedTags,
+              comment: myRating.comment,
+              images: this.fixImagePaths(myRating.images),
+              createTime: myRating.createTime,
+              likes: myRating.likes || 0,
+              dislikes: myRating.dislikes || 0,
+              isMine: true,
+              isLiked: false,
+              isDisliked: false,
+              avatarUrl: '',
+              nickName: '用户',
+              createTimeStr: this.formatTime(myRating.createTime)
+            }
+            allReviews.unshift(myReview)
+          } else {
+            // 如果列表中有我的评价，确保它在顶部
+            allReviews = allReviews.filter(item => !item.isMine)
+            allReviews.unshift(myReviewInList)
+          }
+        }
 
         this.setData({
           reviews: allReviews,
@@ -155,18 +227,51 @@ Page({
     })
   },
 
-  // 点击标签 - 只切换选中状态
+  // 点击标签 - 切换选中状态并更新评论
   onTapTag(e) {
     const tagId = e.currentTarget.dataset.id
     let selectedTags = [...this.data.selectedTags]
+    let comment = this.data.comment || ''
+
+    // 获取标签描述
+    const tag = tagList.find(t => t.id === tagId)
+    if (!tag) return
 
     if (selectedTags.includes(tagId)) {
+      // 取消选中：移除标签描述
       selectedTags = selectedTags.filter(id => id !== tagId)
+      comment = this.removeTagDesc(comment, tag.desc)
     } else {
+      // 选中：添加标签描述
       selectedTags.push(tagId)
+      comment = this.addTagDesc(comment, tag.desc)
     }
 
-    this.setData({ selectedTags })
+    this.setData({ selectedTags, comment })
+    this.updateTagsActiveState()
+  },
+
+  // 添加标签描述到评论
+  addTagDesc(comment, desc) {
+    if (!comment) return desc
+    // 检查是否已存在
+    if (comment.includes(desc)) return comment
+    // 换行添加
+    return comment + '\n' + desc
+  },
+
+  // 从评论中移除标签描述
+  removeTagDesc(comment, desc) {
+    if (!comment) return ''
+    // 移除描述及前面的换行符
+    let newComment = comment.replace('\n' + desc, '')
+    // 如果描述在开头
+    if (newComment === comment) {
+      newComment = comment.replace(desc, '')
+    }
+    // 清理多余的换行符
+    newComment = newComment.replace(/^\n+|\n+$/g, '').replace(/\n{2,}/g, '\n')
+    return newComment
   },
 
   // 输入评论
@@ -246,7 +351,7 @@ Page({
 
   // 提交评价
   async onSubmit() {
-    const { userRating, selectedTags, comment, uploadedImages } = this.data
+    const { userRating, selectedTags, comment, uploadedImages, isEditing, myRating } = this.data
 
     if (!userRating) {
       wx.showToast({ title: '请先评分', icon: 'none' })
@@ -256,10 +361,13 @@ Page({
     this.setData({ isSubmitting: true })
 
     try {
+      // 如果是修改模式且有评价记录，则更新；否则新增
+      const action = (isEditing && myRating) ? 'updateRating' : 'submitRating'
       const res = await wx.cloud.callFunction({
         name: 'rating',
         data: {
-          action: 'submitRating',
+          action,
+          ratingId: myRating?._id,
           rating: userRating,
           selectedTags,
           comment: comment.trim(),
@@ -268,9 +376,13 @@ Page({
       })
 
       if (res.result.success) {
-        wx.showToast({ title: '评价成功', icon: 'success' })
-        this.setData({ hasSubmitted: true, page: 1 })
-        this.loadReviews()
+        wx.showToast({ title: action === 'updateRating' ? '修改成功' : '评价成功', icon: 'success' })
+        this.setData({
+          hasSubmitted: true,
+          isEditing: false,
+          page: 1
+        })
+        this.loadData()
       } else {
         wx.showToast({ title: res.result.error || '提交失败', icon: 'none' })
       }
@@ -282,9 +394,66 @@ Page({
     }
   },
 
-  // 修改评价
+  // 进入添加评价模式
+  onAddRating() {
+    this.setData({
+      isEditing: true,
+      userRating: 0,
+      ratingText: '',
+      selectedTags: [],
+      comment: '',
+      uploadedImages: []
+    })
+    this.updateTagsActiveState()
+  },
+
+  // 进入修改评价模式
   onModifyRating() {
-    this.setData({ hasSubmitted: false })
+    this.setData({ isEditing: true })
+  },
+
+  // 取消编辑
+  onCancelEdit() {
+    this.setData({ isEditing: false })
+    this.loadData()
+  },
+
+  // 删除评价
+  onDeleteRating() {
+    wx.showModal({
+      title: '确认删除',
+      content: '确定要删除我的评价吗？',
+      success: async (res) => {
+        if (res.confirm) {
+          try {
+            const { myRating } = this.data
+            const result = await wx.cloud.callFunction({
+              name: 'rating',
+              data: {
+                action: 'deleteRating',
+                ratingId: myRating._id
+              }
+            })
+
+            if (result.result.success) {
+              wx.showToast({ title: '删除成功', icon: 'success' })
+              this.setData({
+                hasSubmitted: false,
+                isEditing: false,
+                myRating: null,
+                page: 1
+              })
+              this.loadData()
+            } else {
+              wx.showToast({ title: result.result.error || '删除失败', icon: 'none' })
+            }
+          } catch (error) {
+            console.error('删除评价失败:', error)
+            wx.showToast({ title: '删除失败', icon: 'none' })
+          }
+        }
+      }
+    })
   },
 
   // 加载更多
@@ -316,6 +485,20 @@ Page({
     return tag ? tag.icon : '🏷️'
   },
 
+  // 修复图片路径，确保是云存储格式
+  fixImagePaths(images) {
+    if (!images || !Array.isArray(images)) return []
+    return images.map(img => {
+      if (!img) return ''
+      // 如果路径包含/cloud://但前面有其他内容，提取cloud://部分
+      if (img.includes('cloud://') && !img.startsWith('cloud://')) {
+        const cloudIndex = img.indexOf('cloud://')
+        return img.substring(cloudIndex)
+      }
+      return img
+    }).filter(img => img)
+  },
+
   // 格式化时间
   formatTime(time) {
     if (!time) return ''
@@ -332,5 +515,87 @@ Page({
     const month = String(date.getMonth() + 1).padStart(2, '0')
     const day = String(date.getDate()).padStart(2, '0')
     return `${year}-${month}-${day}`
+  },
+
+  // 点赞
+  async onLike(e) {
+    const ratingId = e.currentTarget.dataset.id
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'rating',
+        data: {
+          action: 'likeRating',
+          ratingId
+        }
+      })
+
+      if (res.result.success) {
+        // 只更新本地状态，不重新加载列表
+        const { filteredReviews, reviews } = this.data
+        const updateList = (list) => list.map(item => {
+          if (item._id === ratingId) {
+            const isLiked = res.result.isLiked
+            return {
+              ...item,
+              isLiked,
+              likes: item.likes + (isLiked ? 1 : -1),
+              isDisliked: false,
+              dislikes: item.isDisliked ? item.dislikes - 1 : item.dislikes
+            }
+          }
+          return item
+        })
+        this.setData({
+          filteredReviews: updateList(filteredReviews),
+          reviews: updateList(reviews)
+        })
+      } else {
+        wx.showToast({ title: res.result.error || '操作失败', icon: 'none' })
+      }
+    } catch (error) {
+      console.error('点赞失败:', error)
+      wx.showToast({ title: '操作失败', icon: 'none' })
+    }
+  },
+
+  // 踩
+  async onDislike(e) {
+    const ratingId = e.currentTarget.dataset.id
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'rating',
+        data: {
+          action: 'dislikeRating',
+          ratingId
+        }
+      })
+
+      if (res.result.success) {
+        // 只更新本地状态，不重新加载列表
+        const { filteredReviews, reviews } = this.data
+        const updateList = (list) => list.map(item => {
+          if (item._id === ratingId) {
+            const isDisliked = res.result.isDisliked
+            return {
+              ...item,
+              isDisliked,
+              dislikes: item.dislikes + (isDisliked ? 1 : -1),
+              isLiked: false,
+              likes: item.isLiked ? item.likes - 1 : item.likes
+            }
+          }
+          return item
+        })
+        this.setData({
+          filteredReviews: updateList(filteredReviews),
+          reviews: updateList(reviews)
+        })
+      } else {
+        wx.showToast({ title: res.result.error || '操作失败', icon: 'none' })
+      }
+    } catch (error) {
+      console.error('踩失败:', error)
+      wx.showToast({ title: '操作失败', icon: 'none' })
+    }
   }
 })

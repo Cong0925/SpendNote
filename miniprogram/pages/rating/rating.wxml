@@ -2,9 +2,9 @@
 <view class="rating-page">
   <scroll-view class="scroll-area" scroll-y enhanced show-scrollbar="{{false}}">
 
-    <!-- 评分区域 - 只在未评价时显示 -->
-    <view class="rating-card" wx:if="{{!hasSubmitted}}">
-      <view class="rating-header">请为 SpendNote 评分</view>
+    <!-- 评分区域 - 编辑模式时显示 -->
+    <view class="rating-card" wx:if="{{isEditing}}">
+      <view class="rating-header">{{hasSubmitted ? '修改我的评价' : '请为 SpendNote 评分'}}</view>
       <view class="star-row">
         <view
           wx:for="{{[1,2,3,4,5]}}"
@@ -19,14 +19,14 @@
       <view class="rating-hint">{{ratingText}}</view>
     </view>
 
-    <!-- 标签选择 - 只在未评价时显示 -->
-    <view class="section-card" wx:if="{{!hasSubmitted}}">
+    <!-- 标签选择 - 编辑模式时显示 -->
+    <view class="section-card" wx:if="{{isEditing}}">
       <view class="section-title">选择亮点标签</view>
       <view class="tags-wrap">
         <view
           wx:for="{{tags}}"
           wx:key="id"
-          class="tag-chip {{selectedTags.includes(item.id) ? 'active' : ''}}"
+          class="tag-chip {{item.isActive ? 'active' : ''}}"
           catchtap="onTapTag"
           data-id="{{item.id}}"
           data-text="{{item.text}}"
@@ -37,8 +37,8 @@
       </view>
     </view>
 
-    <!-- 评论输入 - 只在未评价时显示 -->
-    <view class="section-card" wx:if="{{!hasSubmitted}}">
+    <!-- 评论输入 - 编辑模式时显示 -->
+    <view class="section-card" wx:if="{{isEditing}}">
       <view class="section-title">写下你的评价</view>
       <view class="input-area">
         <textarea
@@ -69,8 +69,8 @@
       </view>
     </view>
 
-    <!-- 提交按钮 - 只在未评价时显示 -->
-    <view class="submit-wrap" wx:if="{{!hasSubmitted}}">
+    <!-- 提交按钮 - 新增评价时显示 -->
+    <view class="submit-wrap" wx:if="{{isEditing && !hasSubmitted}}">
       <button
         class="submit-btn {{userRating > 0 ? 'active' : ''}}"
         bindtap="onSubmit"
@@ -81,20 +81,24 @@
       </button>
     </view>
 
-    <!-- 评价成功提示 - 提交后显示 -->
-    <view class="success-card" wx:if="{{hasSubmitted}}">
-      <view class="success-icon">✨</view>
-      <view class="success-text">感谢您的评价</view>
-      <view class="modify-link" bindtap="onModifyRating">
-        <text>修改我的评价</text>
-      </view>
+    <!-- 保存/取消按钮 - 修改评价时显示 -->
+    <view class="save-cancel-wrap" wx:if="{{isEditing && hasSubmitted}}">
+      <button class="cancel-btn" bindtap="onCancelEdit">取消</button>
+      <button
+        class="save-btn {{userRating > 0 ? 'active' : ''}}"
+        bindtap="onSubmit"
+        disabled="{{!userRating || isSubmitting}}"
+      >
+        <text wx:if="{{!isSubmitting}}">保存修改</text>
+        <text wx:else>保存中...</text>
+      </button>
     </view>
 
-    <!-- 评分统计展示 - 已评价后显示 -->
-    <view class="stats-showcase" wx:if="{{hasSubmitted && totalCount > 0}}">
+    <!-- 评分统计展示 - 非编辑模式时显示 -->
+    <view class="stats-showcase" wx:if="{{!isEditing}}">
       <view class="stats-main">
         <view class="stats-score">
-          <text class="score-num">{{avgRating}}</text>
+          <text class="score-num">{{avgRating || '0.0'}}</text>
           <text class="score-unit">分</text>
         </view>
         <view class="stats-stars">
@@ -127,8 +131,8 @@
       </view>
     </view>
 
-    <!-- 筛选栏 - 已评价后显示 -->
-    <view class="filter-section" wx:if="{{hasSubmitted}}">
+    <!-- 筛选栏 - 非编辑模式时显示 -->
+    <view class="filter-section" wx:if="{{!isEditing}}">
       <scroll-view class="filter-scroll" scroll-x enable-flex>
         <view class="filter-chip {{currentFilter === 'all' ? 'active' : ''}}" bindtap="onFilterChange" data-filter="all">
           <text>全部</text>
@@ -153,8 +157,27 @@
       </scroll-view>
     </view>
 
-    <!-- 评价列表 -->
-    <view class="review-list" wx:if="{{hasSubmitted}}">
+    <!-- 添加评价入口 - 未评价且非编辑模式时显示 -->
+    <view class="add-rating-entry" wx:if="{{!hasSubmitted && !isEditing}}" bindtap="onAddRating" hidden="{{isEditing}}">
+      <view class="entry-bg"></view>
+      <view class="entry-content">
+        <view class="entry-left">
+          <view class="entry-icon-wrap">
+            <text class="entry-icon">✍️</text>
+          </view>
+          <view class="entry-info">
+            <text class="entry-title">分享你的使用体验</text>
+            <text class="entry-desc">你的评价能帮助更多人了解 SpendNote</text>
+          </view>
+        </view>
+        <view class="entry-arrow">
+          <text class="arrow-icon">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 评价列表 - 非编辑模式时显示 -->
+    <view class="review-list" wx:if="{{!isEditing}}">
       <view wx:for="{{filteredReviews}}" wx:key="_id" class="review-card {{item.isMine ? 'my-review' : ''}}">
         <!-- 卡片头部 -->
         <view class="card-header">
@@ -168,7 +191,12 @@
             </view>
           </view>
           <view class="header-right">
-            <view class="rating-badge {{item.rating >= 4 ? 'good' : item.rating === 3 ? 'mid' : 'bad'}}">
+            <!-- 我的评价显示修改/删除按钮 -->
+            <view class="my-review-actions" wx:if="{{item.isMine && !isEditing}}">
+              <text class="action-btn modify" bindtap="onModifyRating">修改</text>
+              <text class="action-btn delete" bindtap="onDeleteRating">删除</text>
+            </view>
+            <view class="rating-badge {{item.rating >= 4 ? 'good' : item.rating === 3 ? 'mid' : 'bad'}}" wx:else>
               <text>{{item.rating}}分</text>
             </view>
           </view>
@@ -198,15 +226,28 @@
           <image wx:for="{{item.images}}" wx:for-item="img" wx:for-index="imgIdx" wx:key="imgIdx" src="{{img}}" class="review-image" mode="aspectFill" bindtap="onPreviewReviewImage" data-url="{{img}}" />
         </view>
 
-        <!-- 自己的评价标识 -->
-        <view class="my-review-tag" wx:if="{{item.isMine}}">
-          <text>我的评价</text>
+        <!-- 点赞踩按钮 - 只有非自己的评价才显示 -->
+        <view class="card-actions" wx:if="{{!item.isMine}}">
+          <view class="action-item {{item.isLiked ? 'active' : ''}}" catchtap="onLike" data-id="{{item._id}}">
+            <text class="action-icon">👍</text>
+            <text class="action-num">{{item.likes || 0}}</text>
+          </view>
+          <view class="action-item {{item.isDisliked ? 'active' : ''}}" catchtap="onDislike" data-id="{{item._id}}">
+            <text class="action-icon">👎</text>
+            <text class="action-num">{{item.dislikes || 0}}</text>
+          </view>
         </view>
       </view>
 
       <!-- 加载更多 -->
-      <view class="load-more" wx:if="{{hasMore}}" bindtap="onLoadMore">
+      <view class="load-more" wx:if="{{hasMore && !loading}}" bindtap="onLoadMore">
         <text>加载更多</text>
+      </view>
+
+      <!-- 加载中 -->
+      <view class="loading-state" wx:if="{{loading}}">
+        <view class="loading-spinner"></view>
+        <text class="loading-text">加载中...</text>
       </view>
 
       <!-- 暂无评价 -->

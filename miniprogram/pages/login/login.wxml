@@ -18,10 +18,10 @@
     <view class="brand-section">
       <view class="brand-mark">
         <view class="mark-line mark-left"></view>
-        <text class="mark-text">S</text>
+        <text class="mark-text">SpendNote</text>
         <view class="mark-line mark-right"></view>
       </view>
-      <text class="brand-name">SpendNote</text>
+      <text class="brand-name">开销随手记</text>
       <text class="brand-slogan">轻松记账，智慧生活</text>
     </view>
 
