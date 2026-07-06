@@ -56,7 +56,8 @@ function getQuickTabDateRange(value) {
   let newDate = '', rangeStartDate = '', rangeEndDate = ''
   if (value === 'day') {
     newDate = `${realYear}-${realMonthStr}-${realDayStr}`
-    rangeStartDate = newDate; rangeEndDate = newDate
+    rangeStartDate = `${realYear}-${realMonthStr}-01`
+    rangeEndDate = newDate
   } else if (value === 'month') {
     newDate = `${realYear}-${realMonthStr}`
     rangeStartDate = `${realYear}-${realMonthStr}-01`
