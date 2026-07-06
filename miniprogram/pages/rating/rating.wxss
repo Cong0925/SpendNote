@@ -1,6 +1,8 @@
 /* pages/rating/rating.wxss - Optimized Rating Display */
 page {
   background: linear-gradient(180deg, #f0f4f8 0%, #e8ecf1 100%);
+  overflow: hidden;
+  -webkit-overflow-scrolling: auto;
 }
 
 .rating-page {
@@ -43,11 +45,15 @@ page {
 .star {
   font-size: 72rpx;
   color: #e2e8f0;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
 }
 
 .star.active {
   color: #f59e0b;
+}
+
+/* 编辑模式的评分星星才有缩放效果 */
+.rating-card .star.active {
   transform: scale(1.1);
   text-shadow: 0 4rpx 12rpx rgba(245, 158, 11, 0.3);
 }
@@ -810,46 +816,16 @@ page {
   background: #f8fafc;
   border-radius: 40rpx;
   border: 2rpx solid #e2e8f0;
-  transition: all 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97);
-  position: relative;
-  overflow: hidden;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .action-item:active {
-  transform: scale(0.95);
   background: #f1f5f9;
 }
 
 .action-item.active {
   background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
   border-color: #3b82f6;
-  box-shadow: 0 4rpx 12rpx rgba(59, 130, 246, 0.2);
-}
-
-/* 整个按钮的弹跳动画 */
-.action-item.animate-pop {
-  animation: buttonPop 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
-}
-
-@keyframes buttonPop {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 0 rgba(59, 130, 246, 0);
-  }
-  30% {
-    transform: scale(1.1);
-    box-shadow: 0 4rpx 16rpx rgba(59, 130, 246, 0.3);
-  }
-  50% {
-    transform: scale(0.95);
-  }
-  70% {
-    transform: scale(1.03);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 rgba(59, 130, 246, 0);
-  }
 }
 
 .action-icon {
@@ -861,32 +837,12 @@ page {
   font-size: 24rpx;
   color: #64748b;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease;
 }
 
 .action-item.active .action-icon,
 .action-item.active .action-num {
   color: #2563eb;
-}
-
-/* 数字变化动画 */
-.action-num.animate-num {
-  animation: numSlide 0.3s ease;
-}
-
-@keyframes numSlide {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(-4rpx);
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
 
 /* 自己的评价标识 */

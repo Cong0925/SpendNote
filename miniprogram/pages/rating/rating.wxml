@@ -1,6 +1,6 @@
 <!--pages/rating/rating.wxml - Optimized Rating Display -->
 <view class="rating-page">
-  <scroll-view class="scroll-area" scroll-y enhanced show-scrollbar="{{false}}">
+  <scroll-view class="scroll-area" scroll-y show-scrollbar="{{false}}" bounces="{{false}}">
 
     <!-- 评分区域 - 编辑模式时显示 -->
     <view class="rating-card" wx:if="{{isEditing}}">
@@ -228,11 +228,11 @@
 
         <!-- 点赞踩按钮 - 只有非自己的评价才显示 -->
         <view class="card-actions" wx:if="{{!item.isMine}}">
-          <view class="action-item {{item.isLiked ? 'active' : ''}} {{item.likeAnimating ? 'animate-pop' : ''}}" catchtap="onLike" data-id="{{item._id}}">
+          <view class="action-item {{item.isLiked ? 'active' : ''}}" catchtap="onLike" data-id="{{item._id}}">
             <text class="action-icon">{{item.isLiked ? '👍' : '👍🏻'}}</text>
             <text class="action-num">{{item.likes || 0}}</text>
           </view>
-          <view class="action-item {{item.isDisliked ? 'active' : ''}} {{item.dislikeAnimating ? 'animate-pop' : ''}}" catchtap="onDislike" data-id="{{item._id}}">
+          <view class="action-item {{item.isDisliked ? 'active' : ''}}" catchtap="onDislike" data-id="{{item._id}}">
             <text class="action-icon">{{item.isDisliked ? '👎' : '👎🏻'}}</text>
             <text class="action-num">{{item.dislikes || 0}}</text>
           </view>

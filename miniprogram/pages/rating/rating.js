@@ -517,39 +517,34 @@ Page({
     this._likeAnimating = true
     setTimeout(() => { this._likeAnimating = false }, 400)
 
-    // 触觉反馈
-    wx.vibrateShort({ type: 'light' })
-
-    // 触发动画
-    this.triggerAnimate('likeAnimating', ratingId)
-
     // 先找到当前项，获取旧状态
     const { filteredReviews, reviews } = this.data
-    const currentItem = filteredReviews.find(item => item._id === ratingId)
-    if (!currentItem) return
+    const likeIndex = filteredReviews.findIndex(item => item._id === ratingId)
+    if (likeIndex < 0) return
 
+    const currentItem = filteredReviews[likeIndex]
     const wasLiked = currentItem.isLiked
     const wasDisliked = currentItem.isDisliked
+    const newIsLiked = !wasLiked
 
-    // 乐观UI更新：立即更新本地状态
-    const updateList = (list) => list.map(item => {
-      if (item._id === ratingId) {
-        const newIsLiked = !wasLiked
-        return {
-          ...item,
-          isLiked: newIsLiked,
-          likes: item.likes + (newIsLiked ? 1 : -1),
-          isDisliked: false,
-          dislikes: wasDisliked ? item.dislikes - 1 : item.dislikes
-        }
-      }
-      return item
-    })
+    // 乐观UI更新：使用路径语法只更新具体项，避免整个列表重绘
+    const updateData = {
+      [`filteredReviews[${likeIndex}].isLiked`]: newIsLiked,
+      [`filteredReviews[${likeIndex}].likes`]: currentItem.likes + (newIsLiked ? 1 : -1),
+      [`filteredReviews[${likeIndex}].isDisliked`]: false,
+      [`filteredReviews[${likeIndex}].dislikes`]: wasDisliked ? currentItem.dislikes - 1 : currentItem.dislikes
+    }
 
-    this.setData({
-      filteredReviews: updateList(filteredReviews),
-      reviews: updateList(reviews)
-    })
+    // 同步更新 reviews 数组中对应项
+    const reviewsIndex = reviews.findIndex(item => item._id === ratingId)
+    if (reviewsIndex >= 0) {
+      updateData[`reviews[${reviewsIndex}].isLiked`] = newIsLiked
+      updateData[`reviews[${reviewsIndex}].likes`] = currentItem.likes + (newIsLiked ? 1 : -1)
+      updateData[`reviews[${reviewsIndex}].isDisliked`] = false
+      updateData[`reviews[${reviewsIndex}].dislikes`] = wasDisliked ? currentItem.dislikes - 1 : currentItem.dislikes
+    }
+
+    this.setData(updateData)
 
     // 异步调用云函数
     try {
@@ -563,19 +558,37 @@ Page({
 
       if (!res.result.success) {
         // 失败时回滚本地状态
-        this.setData({
-          filteredReviews: updateList(filteredReviews),
-          reviews: updateList(reviews)
-        })
+        const revertData = {
+          [`filteredReviews[${likeIndex}].isLiked`]: wasLiked,
+          [`filteredReviews[${likeIndex}].likes`]: currentItem.likes + (wasLiked ? 1 : -1),
+          [`filteredReviews[${likeIndex}].isDisliked`]: wasDisliked,
+          [`filteredReviews[${likeIndex}].dislikes`]: wasDisliked ? currentItem.dislikes + 1 : currentItem.dislikes
+        }
+        if (reviewsIndex >= 0) {
+          revertData[`reviews[${reviewsIndex}].isLiked`] = wasLiked
+          revertData[`reviews[${reviewsIndex}].likes`] = currentItem.likes + (wasLiked ? 1 : -1)
+          revertData[`reviews[${reviewsIndex}].isDisliked`] = wasDisliked
+          revertData[`reviews[${reviewsIndex}].dislikes`] = wasDisliked ? currentItem.dislikes + 1 : currentItem.dislikes
+        }
+        this.setData(revertData)
         wx.showToast({ title: res.result.error || '操作失败', icon: 'none' })
       }
     } catch (error) {
       console.error('点赞失败:', error)
       // 失败时回滚
-      this.setData({
-        filteredReviews: updateList(filteredReviews),
-        reviews: updateList(reviews)
-      })
+      const revertData = {
+        [`filteredReviews[${likeIndex}].isLiked`]: wasLiked,
+        [`filteredReviews[${likeIndex}].likes`]: currentItem.likes + (wasLiked ? 1 : -1),
+        [`filteredReviews[${likeIndex}].isDisliked`]: wasDisliked,
+        [`filteredReviews[${likeIndex}].dislikes`]: wasDisliked ? currentItem.dislikes + 1 : currentItem.dislikes
+      }
+      if (reviewsIndex >= 0) {
+        revertData[`reviews[${reviewsIndex}].isLiked`] = wasLiked
+        revertData[`reviews[${reviewsIndex}].likes`] = currentItem.likes + (wasLiked ? 1 : -1)
+        revertData[`reviews[${reviewsIndex}].isDisliked`] = wasDisliked
+        revertData[`reviews[${reviewsIndex}].dislikes`] = wasDisliked ? currentItem.dislikes + 1 : currentItem.dislikes
+      }
+      this.setData(revertData)
       wx.showToast({ title: '操作失败', icon: 'none' })
     }
   },
@@ -589,39 +602,34 @@ Page({
     this._dislikeAnimating = true
     setTimeout(() => { this._dislikeAnimating = false }, 400)
 
-    // 触觉反馈
-    wx.vibrateShort({ type: 'light' })
-
-    // 触发动画
-    this.triggerAnimate('dislikeAnimating', ratingId)
-
     // 先找到当前项，获取旧状态
     const { filteredReviews, reviews } = this.data
-    const currentItem = filteredReviews.find(item => item._id === ratingId)
-    if (!currentItem) return
+    const dislikeIndex = filteredReviews.findIndex(item => item._id === ratingId)
+    if (dislikeIndex < 0) return
 
+    const currentItem = filteredReviews[dislikeIndex]
     const wasLiked = currentItem.isLiked
     const wasDisliked = currentItem.isDisliked
+    const newIsDisliked = !wasDisliked
 
-    // 乐观UI更新：立即更新本地状态
-    const updateList = (list) => list.map(item => {
-      if (item._id === ratingId) {
-        const newIsDisliked = !wasDisliked
-        return {
-          ...item,
-          isDisliked: newIsDisliked,
-          dislikes: item.dislikes + (newIsDisliked ? 1 : -1),
-          isLiked: false,
-          likes: wasLiked ? item.likes - 1 : item.likes
-        }
-      }
-      return item
-    })
+    // 乐观UI更新：使用路径语法只更新具体项，避免整个列表重绘
+    const updateData = {
+      [`filteredReviews[${dislikeIndex}].isDisliked`]: newIsDisliked,
+      [`filteredReviews[${dislikeIndex}].dislikes`]: currentItem.dislikes + (newIsDisliked ? 1 : -1),
+      [`filteredReviews[${dislikeIndex}].isLiked`]: false,
+      [`filteredReviews[${dislikeIndex}].likes`]: wasLiked ? currentItem.likes - 1 : currentItem.likes
+    }
 
-    this.setData({
-      filteredReviews: updateList(filteredReviews),
-      reviews: updateList(reviews)
-    })
+    // 同步更新 reviews 数组中对应项
+    const reviewsIndex = reviews.findIndex(item => item._id === ratingId)
+    if (reviewsIndex >= 0) {
+      updateData[`reviews[${reviewsIndex}].isDisliked`] = newIsDisliked
+      updateData[`reviews[${reviewsIndex}].dislikes`] = currentItem.dislikes + (newIsDisliked ? 1 : -1)
+      updateData[`reviews[${reviewsIndex}].isLiked`] = false
+      updateData[`reviews[${reviewsIndex}].likes`] = wasLiked ? currentItem.likes - 1 : currentItem.likes
+    }
+
+    this.setData(updateData)
 
     // 异步调用云函数
     try {
@@ -635,48 +643,38 @@ Page({
 
       if (!res.result.success) {
         // 失败时回滚本地状态
-        this.setData({
-          filteredReviews: updateList(filteredReviews),
-          reviews: updateList(reviews)
-        })
+        const revertData = {
+          [`filteredReviews[${dislikeIndex}].isDisliked`]: wasDisliked,
+          [`filteredReviews[${dislikeIndex}].dislikes`]: currentItem.dislikes + (wasDisliked ? 1 : -1),
+          [`filteredReviews[${dislikeIndex}].isLiked`]: wasLiked,
+          [`filteredReviews[${dislikeIndex}].likes`]: wasLiked ? currentItem.likes + 1 : currentItem.likes
+        }
+        if (reviewsIndex >= 0) {
+          revertData[`reviews[${reviewsIndex}].isDisliked`] = wasDisliked
+          revertData[`reviews[${reviewsIndex}].dislikes`] = currentItem.dislikes + (wasDisliked ? 1 : -1)
+          revertData[`reviews[${reviewsIndex}].isLiked`] = wasLiked
+          revertData[`reviews[${reviewsIndex}].likes`] = wasLiked ? currentItem.likes + 1 : currentItem.likes
+        }
+        this.setData(revertData)
         wx.showToast({ title: res.result.error || '操作失败', icon: 'none' })
       }
     } catch (error) {
       console.error('踩失败:', error)
+      // 失败时回滚
+      const revertData = {
+        [`filteredReviews[${dislikeIndex}].isDisliked`]: wasDisliked,
+        [`filteredReviews[${dislikeIndex}].dislikes`]: currentItem.dislikes + (wasDisliked ? 1 : -1),
+        [`filteredReviews[${dislikeIndex}].isLiked`]: wasLiked,
+        [`filteredReviews[${dislikeIndex}].likes`]: wasLiked ? currentItem.likes + 1 : currentItem.likes
+      }
+      if (reviewsIndex >= 0) {
+        revertData[`reviews[${reviewsIndex}].isDisliked`] = wasDisliked
+        revertData[`reviews[${reviewsIndex}].dislikes`] = currentItem.dislikes + (wasDisliked ? 1 : -1)
+        revertData[`reviews[${reviewsIndex}].isLiked`] = wasLiked
+        revertData[`reviews[${reviewsIndex}].likes`] = wasLiked ? currentItem.likes + 1 : currentItem.likes
+      }
+      this.setData(revertData)
       wx.showToast({ title: '操作失败', icon: 'none' })
     }
-  },
-
-  // 触发动画
-  triggerAnimate(animKey, ratingId) {
-    const { filteredReviews, reviews } = this.data
-
-    // 先设置动画状态为 true
-    const setAnimating = (list) => list.map(item => {
-      if (item._id === ratingId) {
-        return { ...item, [animKey]: true }
-      }
-      return item
-    })
-
-    this.setData({
-      filteredReviews: setAnimating(filteredReviews),
-      reviews: setAnimating(reviews)
-    })
-
-    // 400ms 后移除动画状态
-    setTimeout(() => {
-      const clearAnimating = (list) => list.map(item => {
-        if (item._id === ratingId) {
-          return { ...item, [animKey]: false }
-        }
-        return item
-      })
-
-      this.setData({
-        filteredReviews: clearAnimating(this.data.filteredReviews),
-        reviews: clearAnimating(this.data.reviews)
-      })
-    }, 400)
   }
 })
