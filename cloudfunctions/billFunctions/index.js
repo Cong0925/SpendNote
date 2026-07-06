@@ -46,6 +46,8 @@ exports.main = async (event, context) => {
         return await listBills(OPENID, data)
       case 'getStatsByDateRange':
         return await getStatsByDateRange(OPENID, data)
+      case 'getMonthlyTrend':
+        return await getMonthlyTrend(OPENID, data)
       default:
         return { success: false, error: '未知操作类型' }
     }
@@ -259,7 +261,7 @@ async function getBill(openid, id) {
  * 获取账单列表
  */
 async function listBills(openid, params = {}) {
-  const { startDate, endDate, type, page = 1, pageSize = 50 } = params
+  const { startDate, endDate, type, category, page = 1, pageSize = 50 } = params
 
   let whereCondition = { _openid: openid }
 
@@ -269,6 +271,10 @@ async function listBills(openid, params = {}) {
 
   if (type) {
     whereCondition.type = type
+  }
+
+  if (category) {
+    whereCondition.category = category
   }
 
   const result = await db.collection(BILLS_COLLECTION)
@@ -413,6 +419,76 @@ async function updateAccountBalance(accountId, billType, amount) {
 }
 
 /**
+ * 获取月度趋势数据（按月聚合某一年的支出/收入）
+ * 使用分页查询突破100条记录限制
+ */
+async function getMonthlyTrend(openid, params = {}) {
+  const { year } = params
+  if (!year) {
+    return { success: false, error: '缺少年份参数' }
+  }
+
+  const startDate = `${year}-01-01`
+  const endDate = `${year}-12-31`
+
+  // 分页查询所有账单（每批100条，微信云数据库单次上限）
+  const BATCH_SIZE = 100
+  let allBills = []
+  let skip = 0
+  let hasMore = true
+
+  while (hasMore) {
+    const batch = await db.collection(BILLS_COLLECTION)
+      .where({
+        _openid: openid,
+        date: _.gte(startDate).and(_.lte(endDate))
+      })
+      .field({ type: true, amount: true, date: true })
+      .skip(skip)
+      .limit(BATCH_SIZE)
+      .get()
+
+    allBills = allBills.concat(batch.data)
+    hasMore = batch.data.length === BATCH_SIZE
+    skip += BATCH_SIZE
+  }
+
+  // 初始化12个月的数据
+  const monthlyData = {}
+  for (let m = 1; m <= 12; m++) {
+    const key = String(m).padStart(2, '0')
+    monthlyData[key] = { month: m, income: 0, expense: 0, count: 0 }
+  }
+
+  // 按月份聚合
+  allBills.forEach(bill => {
+    // 兼容非补零日期格式（如 "2026-1-15"）
+    const parts = bill.date.split('-')
+    const month = (parts[1] || '0').padStart(2, '0')
+    if (monthlyData[month]) {
+      if (bill.type === 'income') {
+        monthlyData[month].income += bill.amount
+      } else {
+        monthlyData[month].expense += bill.amount
+      }
+      monthlyData[month].count += 1
+    }
+  })
+
+  // 转换为数组并精确处理金额
+  const trend = Object.values(monthlyData).map(item => ({
+    ...item,
+    income: roundNumber(item.income),
+    expense: roundNumber(item.expense)
+  }))
+
+  return {
+    success: true,
+    data: trend
+  }
+}
+
+/**
  * 按日期范围获取统计（支持分类统计）
  */
 async function getStatsByDateRange(openid, params = {}) {
@@ -424,18 +500,31 @@ async function getStatsByDateRange(openid, params = {}) {
     whereCondition.date = _.gte(startDate).and(_.lte(endDate))
   }
 
-  // 获取所有账单（包含分类信息）
-  const result = await db.collection(BILLS_COLLECTION)
-    .where(whereCondition)
-    .field({ type: true, amount: true, category: true, icon: true })
-    .get()
+  // 分页获取所有账单（突破100条限制）
+  const BATCH_SIZE = 100
+  let allBills = []
+  let skip = 0
+  let hasMore = true
+
+  while (hasMore) {
+    const batch = await db.collection(BILLS_COLLECTION)
+      .where(whereCondition)
+      .field({ type: true, amount: true, category: true, icon: true })
+      .skip(skip)
+      .limit(BATCH_SIZE)
+      .get()
+
+    allBills = allBills.concat(batch.data)
+    hasMore = batch.data.length === BATCH_SIZE
+    skip += BATCH_SIZE
+  }
 
   // 计算统计
   let totalIncome = 0
   let totalExpense = 0
   const categoryMap = {}
 
-  result.data.forEach(bill => {
+  allBills.forEach(bill => {
     if (bill.type === 'income') {
       totalIncome += bill.amount
     } else {

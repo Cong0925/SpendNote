@@ -19,6 +19,9 @@ Page({
     viewMode: 'month',
     startDate: '',
     endDate: '',
+    // 分类筛选参数
+    categoryFilter: '',
+    billTypeFilter: '',
     // 所有账单（用于搜索）
     allBills: []
   },
@@ -30,47 +33,90 @@ Page({
       statusBarHeight: sysInfo.statusBarHeight || 20,
       viewMode: options.viewMode || 'month',
       startDate: options.startDate || '',
-      endDate: options.endDate || ''
+      endDate: options.endDate || '',
+      categoryFilter: decodeURIComponent(options.category || ''),
+      billTypeFilter: options.billType || ''
     })
     this.loadAllBills()
   },
 
   // 加载账单用于搜索（有日期范围则按范围加载，否则加载所有）
   async loadAllBills() {
-    const { startDate, endDate } = this.data
+    const { startDate, endDate, categoryFilter, billTypeFilter } = this.data
 
     try {
       let res
-      // 如果有日期范围，按日期范围加载；否则加载所有账单
+      const params = { page: 1, pageSize: 500 }
       if (startDate && endDate) {
-        res = await wx.cloud.callFunction({
-          name: 'billFunctions',
-          data: {
-            action: 'getBillsByDateRange',
-            data: { startDate, endDate, page: 1, pageSize: 500 }
-          }
-        })
-      } else {
-        res = await wx.cloud.callFunction({
-          name: 'billFunctions',
-          data: {
-            action: 'getBills',
-            data: { page: 1, pageSize: 500 }
-          }
-        })
+        params.startDate = startDate
+        params.endDate = endDate
+      }
+      if (billTypeFilter) {
+        params.type = billTypeFilter
+      }
+      if (categoryFilter) {
+        params.category = categoryFilter
       }
 
+      const action = (startDate && endDate) ? 'getBillsByDateRange' : 'list'
+      res = await wx.cloud.callFunction({
+        name: 'billFunctions',
+        data: { action, data: params }
+      })
+
       if (res.result.success) {
-        const allBills = res.result.data.map(bill => ({
+        const bills = res.result.data.map(bill => ({
           ...bill,
           amount: parseFloat(bill.amount) || 0,
           amountStr: this.getBillAmountStr(bill)
         }))
+        // 获取账户名称
+        const allBills = await this.fetchAccountNames(bills)
         this.setData({ allBills })
+
+        // 如果有分类筛选，自动展示筛选结果
+        if (categoryFilter) {
+          this.setData({ searchKeyword: categoryFilter })
+          this._showFilteredResults(allBills, categoryFilter)
+        }
       }
     } catch (error) {
       console.error('【搜索页面】加载账单失败', error)
     }
+  },
+
+  // 展示分类筛选结果（无需用户手动搜索）
+  _showFilteredResults(allBills, category) {
+    const { viewMode } = this.data
+    const keyword = category.toLowerCase()
+
+    const matchedBills = allBills.filter(bill => {
+      return (bill.category || '').toLowerCase() === keyword
+    })
+
+    let totalIncome = 0
+    let totalExpense = 0
+    matchedBills.forEach(bill => {
+      if (bill.type === 'expense') {
+        totalExpense += bill.amount
+      } else {
+        totalIncome += bill.amount
+      }
+    })
+
+    const balance = totalIncome - totalExpense
+    const groupedBills = this.groupBillsByDate(matchedBills, viewMode)
+
+    this.setData({
+      searchResult: groupedBills,
+      searched: true,
+      loading: false,
+      searchTotal: matchedBills.length,
+      searchIncomeStr: formatAmount(totalIncome),
+      searchExpenseStr: formatAmount(totalExpense),
+      searchBalanceStr: formatAmount(Math.abs(balance)),
+      searchBalance: balance
+    })
   },
 
   // 返回
@@ -212,6 +258,53 @@ Page({
     const amount = parseFloat(bill.amount) || 0
     const prefix = bill.type === 'expense' ? '-' : '+'
     return `${prefix}¥${formatAmount(amount)}`
+  },
+
+  // 获取账户名称
+  async fetchAccountNames(bills) {
+    // 提取所有不重复的 accountId
+    const accountIds = [...new Set(bills.filter(bill => bill.accountId).map(bill => bill.accountId))]
+
+    // 没有关联账户，标记为无账户
+    if (accountIds.length === 0) {
+      return bills.map(bill => ({
+        ...bill,
+        accountName: '无账户'
+      }))
+    }
+
+    try {
+      // 批量获取账户信息
+      const accountRes = await wx.cloud.callFunction({
+        name: 'accountFunctions',
+        data: {
+          action: 'listByIds',
+          data: { ids: accountIds }
+        }
+      })
+
+      if (accountRes.result.success) {
+        // 构建 accountId -> accountName 映射
+        const accountMap = {}
+        accountRes.result.data.forEach(account => {
+          accountMap[account._id] = account.name
+        })
+
+        // 为每个账单添加账户名称
+        return bills.map(bill => ({
+          ...bill,
+          accountName: bill.accountId ? (accountMap[bill.accountId] || '未知账户') : '无账户'
+        }))
+      }
+    } catch (error) {
+      console.error('获取账户信息失败:', error)
+    }
+
+    // 失败时标记为无账户
+    return bills.map(bill => ({
+      ...bill,
+      accountName: '无账户'
+    }))
   },
 
   // 跳转到详情页

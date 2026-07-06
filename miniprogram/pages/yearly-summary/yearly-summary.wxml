@@ -141,6 +141,32 @@
           </view>
         </view>
 
+        <!-- 月度趋势卡片 -->
+        <view class="trend-card" wx:if="{{monthlyTrend.length > 0}}">
+          <view class="card-header">
+            <text class="card-title">📈 月度趋势</text>
+            <view class="trend-legend">
+              <view class="trend-legend-item">
+                <view class="trend-legend-dot expense"></view>
+                <text>支出</text>
+              </view>
+              <view class="trend-legend-item">
+                <view class="trend-legend-dot income"></view>
+                <text>收入</text>
+              </view>
+            </view>
+          </view>
+          <view class="bar-chart">
+            <view class="bar-group" wx:for="{{monthlyTrend}}" wx:key="month">
+              <view class="bars">
+                <view class="bar expense-bar" style="height: {{item.expenseHeight}}%"></view>
+                <view class="bar income-bar" style="height: {{item.incomeHeight}}%"></view>
+              </view>
+              <text class="bar-label">{{item.month}}月</text>
+            </view>
+          </view>
+        </view>
+
         <!-- 鼓励语 -->
         <view class="encourage-card">
           <view class="encourage-icon">🎉</view>

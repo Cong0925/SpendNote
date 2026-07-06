@@ -1,6 +1,106 @@
 // pages/stats/stats.js
 const { formatAmount } = require('../../utils/formatAmount')
 
+// 日期工具函数（内联避免模块导入问题）
+function formatDate(date) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+function getDisplayDate(dateStr, mode) {
+  const parts = dateStr.split('-')
+  const y = parts[0]
+  const m = parts[1] || '01'
+  switch (mode) {
+    case 'day': return dateStr
+    case 'month': return `${y}-${m}`
+    case 'quarter': return `${y} Q${Math.ceil(parseInt(m) / 3)}`
+    case 'year': return `${y}`
+    default: return dateStr
+  }
+}
+
+function getDateRange(dateStr, mode) {
+  const parts = dateStr.split('-')
+  const y = parseInt(parts[0])
+  const m = parseInt(parts[1]) || 1
+  switch (mode) {
+    case 'day': return { start: dateStr, end: dateStr }
+    case 'month': return {
+      start: `${y}-${String(m).padStart(2, '0')}-01`,
+      end: `${y}-${String(m).padStart(2, '0')}-${new Date(y, m, 0).getDate()}`
+    }
+    case 'quarter': {
+      const q = Math.ceil(m / 3)
+      const qStart = (q - 1) * 3 + 1
+      const qEnd = q * 3
+      return {
+        start: `${y}-${String(qStart).padStart(2, '0')}-01`,
+        end: `${y}-${String(qEnd).padStart(2, '0')}-${new Date(y, qEnd, 0).getDate()}`
+      }
+    }
+    case 'year': return { start: `${y}-01-01`, end: `${y}-12-31` }
+    default: return { start: dateStr, end: dateStr }
+  }
+}
+
+function getQuickTabDateRange(value) {
+  const now = new Date()
+  const realYear = now.getFullYear()
+  const realMonth = now.getMonth() + 1
+  const realDay = now.getDate()
+  const realMonthStr = String(realMonth).padStart(2, '0')
+  const realDayStr = String(realDay).padStart(2, '0')
+  let newDate = '', rangeStartDate = '', rangeEndDate = ''
+  if (value === 'day') {
+    newDate = `${realYear}-${realMonthStr}-${realDayStr}`
+    rangeStartDate = newDate; rangeEndDate = newDate
+  } else if (value === 'month') {
+    newDate = `${realYear}-${realMonthStr}`
+    rangeStartDate = `${realYear}-${realMonthStr}-01`
+    const lastDay = new Date(realYear, realMonth, 0).getDate()
+    rangeEndDate = `${realYear}-${realMonthStr}-${String(lastDay).padStart(2, '0')}`
+  } else if (value === 'quarter') {
+    const currentQuarter = Math.ceil(realMonth / 3) - 1
+    const startMonth = currentQuarter * 3 + 1
+    const endMonth = (currentQuarter + 1) * 3
+    newDate = `${realYear}-${String(startMonth).padStart(2, '0')}-01`
+    rangeStartDate = `${realYear}-${String(startMonth).padStart(2, '0')}-01`
+    const lastDay = new Date(realYear, endMonth, 0).getDate()
+    rangeEndDate = `${realYear}-${String(endMonth).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`
+  } else if (value === 'year') {
+    newDate = `${realYear}`
+    rangeStartDate = `${realYear}-01-01`
+    rangeEndDate = `${realYear}-12-31`
+  }
+  return { newDate, rangeStartDate, rangeEndDate }
+}
+
+// 月度趋势数据加载
+async function loadMonthlyTrendData(year) {
+  const res = await wx.cloud.callFunction({
+    name: 'billFunctions',
+    data: { action: 'getMonthlyTrend', data: { year } }
+  })
+  if (!res.result.success) return { monthlyTrend: [], maxMonthlyAmount: 0 }
+  const trend = res.result.data || []
+  let maxAmount = 0
+  trend.forEach(item => {
+    const total = (item.expense || 0) + (item.income || 0)
+    if (total > maxAmount) maxAmount = total
+  })
+  const monthlyTrend = trend.map(item => ({
+    ...item,
+    expenseHeight: maxAmount > 0 ? ((item.expense || 0) / maxAmount * 100).toFixed(1) : '0',
+    incomeHeight: maxAmount > 0 ? ((item.income || 0) / maxAmount * 100).toFixed(1) : '0',
+    expenseStr: formatAmount(item.expense || 0),
+    incomeStr: formatAmount(item.income || 0)
+  }))
+  return { monthlyTrend, maxMonthlyAmount: maxAmount }
+}
+
 const CHART_COLORS = [
   '#2563EB', '#EF4444', '#22C55E', '#F59E0B', '#8B5CF6',
   '#EC4899', '#06B6D4', '#F97316', '#6366F1', '#14B8A6',
@@ -36,6 +136,9 @@ Page({
     donutGradient: '',
     loading: false,
     activeTab: 'expense',
+    // 月度趋势
+    monthlyTrend: [],
+    maxMonthlyAmount: 0,
     // 时间范围选择
     rangeStartDate: '',
     rangeEndDate: '',
@@ -78,77 +181,18 @@ Page({
 
   initDate() {
     const now = new Date()
-    const date = this.formatDate(now)
+    const date = formatDate(now)
     const viewMode = this.data.viewMode
-
-    // 初始化时间范围
-    let rangeStartDate = date
-    let rangeEndDate = date
-
-    // 根据视图模式设置默认范围
-    if (viewMode === 'month') {
-      const [y, m] = date.split('-')
-      rangeStartDate = `${y}-${m}-01`
-      const lastDay = new Date(parseInt(y), parseInt(m), 0).getDate()
-      rangeEndDate = `${y}-${m}-${lastDay}`
-    } else if (viewMode === 'year') {
-      const [y] = date.split('-')
-      rangeStartDate = `${y}-01-01`
-      rangeEndDate = `${y}-12-31`
-    }
+    const { rangeStartDate, rangeEndDate } = getQuickTabDateRange(viewMode === 'quarter' ? 'quarter' : viewMode)
 
     this.setData({
       currentDate: date,
-      dateDisplay: this.getDisplayDate(date, viewMode),
-      rangeStartDate: rangeStartDate,
-      rangeEndDate: rangeEndDate,
-      rangeStartText: this.getDisplayDate(rangeStartDate, viewMode),
-      rangeEndText: this.getDisplayDate(rangeEndDate, viewMode)
+      dateDisplay: getDisplayDate(date, viewMode),
+      rangeStartDate,
+      rangeEndDate,
+      rangeStartText: getDisplayDate(rangeStartDate, viewMode),
+      rangeEndText: getDisplayDate(rangeEndDate, viewMode)
     })
-  },
-
-  formatDate(date) {
-    const y = date.getFullYear()
-    const m = String(date.getMonth() + 1).padStart(2, '0')
-    const d = String(date.getDate()).padStart(2, '0')
-    return `${y}-${m}-${d}`
-  },
-
-  getDisplayDate(dateStr, mode) {
-    const parts = dateStr.split('-')
-    const y = parts[0]
-    const m = parts[1] || '01'
-    switch (mode) {
-      case 'day': return dateStr
-      case 'month': return `${y}-${m}`
-      case 'quarter': return `${y} Q${Math.ceil(parseInt(m) / 3)}`
-      case 'year': return `${y}`
-    }
-  },
-
-  getDateRange(dateStr, mode) {
-    const parts = dateStr.split('-')
-    const y = parseInt(parts[0])
-    const m = parseInt(parts[1]) || 1
-    switch (mode) {
-      case 'day':
-        return { start: dateStr, end: dateStr }
-      case 'month':
-        return {
-          start: `${y}-${String(m).padStart(2, '0')}-01`,
-          end: `${y}-${String(m).padStart(2, '0')}-${new Date(y, m, 0).getDate()}`
-        }
-      case 'quarter':
-        const q = Math.ceil(m / 3)
-        const qStart = (q - 1) * 3 + 1
-        const qEnd = q * 3
-        return {
-          start: `${y}-${String(qStart).padStart(2, '0')}-01`,
-          end: `${y}-${String(qEnd).padStart(2, '0')}-${new Date(y, qEnd, 0).getDate()}`
-        }
-      case 'year':
-        return { start: `${y}-01-01`, end: `${y}-12-31` }
-    }
   },
 
   // 处理时间范围变更
@@ -175,8 +219,8 @@ Page({
       currentDate: currentDate,
       rangeStartDate: startDate,
       rangeEndDate: endDate,
-      rangeStartText: this.getDisplayDate(startDate, viewMode),
-      rangeEndText: this.getDisplayDate(endDate, viewMode)
+      rangeStartText: getDisplayDate(startDate, viewMode),
+      rangeEndText: getDisplayDate(endDate, viewMode)
     })
 
     this.loadStats()
@@ -185,54 +229,16 @@ Page({
   // 快捷标签切换
   selectQuickTab(e) {
     const value = e.currentTarget.dataset.value
-
-    // 获取当前真实日期
-    const now = new Date()
-    const realYear = now.getFullYear()
-    const realMonth = now.getMonth() + 1
-    const realDay = now.getDate()
-    const realMonthStr = String(realMonth).padStart(2, '0')
-    const realDayStr = String(realDay).padStart(2, '0')
-
-    let newDate = ''
-    let rangeStartDate = ''
-    let rangeEndDate = ''
-
-    if (value === 'day') {
-      // 日模式：强制重置为当前真实日期
-      newDate = `${realYear}-${realMonthStr}-${realDayStr}`
-      rangeStartDate = newDate
-      rangeEndDate = newDate
-    } else if (value === 'month') {
-      // 月模式：强制重置为当前真实月份
-      newDate = `${realYear}-${realMonthStr}`
-      rangeStartDate = `${realYear}-${realMonthStr}-01`
-      const lastDay = new Date(realYear, realMonth, 0).getDate()
-      rangeEndDate = `${realYear}-${realMonthStr}-${String(lastDay).padStart(2, '0')}`
-    } else if (value === 'quarter') {
-      // 季度模式：强制重置为当前真实季度
-      const currentQuarter = Math.ceil(realMonth / 3) - 1
-      const startMonth = currentQuarter * 3 + 1
-      const endMonth = (currentQuarter + 1) * 3
-      newDate = `${realYear}-${String(startMonth).padStart(2, '0')}-01`
-      rangeStartDate = `${realYear}-${String(startMonth).padStart(2, '0')}-01`
-      const lastDay = new Date(realYear, endMonth, 0).getDate()
-      rangeEndDate = `${realYear}-${String(endMonth).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`
-    } else if (value === 'year') {
-      // 年模式：强制重置为当前真实年份
-      newDate = `${realYear}`
-      rangeStartDate = `${realYear}-01-01`
-      rangeEndDate = `${realYear}-12-31`
-    }
+    const { newDate, rangeStartDate, rangeEndDate } = getQuickTabDateRange(value)
 
     this.setData({
       viewMode: value,
       currentDate: newDate,
-      dateDisplay: this.getDisplayDate(newDate, value),
-      rangeStartDate: rangeStartDate,
-      rangeEndDate: rangeEndDate,
-      rangeStartText: this.getDisplayDate(rangeStartDate, value),
-      rangeEndText: this.getDisplayDate(rangeEndDate, value)
+      dateDisplay: getDisplayDate(newDate, value),
+      rangeStartDate,
+      rangeEndDate,
+      rangeStartText: getDisplayDate(rangeStartDate, value),
+      rangeEndText: getDisplayDate(rangeEndDate, value)
     })
 
     this.loadStats()
@@ -251,7 +257,7 @@ Page({
       end = rangeEndDate
     } else {
       // 使用单一日期（季度保持原逻辑）
-      const range = this.getDateRange(currentDate, viewMode)
+      const range = getDateRange(currentDate, viewMode)
       start = range.start
       end = range.end
     }
@@ -312,11 +318,29 @@ Page({
           displayStats,
           donutGradient
         })
+
+        // 年度模式下加载月度趋势
+        if (viewMode === 'year') {
+          this.loadMonthlyTrend(start)
+        } else {
+          this.setData({ monthlyTrend: [], maxMonthlyAmount: 0 })
+        }
       }
     } catch (error) {
       console.error('加载统计失败:', error)
     } finally {
       this.setData({ loading: false })
+    }
+  },
+
+  // 加载月度趋势数据
+  async loadMonthlyTrend(dateStr) {
+    try {
+      const year = parseInt(dateStr.split('-')[0])
+      const { monthlyTrend, maxMonthlyAmount } = await loadMonthlyTrendData(year)
+      this.setData({ monthlyTrend, maxMonthlyAmount })
+    } catch (error) {
+      console.error('加载月度趋势失败:', error)
     }
   },
 
@@ -343,7 +367,7 @@ Page({
       showQuarter: false,
       quarterIndex: value,
       currentDate: newDate,
-      dateDisplay: this.getDisplayDate(newDate, 'quarter')
+      dateDisplay: getDisplayDate(newDate, 'quarter')
     })
     this.loadStats()
   },
@@ -351,5 +375,14 @@ Page({
   switchTab(e) {
     this.setData({ activeTab: e.currentTarget.dataset.tab })
     this.loadStats()
+  },
+
+  // 点击分类，跳转搜索页查看该分类的明细
+  goToCategoryDetail(e) {
+    const { category, type } = e.currentTarget.dataset
+    const { rangeStartDate, rangeEndDate, viewMode } = this.data
+    wx.navigateTo({
+      url: `/pages/search/search?category=${encodeURIComponent(category)}&billType=${type}&startDate=${rangeStartDate}&endDate=${rangeEndDate}&viewMode=${viewMode}`
+    })
   }
 })

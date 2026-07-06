@@ -289,6 +289,20 @@ page {
   overflow: hidden;
 }
 
+.bill-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 4rpx;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.bill-name-row .bill-name {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
 .bill-name {
   font-size: 30rpx;
   color: var(--color-text);
@@ -300,6 +314,29 @@ page {
   white-space: nowrap;
 }
 
+.bill-account-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2rpx 12rpx;
+  background: rgba(37, 99, 235, 0.1);
+  border-radius: 8rpx;
+  flex-shrink: 0;
+}
+
+.bill-account-tag text {
+  font-size: 20rpx;
+  color: #2563EB;
+  white-space: nowrap;
+}
+
+.bill-account-tag.no-account {
+  background: rgba(156, 163, 175, 0.15);
+}
+
+.bill-account-tag.no-account text {
+  color: #9CA3AF;
+}
+
 .bill-note {
   font-size: 24rpx;
   color: var(--color-text-tertiary);
@@ -307,6 +344,11 @@ page {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.bill-note.no-note {
+  color: var(--color-text-light);
+  font-style: italic;
 }
 
 .bill-right {
@@ -325,6 +367,14 @@ page {
 
 .bill-amount.red { color: var(--color-expense); }
 .bill-amount.green { color: var(--color-income); }
+
+.bill-date {
+  font-size: 22rpx;
+  color: var(--color-text-tertiary);
+  display: block;
+  margin-top: 4rpx;
+  white-space: nowrap;
+}
 
 /* ============ 加载 ============ */
 .load-more {

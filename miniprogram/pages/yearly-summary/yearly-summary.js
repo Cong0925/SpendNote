@@ -1,6 +1,29 @@
 // pages/yearly-summary/yearly-summary.js
 const app = getApp()
 
+// 月度趋势数据加载（内联避免模块导入问题）
+async function loadMonthlyTrendData(year) {
+  const res = await wx.cloud.callFunction({
+    name: 'billFunctions',
+    data: { action: 'getMonthlyTrend', data: { year } }
+  })
+  if (!res.result.success) return { monthlyTrend: [], maxMonthlyAmount: 0 }
+  const trend = res.result.data || []
+  let maxAmount = 0
+  trend.forEach(item => {
+    const total = (item.expense || 0) + (item.income || 0)
+    if (total > maxAmount) maxAmount = total
+  })
+  const monthlyTrend = trend.map(item => ({
+    ...item,
+    expenseHeight: maxAmount > 0 ? ((item.expense || 0) / maxAmount * 100).toFixed(1) : '0',
+    incomeHeight: maxAmount > 0 ? ((item.income || 0) / maxAmount * 100).toFixed(1) : '0',
+    expenseStr: Number(item.expense || 0).toFixed(2),
+    incomeStr: Number(item.income || 0).toFixed(2)
+  }))
+  return { monthlyTrend, maxMonthlyAmount: maxAmount }
+}
+
 Page({
   data: {
     year: 2026,
@@ -21,6 +44,9 @@ Page({
     bookkeepingRate: 0,
     // 支出分类排行
     expenseRankList: [],
+    // 月度趋势
+    monthlyTrend: [],
+    maxMonthlyAmount: 0,
     // 年度选择器
     showYearPicker: false,
     yearList: []
@@ -64,9 +90,12 @@ Page({
           savingsRate: data.savingsRate || 0,
           avgBillsPerDay: data.avgBillsPerDay || 0,
           bookkeepingRate: data.bookkeepingRate || 0,
-          expenseRankList: data.expenseRankList || [],
-          loading: false
+          expenseRankList: data.expenseRankList || []
         })
+
+        // 加载月度趋势（等待完成后再隐藏骨架屏）
+        await this.loadMonthlyTrend()
+        this.setData({ loading: false })
       } else {
         console.error('获取年度数据失败：', res.result.error)
         wx.showToast({ title: '加载失败', icon: 'none' })
@@ -96,6 +125,17 @@ Page({
     } catch (err) {
       console.error('计算使用天数失败：', err)
       this.setData({ usageDays: 1 })
+    }
+  },
+
+  // 加载月度趋势数据
+  async loadMonthlyTrend() {
+    try {
+      const { year } = this.data
+      const { monthlyTrend, maxMonthlyAmount } = await loadMonthlyTrendData(year)
+      this.setData({ monthlyTrend, maxMonthlyAmount })
+    } catch (err) {
+      console.error('加载月度趋势失败：', err)
     }
   },
 

@@ -78,12 +78,19 @@
               <text class="bill-icon">{{bill.icon}}</text>
             </view>
             <view class="bill-info">
-              <text class="bill-name">{{bill.category}}</text>
+              <view class="bill-name-row">
+                <text class="bill-name">{{bill.category}}</text>
+                <view class="bill-account-tag {{bill.accountName === '无账户' ? 'no-account' : ''}}">
+                  <text>{{bill.accountName}}</text>
+                </view>
+              </view>
               <text class="bill-note" wx:if="{{bill.note}}">{{bill.note}}</text>
+              <text class="bill-note no-note" wx:else>暂无备注</text>
             </view>
           </view>
           <view class="bill-right">
             <text class="bill-amount {{bill.type === 'expense' ? 'red' : 'green'}}">{{bill.amountStr}}</text>
+            <text class="bill-date" wx:if="{{viewMode !== 'day'}}">{{bill.date}}</text>
           </view>
         </view>
       </view>

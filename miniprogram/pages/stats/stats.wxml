@@ -29,7 +29,7 @@
   </view>
 
   <!-- 收支概览卡片 -->
-  <view class="overview-card animate-slideUp" style="animation-delay: 0.1s">
+  <view class="overview-card animate-fadeIn animate-slideUp">
     <view class="overview-grid">
       <view class="overview-cell">
         <view class="overview-dot expense"></view>
@@ -91,7 +91,7 @@
 
       <view class="stats-list">
         <view class="stats-list-title">分类明细</view>
-        <view class="stats-item" wx:for="{{displayStats}}" wx:key="category">
+        <view class="stats-item" wx:for="{{displayStats}}" wx:key="category" bindtap="goToCategoryDetail" data-category="{{item.category}}" data-type="{{item.type}}">
           <view class="stats-rank" style="background: {{item.color}}20; color: {{item.color}}">
             <text>{{index + 1}}</text>
           </view>
@@ -110,9 +110,40 @@
             <text class="stats-amount">¥{{item.amountStr}}</text>
             <text class="stats-count">{{item.count}}笔</text>
           </view>
+          <view class="stats-arrow">
+            <view class="arrow-icon"></view>
+          </view>
         </view>
       </view>
     </block>
+  </view>
+
+  <!-- 月度趋势柱状图（仅年度模式显示） -->
+  <view class="trend-section animate-slideUp" style="animation-delay: 0.25s" wx:if="{{viewMode === 'year' && monthlyTrend.length > 0}}">
+    <view class="trend-card">
+      <view class="trend-header">
+        <text class="trend-title">月度趋势</text>
+        <view class="trend-legend">
+          <view class="trend-legend-item">
+            <view class="trend-legend-dot expense"></view>
+            <text>支出</text>
+          </view>
+          <view class="trend-legend-item">
+            <view class="trend-legend-dot income"></view>
+            <text>收入</text>
+          </view>
+        </view>
+      </view>
+      <view class="bar-chart">
+        <view class="bar-group" wx:for="{{monthlyTrend}}" wx:key="month">
+          <view class="bars">
+            <view class="bar expense-bar" style="height: {{item.expenseHeight}}%"></view>
+            <view class="bar income-bar" style="height: {{item.incomeHeight}}%"></view>
+          </view>
+          <text class="bar-label">{{item.month}}月</text>
+        </view>
+      </view>
+    </view>
   </view>
 
   <view class="loading" wx:if="{{loading}}">加载中...</view>

@@ -38,6 +38,8 @@ exports.main = async (event, context) => {
         return await getAccount(OPENID, data.id)
       case 'list':
         return await listAccounts(OPENID, data)
+      case 'listByIds':
+        return await listAccountsByIds(OPENID, data)
       case 'getSummary':
         return await getAccountSummary(OPENID)
       case 'updateBalance':
@@ -335,5 +337,28 @@ async function updateBalance(openid, id, amount) {
   return {
     success: true,
     data: { updated: result.stats.updated }
+  }
+}
+
+/**
+ * 根据ID列表批量获取账户
+ */
+async function listAccountsByIds(openid, params = {}) {
+  const { ids = [] } = params
+
+  if (ids.length === 0) {
+    return { success: true, data: [] }
+  }
+
+  const result = await db.collection(ACCOUNTS_COLLECTION)
+    .where({
+      _openid: openid,
+      _id: _.in(ids)
+    })
+    .get()
+
+  return {
+    success: true,
+    data: result.data
   }
 }
