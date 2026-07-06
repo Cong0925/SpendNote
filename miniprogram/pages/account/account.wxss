@@ -379,6 +379,52 @@ page {
   color: var(--color-text-tertiary);
 }
 
+/* ============ 借款骨架屏 ============ */
+.loan-skeleton {
+  background: var(--color-card);
+}
+
+.skeleton-item {
+  pointer-events: none;
+}
+
+.skeleton-circle {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+}
+
+.skeleton-text {
+  background: var(--color-border);
+  border-radius: var(--radius-sm);
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-title {
+  width: 80rpx;
+  height: 28rpx;
+  margin-bottom: 12rpx;
+}
+
+.skeleton-subtitle {
+  width: 60rpx;
+  height: 22rpx;
+}
+
+.skeleton-amount {
+  width: 120rpx;
+  height: 32rpx;
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);

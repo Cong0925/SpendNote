@@ -22,10 +22,34 @@
   <view class="section">
     <view class="section-title loan-title">借款记账</view>
 
-    <!-- 加载中状态 -->
-    <view class="section-loading" wx:if="{{loadingLoans}}">
-      <view class="loading-spinner-small"></view>
-      <text class="loading-text">加载中...</text>
+    <!-- 加载中状态 - 骨架屏 -->
+    <view class="loan-skeleton" wx:if="{{loadingLoans}}">
+      <!-- 借出骨架 -->
+      <view class="loan-item skeleton-item">
+        <view class="loan-left">
+          <view class="skeleton-icon skeleton-circle"></view>
+          <view class="loan-info">
+            <view class="skeleton-text skeleton-title"></view>
+            <view class="skeleton-text skeleton-subtitle"></view>
+          </view>
+        </view>
+        <view class="loan-right">
+          <view class="skeleton-text skeleton-amount"></view>
+        </view>
+      </view>
+      <!-- 借入骨架 -->
+      <view class="loan-item skeleton-item">
+        <view class="loan-left">
+          <view class="skeleton-icon skeleton-circle"></view>
+          <view class="loan-info">
+            <view class="skeleton-text skeleton-title"></view>
+            <view class="skeleton-text skeleton-subtitle"></view>
+          </view>
+        </view>
+        <view class="loan-right">
+          <view class="skeleton-text skeleton-amount"></view>
+        </view>
+      </view>
     </view>
 
     <!-- 加载完成 -->
