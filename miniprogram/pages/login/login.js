@@ -122,12 +122,29 @@ Page({
         }
       })
 
-      // 4. 缓存用户信息到本地
-      const userInfo = {
-        avatarUrl: finalAvatarUrl,
-        nickName: nickName.trim(),
-        openid
+      // 4. 从数据库获取完整用户信息（包含 createTime）
+      const userRes = await wx.cloud.callFunction({
+        name: 'user',
+        data: {
+          action: 'get'
+        }
+      })
+
+      let userInfo
+      if (userRes.result.success && userRes.result.data) {
+        // 使用数据库返回的完整用户信息
+        userInfo = userRes.result.data
+      } else {
+        // 降级：使用基本信息
+        console.error('获取用户信息失败，使用基本信息')
+        userInfo = {
+          avatarUrl: finalAvatarUrl,
+          nickName: nickName.trim(),
+          openid
+        }
       }
+
+      // 缓存用户信息到本地
       wx.setStorageSync('userInfo', userInfo)
       app.globalData.userInfo = userInfo
 
