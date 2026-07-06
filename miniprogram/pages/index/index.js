@@ -231,9 +231,8 @@ Page({
 
   // 加载账单
   async loadBills() {
-    if (this.data.loading) return
-
-    this.setData({ loading: true })
+    // 清空列表并显示加载状态
+    this.setData({ loading: true, bills: [], groupedBills: [] })
 
     const { currentDate, viewMode, rangeStartDate, rangeEndDate } = this.data
 
@@ -938,8 +937,8 @@ Page({
       rangeStartDate = `${realYear}-01-01`
       rangeEndDate = `${realYear}-12-31`
     }
-
     this.setData({
+      loading: true,
       viewMode: value,
       currentDate: newDate,
       dateDisplay: this.getDisplayDate(newDate, value),
