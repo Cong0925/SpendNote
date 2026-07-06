@@ -127,9 +127,9 @@
             </view>
           </view>
           <view class="swipe-card {{bill.swiped ? 'open' : ''}}"
-            catchtouchstart="onTouchStart"
-            catchtouchmove="onTouchMove"
-            catchtouchend="onTouchEnd"
+            bindtouchstart="onTouchStart"
+            bindtouchmove="onTouchMove"
+            bindtouchend="onTouchEnd"
             data-date="{{item.date}}"
             data-index="{{index}}">
             <view class="bill-row">
@@ -176,9 +176,9 @@
               </view>
             </view>
             <view class="swipe-card {{bill.swiped ? 'open' : ''}}"
-              catchtouchstart="onTouchStart"
-              catchtouchmove="onTouchMove"
-              catchtouchend="onTouchEnd"
+              bindtouchstart="onTouchStart"
+              bindtouchmove="onTouchMove"
+              bindtouchend="onTouchEnd"
               data-date="{{dayGroup.date}}"
               data-index="{{index}}">
               <view class="bill-row">
@@ -240,9 +240,9 @@
                   </view>
                 </view>
                 <view class="swipe-card {{bill.swiped ? 'open' : ''}}"
-                  catchtouchstart="onTouchStart"
-                  catchtouchmove="onTouchMove"
-                  catchtouchend="onTouchEnd"
+                  bindtouchstart="onTouchStart"
+                  bindtouchmove="onTouchMove"
+                  bindtouchend="onTouchEnd"
                   data-date="{{dayGroup.date}}"
                   data-index="{{index}}">
                   <view class="bill-row">
