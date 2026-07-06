@@ -30,6 +30,7 @@
         <view class="overview-card">
           <view class="card-header">
             <text class="card-title">💰 年度总览</text>
+            <text class="card-count">{{totalCount}}笔</text>
           </view>
           <view class="overview-stats">
             <view class="stat-block income">
@@ -40,10 +41,10 @@
               <text class="stat-label">总支出</text>
               <text class="stat-value">¥{{totalExpenseStr}}</text>
             </view>
-            <view class="stat-block total">
-              <text class="stat-label">总笔数</text>
-              <text class="stat-value">{{totalCount}}笔</text>
-            </view>
+          </view>
+          <view class="overview-balance">
+            <text class="balance-label">结余</text>
+            <text class="balance-value {{balance >= 0 ? 'positive' : 'negative'}}">¥{{balanceStr}}</text>
           </view>
         </view>
 

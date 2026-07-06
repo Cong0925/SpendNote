@@ -130,6 +130,9 @@
 }
 
 .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 24rpx;
 }
 
@@ -139,10 +142,17 @@
   color: var(--color-text, #1A1D26);
 }
 
+.card-count {
+  font-size: 24rpx;
+  color: var(--color-text-secondary, #6B7280);
+  font-weight: 500;
+}
+
 /* 年度总览 */
 .overview-stats {
   display: flex;
   justify-content: space-between;
+  gap: 20rpx;
 }
 
 .stat-block {
@@ -150,7 +160,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20rpx 0;
+  padding: 32rpx 0;
   border-radius: var(--radius-lg, 24rpx);
 }
 
@@ -162,18 +172,14 @@
   background: var(--color-expense-light, #FEE2E2);
 }
 
-.stat-block.total {
-  background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
-}
-
 .stat-label {
-  font-size: 22rpx;
+  font-size: 24rpx;
   color: var(--color-text-secondary, #6B7280);
-  margin-bottom: 8rpx;
+  margin-bottom: 12rpx;
 }
 
 .stat-value {
-  font-size: 32rpx;
+  font-size: 40rpx;
   font-weight: 700;
   color: var(--color-text, #1A1D26);
 }
@@ -183,6 +189,33 @@
 }
 
 .stat-block.expense .stat-value {
+  color: var(--color-expense, #EF4444);
+}
+
+.overview-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid var(--color-border, #E5E7EB);
+}
+
+.balance-label {
+  font-size: 26rpx;
+  color: var(--color-text-secondary, #6B7280);
+}
+
+.balance-value {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.balance-value.positive {
+  color: var(--color-income, #22C55E);
+}
+
+.balance-value.negative {
   color: var(--color-expense, #EF4444);
 }
 

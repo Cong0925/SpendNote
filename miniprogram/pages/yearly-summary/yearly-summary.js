@@ -61,6 +61,8 @@ Page({
     // 格式化后的金额字符串
     totalIncomeStr: '0.00',
     totalExpenseStr: '0.00',
+    balance: 0,
+    balanceStr: '0.00',
     // 新增分析数据
     dailyAvgExpense: '0.00',
     dailyAvgIncome: '0.00',
@@ -108,13 +110,19 @@ Page({
 
       if (res.result.success) {
         const data = res.result.data
+        const totalIncome = data.totalIncome || 0
+        const totalExpense = data.totalExpense || 0
+        const balance = totalIncome - totalExpense
+        const balancePrefix = balance >= 0 ? '+' : '-'
         this.setData({
-          totalIncome: data.totalIncome || 0,
-          totalExpense: data.totalExpense || 0,
+          totalIncome,
+          totalExpense,
           totalCount: data.totalCount || 0,
           bookkeepingDays: data.bookkeepingDays || 0,
-          totalIncomeStr: this.formatAmount(data.totalIncome),
-          totalExpenseStr: this.formatAmount(data.totalExpense),
+          totalIncomeStr: this.formatAmount(totalIncome),
+          totalExpenseStr: this.formatAmount(totalExpense),
+          balance,
+          balanceStr: balancePrefix + this.formatAmount(Math.abs(balance)),
           dailyAvgExpense: data.dailyAvgExpense || '0.00',
           dailyAvgIncome: data.dailyAvgIncome || '0.00',
           savingsRate: data.savingsRate || 0,
