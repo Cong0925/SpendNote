@@ -141,7 +141,7 @@
 
   <!-- 月度趋势柱状图（仅年度模式显示） -->
   <view class="trend-section" wx:if="{{viewMode === 'year' && monthlyTrend.length > 0}}">
-    <view class="trend-card">
+    <view class="trend-card" bindtap="hideTooltip">
       <view class="trend-header">
         <text class="trend-title">月度趋势</text>
         <view class="trend-legend">
@@ -155,13 +155,64 @@
           </view>
         </view>
       </view>
-      <view class="bar-chart">
-        <view class="bar-group" wx:for="{{monthlyTrend}}" wx:key="month">
-          <view class="bars">
-            <view class="bar expense-bar" style="height: {{item.expenseHeight}}%"></view>
-            <view class="bar income-bar" style="height: {{item.incomeHeight}}%"></view>
+
+      <!-- 点击信息卡片 -->
+      <view class="trend-tooltip {{showTooltip ? 'show' : ''}}" wx:if="{{tooltipData}}">
+        <view class="tooltip-header">
+          <text class="tooltip-month">{{tooltipData.month}}月</text>
+          <view class="tooltip-close" bindtap="hideTooltip">×</view>
+        </view>
+        <view class="tooltip-content">
+          <view class="tooltip-item">
+            <view class="tooltip-dot expense"></view>
+            <text class="tooltip-label">支出</text>
+            <text class="tooltip-value expense">¥{{tooltipData.expenseStr}}</text>
           </view>
-          <text class="bar-label">{{item.month}}月</text>
+          <view class="tooltip-item">
+            <view class="tooltip-dot income"></view>
+            <text class="tooltip-label">收入</text>
+            <text class="tooltip-value income">¥{{tooltipData.incomeStr}}</text>
+          </view>
+          <view class="tooltip-divider"></view>
+          <view class="tooltip-item">
+            <text class="tooltip-label">结余</text>
+            <text class="tooltip-value {{tooltipData.balance >= 0 ? 'income' : 'expense'}}">¥{{tooltipData.balanceStr}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="bar-chart-container">
+        <!-- Y轴刻度 -->
+        <view class="y-axis">
+          <text class="y-axis-label">{{yAxisLabels[0]}}</text>
+          <text class="y-axis-label">{{yAxisLabels[1]}}</text>
+          <text class="y-axis-label">{{yAxisLabels[2]}}</text>
+          <text class="y-axis-label">{{yAxisLabels[3]}}</text>
+          <text class="y-axis-label">{{yAxisLabels[4]}}</text>
+        </view>
+
+        <!-- 柱状图区域 -->
+        <view class="bar-chart">
+          <!-- 刻度线 -->
+          <view class="grid-lines">
+            <view class="grid-line"></view>
+            <view class="grid-line"></view>
+            <view class="grid-line"></view>
+            <view class="grid-line"></view>
+            <view class="grid-line"></view>
+          </view>
+
+          <!-- 柱状图 -->
+          <view class="bar-group" wx:for="{{monthlyTrend}}" wx:key="month"
+            catchtap="onBarTap" data-index="{{index}}">
+            <view class="bars">
+              <view class="bar expense-bar {{selectedMonth === item.month ? 'selected' : ''}}"
+                style="height: {{item.expenseHeight}}%"></view>
+              <view class="bar income-bar {{selectedMonth === item.month ? 'selected' : ''}}"
+                style="height: {{item.incomeHeight}}%"></view>
+            </view>
+            <text class="bar-label {{selectedMonth === item.month ? 'selected' : ''}}">{{item.month}}月</text>
+          </view>
         </view>
       </view>
     </view>

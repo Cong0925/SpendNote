@@ -85,21 +85,38 @@ async function loadMonthlyTrendData(year) {
     name: 'billFunctions',
     data: { action: 'getMonthlyTrend', data: { year } }
   })
-  if (!res.result.success) return { monthlyTrend: [], maxMonthlyAmount: 0 }
+  if (!res.result.success) return { monthlyTrend: [], maxMonthlyAmount: 0, yAxisLabels: [] }
   const trend = res.result.data || []
   let maxAmount = 0
   trend.forEach(item => {
     const total = (item.expense || 0) + (item.income || 0)
     if (total > maxAmount) maxAmount = total
   })
-  const monthlyTrend = trend.map(item => ({
-    ...item,
-    expenseHeight: maxAmount > 0 ? ((item.expense || 0) / maxAmount * 100).toFixed(1) : '0',
-    incomeHeight: maxAmount > 0 ? ((item.income || 0) / maxAmount * 100).toFixed(1) : '0',
-    expenseStr: formatAmount(item.expense || 0),
-    incomeStr: formatAmount(item.income || 0)
-  }))
-  return { monthlyTrend, maxMonthlyAmount: maxAmount }
+
+  // 计算Y轴刻度（5个刻度线）
+  const yAxisLabels = []
+  for (let i = 4; i >= 0; i--) {
+    const value = maxAmount * (i / 4)
+    yAxisLabels.push(formatAmount(value))
+  }
+
+  // 计算每个月份的数据点位置
+  const monthlyTrend = trend.map((item, index) => {
+    const expense = item.expense || 0
+    const income = item.income || 0
+    const balance = income - expense
+    return {
+      ...item,
+      expenseHeight: maxAmount > 0 ? (expense / maxAmount * 100).toFixed(1) : '0',
+      incomeHeight: maxAmount > 0 ? (income / maxAmount * 100).toFixed(1) : '0',
+      expenseStr: formatAmount(expense),
+      incomeStr: formatAmount(income),
+      balanceStr: formatAmount(balance, { showSign: true }),
+      balance
+    }
+  })
+
+  return { monthlyTrend, maxMonthlyAmount: maxAmount, yAxisLabels }
 }
 
 const CHART_COLORS = [
@@ -149,6 +166,12 @@ Page({
     // 月度趋势
     monthlyTrend: [],
     maxMonthlyAmount: 0,
+    // Y轴刻度
+    yAxisLabels: ['0', '0', '0', '0', '0'],
+    // 点击交互
+    showTooltip: false,
+    selectedMonth: null,
+    tooltipData: null,
     // 时间范围选择
     rangeStartDate: '',
     rangeEndDate: '',
@@ -360,8 +383,15 @@ Page({
   async loadMonthlyTrend(dateStr) {
     try {
       const year = parseInt(dateStr.split('-')[0])
-      const { monthlyTrend, maxMonthlyAmount } = await loadMonthlyTrendData(year)
-      this.setData({ monthlyTrend, maxMonthlyAmount })
+      const { monthlyTrend, maxMonthlyAmount, yAxisLabels } = await loadMonthlyTrendData(year)
+      this.setData({
+        monthlyTrend,
+        maxMonthlyAmount,
+        yAxisLabels,
+        showTooltip: false,
+        selectedMonth: null,
+        tooltipData: null
+      })
     } catch (error) {
       console.error('加载月度趋势失败:', error)
     }
@@ -419,6 +449,46 @@ Page({
     const { rangeStartDate, rangeEndDate, viewMode } = this.data
     wx.navigateTo({
       url: `/pages/search/search?category=${encodeURIComponent(category)}&billType=${type}&startDate=${rangeStartDate}&endDate=${rangeEndDate}&viewMode=${viewMode}`
+    })
+  },
+
+  // 点击柱状图
+  onBarTap(e) {
+    const { index } = e.currentTarget.dataset
+    const { monthlyTrend, selectedMonth } = this.data
+    const item = monthlyTrend[index]
+
+    if (selectedMonth === item.month) {
+      // 点击已选中的，取消选中
+      this.setData({
+        showTooltip: false,
+        selectedMonth: null,
+        tooltipData: null
+      })
+    } else {
+      // 选中新的月份
+      this.setData({
+        showTooltip: true,
+        selectedMonth: item.month,
+        tooltipData: {
+          month: item.month,
+          expense: item.expense || 0,
+          income: item.income || 0,
+          balance: item.balance || 0,
+          expenseStr: item.expenseStr,
+          incomeStr: item.incomeStr,
+          balanceStr: item.balanceStr
+        }
+      })
+    }
+  },
+
+  // 隐藏信息卡片
+  hideTooltip() {
+    this.setData({
+      showTooltip: false,
+      selectedMonth: null,
+      tooltipData: null
     })
   }
 })

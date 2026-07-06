@@ -695,6 +695,7 @@ page {
   border-radius: var(--radius-xl);
   padding: 28rpx 32rpx;
   box-shadow: var(--shadow-card);
+  position: relative;
 }
 
 .trend-header {
@@ -732,7 +733,128 @@ page {
 .trend-legend-dot.expense { background: var(--color-expense); }
 .trend-legend-dot.income { background: var(--color-income); }
 
+/* ============ 点击信息卡片 ============ */
+.trend-tooltip {
+  position: absolute;
+  top: 80rpx;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10rpx);
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  padding: 20rpx 24rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  min-width: 280rpx;
+}
+
+.trend-tooltip.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.tooltip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+  padding-bottom: 12rpx;
+  border-bottom: 1rpx solid var(--color-divider);
+}
+
+.tooltip-month {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.tooltip-close {
+  width: 40rpx;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  color: var(--color-text-tertiary);
+  border-radius: 50%;
+  background: var(--color-bg);
+}
+
+.tooltip-close:active {
+  background: var(--color-divider);
+}
+
+.tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.tooltip-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.tooltip-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 3rpx;
+  flex-shrink: 0;
+}
+
+.tooltip-dot.expense { background: var(--color-expense); }
+.tooltip-dot.income { background: var(--color-income); }
+
+.tooltip-label {
+  font-size: 24rpx;
+  color: var(--color-text-secondary);
+  flex: 1;
+}
+
+.tooltip-value {
+  font-size: 26rpx;
+  font-weight: 600;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+}
+
+.tooltip-value.expense { color: var(--color-expense); }
+.tooltip-value.income { color: var(--color-income); }
+
+.tooltip-divider {
+  height: 1rpx;
+  background: var(--color-divider);
+  margin: 4rpx 0;
+}
+
+/* ============ 柱状图容器 ============ */
+.bar-chart-container {
+  display: flex;
+  gap: 12rpx;
+}
+
+/* ============ Y轴刻度 ============ */
+.y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 240rpx;
+  padding-bottom: 40rpx;
+}
+
+.y-axis-label {
+  font-size: 18rpx;
+  color: var(--color-text-tertiary);
+  text-align: right;
+  min-width: 60rpx;
+}
+
+/* ============ 柱状图区域 ============ */
 .bar-chart {
+  flex: 1;
   display: flex;
   align-items: flex-end;
   gap: 8rpx;
@@ -741,6 +863,26 @@ page {
   position: relative;
 }
 
+/* ============ 网格线 ============ */
+.grid-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 40rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.grid-line {
+  height: 1rpx;
+  background: var(--color-divider);
+  opacity: 0.5;
+}
+
+/* ============ 柱状图组 ============ */
 .bar-group {
   flex: 1;
   display: flex;
@@ -748,6 +890,7 @@ page {
   align-items: center;
   height: 100%;
   position: relative;
+  z-index: 1;
 }
 
 .bars {
@@ -762,7 +905,7 @@ page {
   flex: 1;
   border-radius: 4rpx 4rpx 0 0;
   min-height: 4rpx;
-  transition: height 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: height 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease;
 }
 
 .bar.expense-bar {
@@ -775,12 +918,23 @@ page {
   opacity: 0.85;
 }
 
+.bar.selected {
+  opacity: 1;
+  filter: brightness(1.1);
+}
+
 .bar-label {
   position: absolute;
   bottom: 0;
   font-size: 18rpx;
   color: var(--color-text-tertiary);
   white-space: nowrap;
+  transition: color 0.3s ease;
+}
+
+.bar-label.selected {
+  color: var(--color-text);
+  font-weight: 600;
 }
 
 /* ============ 分类箭头 ============ */
