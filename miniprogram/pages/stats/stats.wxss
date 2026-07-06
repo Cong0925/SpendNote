@@ -76,9 +76,9 @@ page {
 }
 
 .quick-tab.active {
-  background: var(--color-text);
+  background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%);
   color: #ffffff;
-  box-shadow: 0 4rpx 12rpx rgba(26, 26, 26, 0.2);
+  box-shadow: 0 4rpx 16rpx rgba(37, 99, 235, 0.3);
 }
 
 /* ============ 收支概览卡片 ============ */
@@ -290,9 +290,9 @@ page {
 }
 
 .tab-item.active {
-  background: var(--color-text);
+  background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%);
   color: #ffffff;
-  box-shadow: 0 4rpx 12rpx rgba(26, 26, 26, 0.15);
+  box-shadow: 0 4rpx 16rpx rgba(37, 99, 235, 0.3);
   font-weight: 600;
 }
 
