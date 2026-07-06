@@ -426,7 +426,13 @@ Page({
   },
 
   switchTab(e) {
-    this.setData({ activeTab: e.currentTarget.dataset.tab })
+    // 清空当前数据并显示骨架屏
+    this.setData({
+      activeTab: e.currentTarget.dataset.tab,
+      categoryStats: [],
+      displayStats: [],
+      donutGradient: ''
+    })
     this.loadStats()
   },
 

@@ -92,7 +92,49 @@
       <text class="empty-desc">记录一笔账单后这里会出现统计</text>
     </view>
 
-    <block wx:if="{{categoryStats.length > 0}}">
+    <!-- 骨架屏：加载中状态 - 使用相同的容器结构 -->
+    <block wx:if="{{loading && categoryStats.length === 0}}">
+      <view class="donut-wrapper">
+        <view class="donut-chart">
+          <view class="donut-ring skeleton-donut-ring"></view>
+          <view class="donut-center">
+            <text class="skeleton-text skeleton-amount"></text>
+            <text class="skeleton-text skeleton-label"></text>
+          </view>
+        </view>
+        <view class="donut-legend">
+          <view class="legend-item" wx:for="{{[1,2,3,4,5]}}" wx:key="*this">
+            <view class="skeleton-dot"></view>
+            <text class="skeleton-text skeleton-name"></text>
+            <text class="skeleton-text skeleton-percent"></text>
+          </view>
+        </view>
+      </view>
+
+      <view class="stats-list">
+        <view class="stats-list-title">分类明细</view>
+        <view class="stats-item" wx:for="{{[1,2,3,4]}}" wx:key="*this">
+          <view class="stats-rank skeleton-rank"></view>
+          <view class="stats-left">
+            <view class="stats-icon-wrap">
+              <text class="skeleton-icon"></text>
+            </view>
+            <view class="stats-info">
+              <text class="skeleton-text skeleton-category"></text>
+              <view class="stats-bar">
+                <view class="skeleton-bar-fill"></view>
+              </view>
+            </view>
+          </view>
+          <view class="stats-right">
+            <text class="skeleton-text skeleton-amount-sm"></text>
+            <text class="skeleton-text skeleton-count"></text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <block wx:if="{{categoryStats.length > 0 && !loading}}">
       <view class="donut-wrapper">
         <view class="donut-chart">
           <view class="donut-ring" style="background: conic-gradient({{donutGradient}})"></view>
