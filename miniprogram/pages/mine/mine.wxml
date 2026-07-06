@@ -70,6 +70,7 @@
 
   <!-- 功能菜单 -->
   <view class="menu-card animate-slideUp" style="animation-delay: 0.15s">
+    <!-- 常用功能 -->
     <view class="menu-item" bindtap="goToCategory">
       <view class="menu-icon-wrap">
         <text class="menu-icon">📂</text>
@@ -86,6 +87,16 @@
       <text class="menu-arrow">›</text>
     </view>
     <view class="menu-divider"></view>
+    <!-- 中频功能 -->
+    <view class="menu-item" bindtap="goToRating">
+      <view class="menu-icon-wrap">
+        <text class="menu-icon">⭐</text>
+      </view>
+      <text class="menu-text">给个好评</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-divider"></view>
+    <!-- 低频功能 -->
     <view class="menu-item" bindtap="goToFeedback">
       <view class="menu-icon-wrap">
         <text class="menu-icon">💬</text>
@@ -102,14 +113,7 @@
       <text class="menu-arrow">›</text>
     </view>
     <view class="menu-divider"></view>
-    <view class="menu-item" bindtap="goToRating">
-      <view class="menu-icon-wrap">
-        <text class="menu-icon">⭐</text>
-      </view>
-      <text class="menu-text">给个好评</text>
-      <text class="menu-arrow">›</text>
-    </view>
-    <view class="menu-divider"></view>
+    <!-- 危险操作置底 -->
     <view class="menu-item danger" bindtap="showClearDataModal">
       <view class="menu-icon-wrap danger">
         <text class="menu-icon">🗑️</text>

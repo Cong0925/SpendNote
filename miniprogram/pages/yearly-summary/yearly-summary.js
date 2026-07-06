@@ -115,7 +115,6 @@ Page({
   // 加载年度列表
   async loadYearList() {
     try {
-      console.log('开始加载年度列表...')
       const res = await wx.cloud.callFunction({
         name: 'yearlySummary',
         data: {
@@ -123,10 +122,7 @@ Page({
         }
       })
 
-      console.log('年度列表返回结果：', res.result)
-
       if (res.result.success) {
-        console.log('获取到的年度数据：', res.result.data)
         this.setData({ yearList: res.result.data })
       } else {
         console.error('获取年度列表失败：', res.result.error)
