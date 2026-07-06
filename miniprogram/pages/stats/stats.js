@@ -1,5 +1,5 @@
 // pages/stats/stats.js
-const { formatAmount } = require('../../utils/formatAmount')
+const { formatAmountWithUnit, formatAmount } = require('../../utils/formatAmount')
 
 // 日期工具函数（内联避免模块导入问题）
 function formatDate(date) {
@@ -131,6 +131,15 @@ Page({
     totalIncomeStr: '0.00',
     balanceStr: '0.00',
     balance: 0,
+    // hero-card 默认状态：带单位的金额
+    totalExpenseValue: '0.00',
+    totalExpenseUnit: '元',
+    totalIncomeValue: '0.00',
+    totalIncomeUnit: '元',
+    balanceValue: '0.00',
+    balanceUnit: '元',
+    // 展开状态：记录当前展开的是哪个金额
+    expandedAmount: null,
     categoryStats: [],
     displayStats: [],
     donutGradient: '',
@@ -175,6 +184,7 @@ Page({
    */
   resetTemporaryStates() {
     this.setData({
+      expandedAmount: null,      // 重置展开状态
       showQuarter: false         // 重置季度弹窗
     })
   },
@@ -309,11 +319,23 @@ Page({
           donutGradient = '#F0F2F5 0deg 360deg'
         }
 
+        // hero-card 默认状态：带单位的金额
+        const expenseUnit = formatAmountWithUnit(totalExpense)
+        const incomeUnit = formatAmountWithUnit(totalIncome)
+        const balanceUnit = formatAmountWithUnit(balance)
+
         this.setData({
           totalExpenseStr: formatAmount(totalExpense),
           totalIncomeStr: formatAmount(totalIncome),
           balanceStr: formatAmount(balance, { showSign: true }),
           balance,
+          // hero-card 默认状态：带单位
+          totalExpenseValue: expenseUnit.value,
+          totalExpenseUnit: expenseUnit.unit,
+          totalIncomeValue: incomeUnit.value,
+          totalIncomeUnit: incomeUnit.unit,
+          balanceValue: balanceUnit.value,
+          balanceUnit: balanceUnit.unit,
           categoryStats: stats.categoryStats,
           displayStats,
           donutGradient
@@ -375,6 +397,19 @@ Page({
   switchTab(e) {
     this.setData({ activeTab: e.currentTarget.dataset.tab })
     this.loadStats()
+  },
+
+  // 处理金额点击，展开/收起显示
+  toggleAmountExpand(e) {
+    const { type } = e.currentTarget.dataset
+    const { expandedAmount } = this.data
+
+    // 如果点击已展开的，则收起；否则展开点击的
+    if (expandedAmount === type) {
+      this.setData({ expandedAmount: null })
+    } else {
+      this.setData({ expandedAmount: type })
+    }
   },
 
   // 点击分类，跳转搜索页查看该分类的明细
