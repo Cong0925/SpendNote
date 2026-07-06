@@ -11,7 +11,7 @@ const ratingsCollection = db.collection('ratings')
 
 exports.main = async (event, context) => {
   const { OPENID } = cloud.getWXContext()
-  const { action, rating, selectedTags, comment, images, ratingId, page = 1, pageSize = 10 } = event
+  const { action, rating, selectedTags, comment, images, ratingId, page = 1, pageSize = 10, filter = 'all' } = event
 
   try {
     switch (action) {
@@ -28,7 +28,7 @@ exports.main = async (event, context) => {
         return await deleteRating(OPENID, ratingId)
 
       case 'listRatings':
-        return await listRatings(OPENID, page, pageSize)
+        return await listRatings(OPENID, page, pageSize, filter)
 
       case 'likeRating':
         return await likeRating(OPENID, ratingId)
@@ -173,22 +173,47 @@ async function deleteRating(openid, ratingId) {
   }
 }
 
-// 获取评价列表（分页，我的评价置顶）
-async function listRatings(openid, page, pageSize) {
+// 获取评价列表（分页，我的评价置顶，支持筛选）
+async function listRatings(openid, page, pageSize, filter) {
   try {
     const skip = (page - 1) * pageSize
 
-    // 获取总数（显示所有评价）
-    const countRes = await ratingsCollection.count()
+    // 构建查询条件
+    let query = ratingsCollection
 
-    // 获取列表（显示所有评价，按时间倒序）
-    const listRes = await ratingsCollection
+    // 根据筛选条件构建查询
+    if (filter === 'good') {
+      // 好评：4-5分
+      query = query.where(_.or([
+        { rating: _.gte(4).and(_.lte(5)) }
+      ]))
+    } else if (filter === 'mid') {
+      // 中评：3分
+      query = query.where({ rating: 3 })
+    } else if (filter === 'bad') {
+      // 差评：1-2分
+      query = query.where(_.or([
+        { rating: _.gte(1).and(_.lte(2)) }
+      ]))
+    } else if (filter === 'hasImage') {
+      // 有图：images 数组不为空
+      query = query.where({
+        images: _.exists(true).and(_.neq([]))
+      })
+    }
+    // filter === 'all' 时不添加条件，查询所有
+
+    // 获取符合条件的总数
+    const countRes = await query.count()
+
+    // 获取符合条件的列表（按时间倒序）
+    const listRes = await query
       .orderBy('createTime', 'desc')
       .skip(skip)
       .limit(pageSize)
       .get()
 
-    // 计算平均分和各类型数量（显示所有评价）
+    // 计算平均分和各类型数量（显示所有评价，不带筛选）
     const allRatings = await ratingsCollection
       .field({ rating: true, images: true })
       .get()
@@ -229,7 +254,7 @@ async function listRatings(openid, page, pageSize) {
       nickName: '用户'
     }))
 
-    // 将我的评价置顶
+    // 将我的评价置顶（如果在我的评价在当前筛选结果中）
     const myReview = safeList.find(item => item.isMine)
     if (myReview) {
       safeList = safeList.filter(item => !item.isMine)

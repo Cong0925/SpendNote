@@ -134,7 +134,8 @@ Page({
         data: {
           action: 'listRatings',
           page: this.data.page,
-          pageSize: this.data.pageSize
+          pageSize: this.data.pageSize,
+          filter: this.data.currentFilter
         }
       })
 
@@ -143,45 +144,17 @@ Page({
 
         const formattedList = list.map(item => ({
           ...item,
+          tags: this.formatTags(item.selectedTags),
           images: this.fixImagePaths(item.images),
           createTimeStr: this.formatTime(item.createTime)
         }))
 
         let allReviews = append ? [...this.data.reviews, ...formattedList] : formattedList
 
-        // 确保我的评价始终在列表顶部（去重）
-        const { myRating } = this.data
-        if (myRating) {
-          const myReviewInList = allReviews.find(item => item.isMine)
-          if (!myReviewInList) {
-            // 如果当前列表中没有我的评价，添加到顶部
-            const myReview = {
-              _id: myRating._id,
-              rating: myRating.rating,
-              selectedTags: myRating.selectedTags,
-              comment: myRating.comment,
-              images: this.fixImagePaths(myRating.images),
-              createTime: myRating.createTime,
-              likes: myRating.likes || 0,
-              dislikes: myRating.dislikes || 0,
-              isMine: true,
-              isLiked: false,
-              isDisliked: false,
-              avatarUrl: '',
-              nickName: '用户',
-              createTimeStr: this.formatTime(myRating.createTime)
-            }
-            allReviews.unshift(myReview)
-          } else {
-            // 如果列表中有我的评价，确保它在顶部
-            allReviews = allReviews.filter(item => !item.isMine)
-            allReviews.unshift(myReviewInList)
-          }
-        }
-
+        // 后端已处理我的评价置顶逻辑，这里直接使用返回的数据
         this.setData({
           reviews: allReviews,
-          filteredReviews: this.filterReviews(allReviews, this.data.currentFilter),
+          filteredReviews: allReviews,
           totalCount: total,
           goodCount,
           midCount,
@@ -199,23 +172,24 @@ Page({
     }
   },
 
-  // 筛选评价
+  // 筛选评价（保留兼容性，但主要逻辑已在后端）
   filterReviews(reviews, filter) {
-    if (filter === 'all') return reviews
-    if (filter === 'good') return reviews.filter(r => r.rating >= 4)
-    if (filter === 'mid') return reviews.filter(r => r.rating === 3)
-    if (filter === 'bad') return reviews.filter(r => r.rating <= 2)
-    if (filter === 'hasImage') return reviews.filter(r => r.images && r.images.length > 0)
     return reviews
   },
 
   // 筛选切换
   onFilterChange(e) {
     const filter = e.currentTarget.dataset.filter
+    if (filter === this.data.currentFilter) return
+
     this.setData({
       currentFilter: filter,
-      filteredReviews: this.filterReviews(this.data.reviews, filter)
+      page: 1,
+      reviews: [],
+      filteredReviews: [],
+      hasMore: true
     })
+    this.loadReviews()
   },
 
   // 点击星星
@@ -377,11 +351,19 @@ Page({
 
       if (res.result.success) {
         wx.showToast({ title: action === 'updateRating' ? '修改成功' : '评价成功', icon: 'success' })
+        // 重置所有状态，回到初始展示界面
         this.setData({
           hasSubmitted: true,
           isEditing: false,
-          page: 1
+          page: 1,
+          currentFilter: 'all',
+          userRating: 0,
+          ratingText: '',
+          selectedTags: [],
+          comment: '',
+          uploadedImages: []
         })
+        this.updateTagsActiveState()
         this.loadData()
       } else {
         wx.showToast({ title: res.result.error || '提交失败', icon: 'none' })
@@ -473,16 +455,25 @@ Page({
     })
   },
 
-  // 获取标签文本
+  // 获取标签文本（保留兼容性）
   getTagText(tagId) {
     const tag = tagList.find(t => t.id === tagId)
     return tag ? tag.text : tagId
   },
 
-  // 获取标签图标
+  // 获取标签图标（保留兼容性）
   getTagIcon(tagId) {
     const tag = tagList.find(t => t.id === tagId)
     return tag ? tag.icon : '🏷️'
+  },
+
+  // 预处理标签数据，将 tagId 转换为完整对象
+  formatTags(tagIds) {
+    if (!tagIds || !Array.isArray(tagIds)) return []
+    return tagIds.map(tagId => {
+      const tag = tagList.find(t => t.id === tagId)
+      return tag ? { id: tag.id, icon: tag.icon, text: tag.text } : { id: tagId, icon: '🏷️', text: tagId }
+    })
   },
 
   // 修复图片路径，确保是云存储格式
@@ -520,6 +511,47 @@ Page({
   // 点赞
   async onLike(e) {
     const ratingId = e.currentTarget.dataset.id
+
+    // 防止重复点击
+    if (this._likeAnimating) return
+    this._likeAnimating = true
+    setTimeout(() => { this._likeAnimating = false }, 400)
+
+    // 触觉反馈
+    wx.vibrateShort({ type: 'light' })
+
+    // 触发动画
+    this.triggerAnimate('likeAnimating', ratingId)
+
+    // 先找到当前项，获取旧状态
+    const { filteredReviews, reviews } = this.data
+    const currentItem = filteredReviews.find(item => item._id === ratingId)
+    if (!currentItem) return
+
+    const wasLiked = currentItem.isLiked
+    const wasDisliked = currentItem.isDisliked
+
+    // 乐观UI更新：立即更新本地状态
+    const updateList = (list) => list.map(item => {
+      if (item._id === ratingId) {
+        const newIsLiked = !wasLiked
+        return {
+          ...item,
+          isLiked: newIsLiked,
+          likes: item.likes + (newIsLiked ? 1 : -1),
+          isDisliked: false,
+          dislikes: wasDisliked ? item.dislikes - 1 : item.dislikes
+        }
+      }
+      return item
+    })
+
+    this.setData({
+      filteredReviews: updateList(filteredReviews),
+      reviews: updateList(reviews)
+    })
+
+    // 异步调用云函数
     try {
       const res = await wx.cloud.callFunction({
         name: 'rating',
@@ -529,31 +561,21 @@ Page({
         }
       })
 
-      if (res.result.success) {
-        // 只更新本地状态，不重新加载列表
-        const { filteredReviews, reviews } = this.data
-        const updateList = (list) => list.map(item => {
-          if (item._id === ratingId) {
-            const isLiked = res.result.isLiked
-            return {
-              ...item,
-              isLiked,
-              likes: item.likes + (isLiked ? 1 : -1),
-              isDisliked: false,
-              dislikes: item.isDisliked ? item.dislikes - 1 : item.dislikes
-            }
-          }
-          return item
-        })
+      if (!res.result.success) {
+        // 失败时回滚本地状态
         this.setData({
           filteredReviews: updateList(filteredReviews),
           reviews: updateList(reviews)
         })
-      } else {
         wx.showToast({ title: res.result.error || '操作失败', icon: 'none' })
       }
     } catch (error) {
       console.error('点赞失败:', error)
+      // 失败时回滚
+      this.setData({
+        filteredReviews: updateList(filteredReviews),
+        reviews: updateList(reviews)
+      })
       wx.showToast({ title: '操作失败', icon: 'none' })
     }
   },
@@ -561,6 +583,47 @@ Page({
   // 踩
   async onDislike(e) {
     const ratingId = e.currentTarget.dataset.id
+
+    // 防止重复点击
+    if (this._dislikeAnimating) return
+    this._dislikeAnimating = true
+    setTimeout(() => { this._dislikeAnimating = false }, 400)
+
+    // 触觉反馈
+    wx.vibrateShort({ type: 'light' })
+
+    // 触发动画
+    this.triggerAnimate('dislikeAnimating', ratingId)
+
+    // 先找到当前项，获取旧状态
+    const { filteredReviews, reviews } = this.data
+    const currentItem = filteredReviews.find(item => item._id === ratingId)
+    if (!currentItem) return
+
+    const wasLiked = currentItem.isLiked
+    const wasDisliked = currentItem.isDisliked
+
+    // 乐观UI更新：立即更新本地状态
+    const updateList = (list) => list.map(item => {
+      if (item._id === ratingId) {
+        const newIsDisliked = !wasDisliked
+        return {
+          ...item,
+          isDisliked: newIsDisliked,
+          dislikes: item.dislikes + (newIsDisliked ? 1 : -1),
+          isLiked: false,
+          likes: wasLiked ? item.likes - 1 : item.likes
+        }
+      }
+      return item
+    })
+
+    this.setData({
+      filteredReviews: updateList(filteredReviews),
+      reviews: updateList(reviews)
+    })
+
+    // 异步调用云函数
     try {
       const res = await wx.cloud.callFunction({
         name: 'rating',
@@ -570,32 +633,50 @@ Page({
         }
       })
 
-      if (res.result.success) {
-        // 只更新本地状态，不重新加载列表
-        const { filteredReviews, reviews } = this.data
-        const updateList = (list) => list.map(item => {
-          if (item._id === ratingId) {
-            const isDisliked = res.result.isDisliked
-            return {
-              ...item,
-              isDisliked,
-              dislikes: item.dislikes + (isDisliked ? 1 : -1),
-              isLiked: false,
-              likes: item.isLiked ? item.likes - 1 : item.likes
-            }
-          }
-          return item
-        })
+      if (!res.result.success) {
+        // 失败时回滚本地状态
         this.setData({
           filteredReviews: updateList(filteredReviews),
           reviews: updateList(reviews)
         })
-      } else {
         wx.showToast({ title: res.result.error || '操作失败', icon: 'none' })
       }
     } catch (error) {
       console.error('踩失败:', error)
       wx.showToast({ title: '操作失败', icon: 'none' })
     }
+  },
+
+  // 触发动画
+  triggerAnimate(animKey, ratingId) {
+    const { filteredReviews, reviews } = this.data
+
+    // 先设置动画状态为 true
+    const setAnimating = (list) => list.map(item => {
+      if (item._id === ratingId) {
+        return { ...item, [animKey]: true }
+      }
+      return item
+    })
+
+    this.setData({
+      filteredReviews: setAnimating(filteredReviews),
+      reviews: setAnimating(reviews)
+    })
+
+    // 400ms 后移除动画状态
+    setTimeout(() => {
+      const clearAnimating = (list) => list.map(item => {
+        if (item._id === ratingId) {
+          return { ...item, [animKey]: false }
+        }
+        return item
+      })
+
+      this.setData({
+        filteredReviews: clearAnimating(this.data.filteredReviews),
+        reviews: clearAnimating(this.data.reviews)
+      })
+    }, 400)
   }
 })

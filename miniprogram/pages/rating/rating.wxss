@@ -553,20 +553,20 @@ page {
   margin-bottom: 24rpx;
 }
 
-.filter-scroll {
-  white-space: nowrap;
-  padding: 4rpx 0;
+.filter-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
 }
 
 .filter-chip {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 8rpx;
-  padding: 16rpx 24rpx;
+  padding: 12rpx 20rpx;
   background: #fff;
-  border-radius: 40rpx;
+  border-radius: 32rpx;
   border: 2rpx solid #e2e8f0;
-  margin-right: 12rpx;
   transition: all 0.3s ease;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
 }
@@ -578,7 +578,7 @@ page {
 }
 
 .filter-chip text {
-  font-size: 26rpx;
+  font-size: 24rpx;
   color: #64748b;
 }
 
@@ -588,12 +588,12 @@ page {
 }
 
 .filter-num {
-  font-size: 22rpx;
+  font-size: 20rpx;
   background: #f1f5f9;
-  padding: 4rpx 12rpx;
-  border-radius: 16rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 12rpx;
   color: #64748b;
-  min-width: 32rpx;
+  min-width: 28rpx;
   text-align: center;
 }
 
@@ -796,8 +796,9 @@ page {
 /* 点赞踩按钮 */
 .card-actions {
   display: flex;
-  gap: 32rpx;
-  padding-top: 16rpx;
+  gap: 24rpx;
+  padding-top: 20rpx;
+  margin-top: 16rpx;
   border-top: 1rpx solid #f1f5f9;
 }
 
@@ -805,29 +806,87 @@ page {
   display: flex;
   align-items: center;
   gap: 8rpx;
-  padding: 12rpx 20rpx;
+  padding: 12rpx 24rpx;
   background: #f8fafc;
-  border-radius: 32rpx;
+  border-radius: 40rpx;
   border: 2rpx solid #e2e8f0;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  position: relative;
+  overflow: hidden;
+}
+
+.action-item:active {
+  transform: scale(0.95);
+  background: #f1f5f9;
 }
 
 .action-item.active {
-  background: #eff6ff;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
   border-color: #3b82f6;
+  box-shadow: 0 4rpx 12rpx rgba(59, 130, 246, 0.2);
+}
+
+/* 整个按钮的弹跳动画 */
+.action-item.animate-pop {
+  animation: buttonPop 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes buttonPop {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+  }
+  30% {
+    transform: scale(1.1);
+    box-shadow: 0 4rpx 16rpx rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  70% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+  }
 }
 
 .action-icon {
   font-size: 28rpx;
+  display: inline-block;
 }
 
 .action-num {
   font-size: 24rpx;
   color: #64748b;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
+.action-item.active .action-icon,
 .action-item.active .action-num {
-  color: #3b82f6;
+  color: #2563eb;
+}
+
+/* 数字变化动画 */
+.action-num.animate-num {
+  animation: numSlide 0.3s ease;
+}
+
+@keyframes numSlide {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-4rpx);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* 自己的评价标识 */

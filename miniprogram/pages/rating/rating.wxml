@@ -133,7 +133,7 @@
 
     <!-- 筛选栏 - 非编辑模式时显示 -->
     <view class="filter-section" wx:if="{{!isEditing}}">
-      <scroll-view class="filter-scroll" scroll-x enable-flex>
+      <view class="filter-wrap">
         <view class="filter-chip {{currentFilter === 'all' ? 'active' : ''}}" bindtap="onFilterChange" data-filter="all">
           <text>全部</text>
           <view class="filter-num">{{totalCount}}</view>
@@ -154,7 +154,7 @@
           <text>🖼️ 有图</text>
           <view class="filter-num">{{hasImageCount}}</view>
         </view>
-      </scroll-view>
+      </view>
     </view>
 
     <!-- 添加评价入口 - 未评价且非编辑模式时显示 -->
@@ -209,10 +209,10 @@
         </view>
 
         <!-- 标签 -->
-        <view class="card-tags" wx:if="{{item.selectedTags && item.selectedTags.length > 0}}">
-          <view wx:for="{{item.selectedTags}}" wx:for-item="tagId" wx:for-index="tagIdx" wx:key="tagIdx" class="tag-item">
-            <text class="tag-icon">{{getTagIcon(tagId)}}</text>
-            <text class="tag-text">{{getTagText(tagId)}}</text>
+        <view class="card-tags" wx:if="{{item.tags && item.tags.length > 0}}">
+          <view wx:for="{{item.tags}}" wx:for-item="tag" wx:for-index="tagIdx" wx:key="id" class="tag-item">
+            <text class="tag-icon">{{tag.icon}}</text>
+            <text class="tag-text">{{tag.text}}</text>
           </view>
         </view>
 
@@ -228,12 +228,12 @@
 
         <!-- 点赞踩按钮 - 只有非自己的评价才显示 -->
         <view class="card-actions" wx:if="{{!item.isMine}}">
-          <view class="action-item {{item.isLiked ? 'active' : ''}}" catchtap="onLike" data-id="{{item._id}}">
-            <text class="action-icon">👍</text>
+          <view class="action-item {{item.isLiked ? 'active' : ''}} {{item.likeAnimating ? 'animate-pop' : ''}}" catchtap="onLike" data-id="{{item._id}}">
+            <text class="action-icon">{{item.isLiked ? '👍' : '👍🏻'}}</text>
             <text class="action-num">{{item.likes || 0}}</text>
           </view>
-          <view class="action-item {{item.isDisliked ? 'active' : ''}}" catchtap="onDislike" data-id="{{item._id}}">
-            <text class="action-icon">👎</text>
+          <view class="action-item {{item.isDisliked ? 'active' : ''}} {{item.dislikeAnimating ? 'animate-pop' : ''}}" catchtap="onDislike" data-id="{{item._id}}">
+            <text class="action-icon">{{item.isDisliked ? '👎' : '👎🏻'}}</text>
             <text class="action-num">{{item.dislikes || 0}}</text>
           </view>
         </view>
