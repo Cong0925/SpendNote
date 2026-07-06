@@ -1,27 +1,52 @@
 // pages/yearly-summary/yearly-summary.js
 const app = getApp()
 
+// 金额格式化函数（内联避免模块导入问题）
+function formatAmount(amount) {
+  if (amount == null || isNaN(amount)) {
+    return '0.00'
+  }
+  return Number(amount).toFixed(2)
+}
+
 // 月度趋势数据加载（内联避免模块导入问题）
 async function loadMonthlyTrendData(year) {
   const res = await wx.cloud.callFunction({
     name: 'billFunctions',
     data: { action: 'getMonthlyTrend', data: { year } }
   })
-  if (!res.result.success) return { monthlyTrend: [], maxMonthlyAmount: 0 }
+  if (!res.result.success) return { monthlyTrend: [], maxMonthlyAmount: 0, yAxisLabels: [] }
   const trend = res.result.data || []
   let maxAmount = 0
   trend.forEach(item => {
     const total = (item.expense || 0) + (item.income || 0)
     if (total > maxAmount) maxAmount = total
   })
-  const monthlyTrend = trend.map(item => ({
-    ...item,
-    expenseHeight: maxAmount > 0 ? ((item.expense || 0) / maxAmount * 100).toFixed(1) : '0',
-    incomeHeight: maxAmount > 0 ? ((item.income || 0) / maxAmount * 100).toFixed(1) : '0',
-    expenseStr: Number(item.expense || 0).toFixed(2),
-    incomeStr: Number(item.income || 0).toFixed(2)
-  }))
-  return { monthlyTrend, maxMonthlyAmount: maxAmount }
+
+  // 计算Y轴刻度（5个刻度线）
+  const yAxisLabels = []
+  for (let i = 4; i >= 0; i--) {
+    const value = maxAmount * (i / 4)
+    yAxisLabels.push(formatAmount(value))
+  }
+
+  // 计算每个月份的数据点位置
+  const monthlyTrend = trend.map(item => {
+    const expense = item.expense || 0
+    const income = item.income || 0
+    const balance = income - expense
+    return {
+      ...item,
+      expenseHeight: maxAmount > 0 ? (expense / maxAmount * 100).toFixed(1) : '0',
+      incomeHeight: maxAmount > 0 ? (income / maxAmount * 100).toFixed(1) : '0',
+      expenseStr: formatAmount(expense),
+      incomeStr: formatAmount(income),
+      balanceStr: formatAmount(balance),
+      balance
+    }
+  })
+
+  return { monthlyTrend, maxMonthlyAmount: maxAmount, yAxisLabels }
 }
 
 Page({
@@ -47,6 +72,11 @@ Page({
     // 月度趋势
     monthlyTrend: [],
     maxMonthlyAmount: 0,
+    yAxisLabels: [],
+    // 点击信息面板
+    showTooltip: false,
+    selectedMonth: null,
+    tooltipData: null,
     // 年度选择器
     showYearPicker: false,
     yearList: []
@@ -132,11 +162,51 @@ Page({
   async loadMonthlyTrend() {
     try {
       const { year } = this.data
-      const { monthlyTrend, maxMonthlyAmount } = await loadMonthlyTrendData(year)
-      this.setData({ monthlyTrend, maxMonthlyAmount })
+      const { monthlyTrend, maxMonthlyAmount, yAxisLabels } = await loadMonthlyTrendData(year)
+      this.setData({ monthlyTrend, maxMonthlyAmount, yAxisLabels })
     } catch (err) {
       console.error('加载月度趋势失败：', err)
     }
+  },
+
+  // 点击柱状图
+  onBarTap(e) {
+    const { index } = e.currentTarget.dataset
+    const { monthlyTrend, selectedMonth } = this.data
+    const item = monthlyTrend[index]
+
+    if (selectedMonth === item.month) {
+      // 点击已选中的，取消选中
+      this.setData({
+        showTooltip: false,
+        selectedMonth: null,
+        tooltipData: null
+      })
+    } else {
+      // 选中新的月份
+      this.setData({
+        showTooltip: true,
+        selectedMonth: item.month,
+        tooltipData: {
+          month: item.month,
+          expense: item.expense || 0,
+          income: item.income || 0,
+          balance: item.balance || 0,
+          expenseStr: item.expenseStr,
+          incomeStr: item.incomeStr,
+          balanceStr: item.balanceStr
+        }
+      })
+    }
+  },
+
+  // 隐藏信息卡片
+  hideTooltip() {
+    this.setData({
+      showTooltip: false,
+      selectedMonth: null,
+      tooltipData: null
+    })
   },
 
   // 返回上一页

@@ -90,28 +90,30 @@
   color: var(--color-text-secondary, #64748b);
 }
 
-/* 右侧装饰点 */
+/* 右侧切换按钮 */
 .year-deco {
   display: flex;
-  flex-direction: column;
-  gap: 6rpx;
-  padding: 8rpx 0;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx;
+  background: rgba(59, 130, 246, 0.08);
+  border-radius: 16rpx;
+  transition: all 0.2s ease;
 }
 
-.deco-dot {
-  width: 8rpx;
-  height: 8rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  opacity: 0.5;
+.year-deco:active {
+  background: rgba(59, 130, 246, 0.15);
+  transform: scale(0.95);
 }
 
-.deco-dot:first-child {
-  opacity: 0.8;
-}
-
-.deco-dot:last-child {
-  opacity: 0.3;
+/* 下拉箭头 */
+.deco-arrow {
+  width: 0;
+  height: 0;
+  border-left: 10rpx solid transparent;
+  border-right: 10rpx solid transparent;
+  border-top: 12rpx solid #3b82f6;
+  opacity: 0.6;
 }
 
 /* 卡片通用样式 */
@@ -376,6 +378,7 @@
   padding: 28rpx;
   margin-bottom: 20rpx;
   box-shadow: var(--shadow-card, 0 2rpx 8rpx rgba(0, 0, 0, 0.04));
+  position: relative;
 }
 
 .trend-card .card-header {
@@ -412,7 +415,138 @@
   background: var(--color-income, #22C55E);
 }
 
+/* ============ 点击信息卡片 ============ */
+.trend-tooltip {
+  position: absolute;
+  top: 80rpx;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10rpx);
+  background: var(--color-card, #FFFFFF);
+  border-radius: var(--radius-lg, 24rpx);
+  padding: 20rpx 24rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  min-width: 280rpx;
+}
+
+.trend-tooltip.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.tooltip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+  padding-bottom: 12rpx;
+  border-bottom: 1rpx solid var(--color-divider, #F0F2F5);
+}
+
+.tooltip-month {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text, #1A1D26);
+}
+
+.tooltip-close {
+  width: 40rpx;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  color: var(--color-text-tertiary, #9CA3AF);
+  border-radius: 50%;
+  background: var(--color-bg, #F5F7FA);
+}
+
+.tooltip-close:active {
+  background: var(--color-divider, #F0F2F5);
+}
+
+.tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.tooltip-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.tooltip-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 3rpx;
+  flex-shrink: 0;
+}
+
+.tooltip-dot.expense {
+  background: var(--color-expense, #EF4444);
+}
+
+.tooltip-dot.income {
+  background: var(--color-income, #22C55E);
+}
+
+.tooltip-label {
+  font-size: 24rpx;
+  color: var(--color-text-secondary, #6B7280);
+  flex: 1;
+}
+
+.tooltip-value {
+  font-size: 26rpx;
+  font-weight: 600;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+}
+
+.tooltip-value.expense {
+  color: var(--color-expense, #EF4444);
+}
+
+.tooltip-value.income {
+  color: var(--color-income, #22C55E);
+}
+
+.tooltip-divider {
+  height: 1rpx;
+  background: var(--color-divider, #F0F2F5);
+  margin: 4rpx 0;
+}
+
+/* ============ 柱状图容器 ============ */
+.bar-chart-container {
+  display: flex;
+  gap: 12rpx;
+}
+
+/* ============ Y轴刻度 ============ */
+.y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 240rpx;
+  padding-bottom: 40rpx;
+}
+
+.y-axis-label {
+  font-size: 18rpx;
+  color: var(--color-text-tertiary, #9CA3AF);
+  text-align: right;
+  min-width: 60rpx;
+}
+
+/* ============ 柱状图区域 ============ */
 .bar-chart {
+  flex: 1;
   display: flex;
   align-items: flex-end;
   gap: 8rpx;
@@ -421,6 +555,26 @@
   position: relative;
 }
 
+/* ============ 网格线 ============ */
+.grid-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 40rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.grid-line {
+  height: 1rpx;
+  background: var(--color-divider, #F0F2F5);
+  opacity: 0.5;
+}
+
+/* ============ 柱状图组 ============ */
 .bar-group {
   flex: 1;
   display: flex;
@@ -428,6 +582,7 @@
   align-items: center;
   height: 100%;
   position: relative;
+  z-index: 1;
 }
 
 .bars {
@@ -442,7 +597,7 @@
   flex: 1;
   border-radius: 4rpx 4rpx 0 0;
   min-height: 4rpx;
-  transition: height 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: height 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease;
 }
 
 .bar.expense-bar {
@@ -455,12 +610,22 @@
   opacity: 0.85;
 }
 
+.bar.selected {
+  opacity: 1;
+  filter: brightness(1.1);
+}
+
 .bar-label {
   position: absolute;
   bottom: 0;
   font-size: 18rpx;
   color: var(--color-text-tertiary, #9CA3AF);
   white-space: nowrap;
+}
+
+.bar-label.selected {
+  color: var(--color-text, #1A1D26);
+  font-weight: 600;
 }
 
 /* ========== 骨架屏样式 ========== */
