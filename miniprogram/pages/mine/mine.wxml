@@ -123,14 +123,6 @@
     </view>
   </view>
 
-  <!-- 版本信息 -->
-  <view class="version-info animate-fadeIn" style="animation-delay: 0.2s">
-    <view class="version-badge">
-      <text>SpendNote v1.0.0</text>
-    </view>
-    <text class="version-sub">轻量 · 纯净 · 数据自主</text>
-  </view>
-
   <!-- 清除数据弹窗 -->
   <view class="clear-modal-mask" wx:if="{{showClearModal}}" bindtap="closeClearModal">
     <view class="clear-modal" catchtap="noop">

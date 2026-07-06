@@ -13,6 +13,7 @@ page {
   flex: 1;
   overflow: hidden;
   box-sizing: border-box;
+  padding-bottom: 100rpx;
 }
 
 /* ============ 日期选择器 ============ */

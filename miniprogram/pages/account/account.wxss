@@ -15,6 +15,7 @@ page {
   flex: 1;
   overflow: hidden;
   box-sizing: border-box;
+  padding-bottom: 100rpx;
 }
 
 /* ============ 顶部净资产区域 ============ */
