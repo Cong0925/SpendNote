@@ -78,7 +78,7 @@
 .year-list {
   padding: 0 30rpx 48rpx 20rpx;
   max-height: 55vh;
-  width: 95%;
+  width: 97%;
 }
 
 .year-item {
@@ -87,6 +87,7 @@
   justify-content: space-between;
   padding: 28rpx 24rpx;
   margin-bottom: 16rpx;
+  margin-right: 20rpx;
   background: #f8fafc;
   border-radius: 20rpx;
   border: 2rpx solid transparent;

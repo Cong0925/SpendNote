@@ -123,8 +123,24 @@ Page({
           expenseRankList: data.expenseRankList || []
         })
 
-        // 加载月度趋势（等待完成后再隐藏骨架屏）
-        await this.loadMonthlyTrend()
+        // 如果年度总结中有月度趋势数据，计算柱状图高度
+        if (data.monthlyTrend && data.monthlyTrend.length > 0) {
+          const maxAmount = data.maxMonthlyAmount || 0
+          const monthlyTrend = data.monthlyTrend.map(item => ({
+            ...item,
+            expenseHeight: maxAmount > 0 ? ((item.expense || 0) / maxAmount * 100).toFixed(1) : '0',
+            incomeHeight: maxAmount > 0 ? ((item.income || 0) / maxAmount * 100).toFixed(1) : '0'
+          }))
+          this.setData({
+            monthlyTrend,
+            maxMonthlyAmount: maxAmount,
+            yAxisLabels: data.yAxisLabels || []
+          })
+        } else {
+          // 如果年度总结中没有月度趋势数据，尝试从云函数获取（兼容旧数据）
+          await this.loadMonthlyTrend()
+        }
+
         this.setData({ loading: false })
       } else {
         console.error('获取年度数据失败：', res.result.error)
