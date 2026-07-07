@@ -1,177 +1,234 @@
 <!--
   账户详情页面 - 简化版
   采用系统默认导航栏，简化顶部设计
+  骨架屏与真实内容完全互斥
 -->
 <view class="page">
-  <!-- 账户信息卡片 -->
-  <view class="account-card">
-    <view class="card-header">
-      <view class="icon-wrap">
-        <image class="account-icon" src="{{account.icon}}" mode="aspectFit"></image>
+  <!-- ========== 骨架屏区域（loading时显示） ========== -->
+  <block wx:if="{{showSkeleton}}">
+    <!-- 账户信息卡片骨架屏 -->
+    <view class="account-card">
+      <view class="card-header">
+        <view class="icon-wrap skeleton-icon"></view>
+        <view class="info-wrap">
+          <view class="skeleton-name"></view>
+          <view class="skeleton-type"></view>
+        </view>
       </view>
-      <view class="info-wrap">
-        <text class="account-name">{{account.name}}</text>
-        <text class="account-type">{{account.typeText}}</text>
-      </view>
-    </view>
-
-    <!-- 余额显示 -->
-    <view class="balance-wrap">
-      <text class="balance-label">{{account.isDebt ? '应还金额' : '账户余额'}}</text>
-      <text class="balance-amount {{account.isDebt ? 'debt' : 'asset'}}">
-        {{account.isDebt ? '-' : ''}}￥{{account.balanceStr || '0.00'}}
-      </text>
-    </view>
-
-    <!-- 信用卡专属信息 -->
-    <view class="card-extra" wx:if="{{account.type === 'credit'}}">
-      <view class="extra-item" wx:if="{{account.creditLimit}}">
-        <text class="extra-label">信用额度</text>
-        <text class="extra-value">￥{{account.creditLimitStr}}</text>
-      </view>
-      <view class="extra-item" wx:if="{{account.billDay}}">
-        <text class="extra-label">账单日</text>
-        <text class="extra-value">每月{{account.billDay}}日</text>
-      </view>
-      <view class="extra-item" wx:if="{{account.repayDay}}">
-        <text class="extra-label">还款日</text>
-        <text class="extra-value">每月{{account.repayDay}}日</text>
+      <view class="balance-wrap">
+        <view class="skeleton-label"></view>
+        <view class="skeleton-amount"></view>
       </view>
     </view>
 
-    <!-- 花呗/京东白条/美团月付专属信息 -->
-    <view class="card-extra" wx:if="{{account.type === 'huabei' || account.type === 'jd' || account.type === 'mt'}}">
-      <view class="extra-item" wx:if="{{account.repayDay}}">
-        <text class="extra-label">还款日</text>
-        <text class="extra-value">每月{{account.repayDay}}日</text>
+    <!-- 收支统计骨架屏 -->
+    <view class="stats-card">
+      <view class="stat-item">
+        <view class="skeleton-stat-label"></view>
+        <view class="skeleton-stat-value"></view>
       </view>
-    </view>
-  </view>
-
-  <!-- 收支统计 -->
-  <view class="stats-card">
-    <view class="stat-item">
-      <text class="stat-label">入账</text>
-      <text class="stat-value income">￥{{stats.incomeStr || '0.00'}}</text>
-    </view>
-    <view class="stat-divider"></view>
-    <view class="stat-item">
-      <text class="stat-label">出账</text>
-      <text class="stat-value expense">￥{{stats.expenseStr || '0.00'}}</text>
-    </view>
-  </view>
-
-  <!-- 账单和转账记录区域 -->
-  <view class="record-section">
-    <!-- Tab切换 -->
-    <view class="tab-bar">
-      <view class="tab-item {{currentTab === 'bills' ? 'active' : ''}}" data-tab="bills" bindtap="switchTab">
-        <text class="tab-text">账单记录</text>
-        <view class="tab-badge" wx:if="{{billList.length > 0}}">{{billList.length}}</view>
-      </view>
-      <view class="tab-item {{currentTab === 'transfers' ? 'active' : ''}}" data-tab="transfers" bindtap="switchTab">
-        <text class="tab-text">转账记录</text>
-        <view class="tab-badge" wx:if="{{transferList.length > 0}}">{{transferList.length}}</view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <view class="skeleton-stat-label"></view>
+        <view class="skeleton-stat-value"></view>
       </view>
     </view>
 
-    <!-- 账单列表 -->
-    <view class="tab-content" wx:if="{{currentTab === 'bills'}}">
-      <!-- 空状态 -->
-      <view class="empty-state" wx:if="{{billList.length === 0 && !loading}}">
-        <text class="empty-text">暂无账单记录</text>
+    <!-- Tab栏骨架屏 -->
+    <view class="record-section">
+      <view class="tab-bar">
+        <view class="tab-item">
+          <view class="skeleton-tab-text"></view>
+        </view>
+        <view class="tab-item">
+          <view class="skeleton-tab-text"></view>
+        </view>
+      </view>
+
+      <!-- 列表骨架屏 -->
+      <view class="list-skeleton">
+        <view class="list-item-skeleton" wx:for="{{[1,2,3]}}" wx:key="*this">
+          <view class="skeleton-item-icon"></view>
+          <view class="skeleton-item-info">
+            <view class="skeleton-item-title"></view>
+            <view class="skeleton-item-subtitle"></view>
+          </view>
+          <view class="skeleton-item-right">
+            <view class="skeleton-item-amount"></view>
+            <view class="skeleton-item-date"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- ========== 真实内容区域（loading完成后显示） ========== -->
+  <block wx:if="{{!showSkeleton}}">
+    <!-- 账户信息卡片 -->
+    <view class="account-card">
+      <view class="card-header">
+        <view class="icon-wrap">
+          <image class="account-icon" src="{{account.icon}}" mode="aspectFit"></image>
+        </view>
+        <view class="info-wrap">
+          <text class="account-name">{{account.name}}</text>
+          <text class="account-type">{{account.typeText}}</text>
+        </view>
+      </view>
+
+      <!-- 余额显示 -->
+      <view class="balance-wrap">
+        <text class="balance-label">{{account.isDebt ? '应还金额' : '账户余额'}}</text>
+        <text class="balance-amount {{account.isDebt ? 'debt' : 'asset'}}">
+          {{account.isDebt ? '-' : ''}}￥{{account.balanceStr || '0.00'}}
+        </text>
+      </view>
+
+      <!-- 信用卡专属信息 -->
+      <view class="card-extra" wx:if="{{account.type === 'credit'}}">
+        <view class="extra-item" wx:if="{{account.creditLimit}}">
+          <text class="extra-label">信用额度</text>
+          <text class="extra-value">￥{{account.creditLimitStr}}</text>
+        </view>
+        <view class="extra-item" wx:if="{{account.billDay}}">
+          <text class="extra-label">账单日</text>
+          <text class="extra-value">每月{{account.billDay}}日</text>
+        </view>
+        <view class="extra-item" wx:if="{{account.repayDay}}">
+          <text class="extra-label">还款日</text>
+          <text class="extra-value">每月{{account.repayDay}}日</text>
+        </view>
+      </view>
+
+      <!-- 花呗/京东白条/美团月付专属信息 -->
+      <view class="card-extra" wx:if="{{account.type === 'huabei' || account.type === 'jd' || account.type === 'mt'}}">
+        <view class="extra-item" wx:if="{{account.repayDay}}">
+          <text class="extra-label">还款日</text>
+          <text class="extra-value">每月{{account.repayDay}}日</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 收支统计 -->
+    <view class="stats-card">
+      <view class="stat-item">
+        <text class="stat-label">入账</text>
+        <text class="stat-value income">￥{{stats.incomeStr || '0.00'}}</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-label">出账</text>
+        <text class="stat-value expense">￥{{stats.expenseStr || '0.00'}}</text>
+      </view>
+    </view>
+
+    <!-- 账单和转账记录区域 -->
+    <view class="record-section">
+      <!-- Tab切换 -->
+      <view class="tab-bar">
+        <view class="tab-item {{currentTab === 'bills' ? 'active' : ''}}" data-tab="bills" bindtap="switchTab">
+          <text class="tab-text">账单记录</text>
+          <view class="tab-badge" wx:if="{{billList.length > 0}}">{{billList.length}}</view>
+        </view>
+        <view class="tab-item {{currentTab === 'transfers' ? 'active' : ''}}" data-tab="transfers" bindtap="switchTab">
+          <text class="tab-text">转账记录</text>
+          <view class="tab-badge" wx:if="{{transferList.length > 0}}">{{transferList.length}}</view>
+        </view>
       </view>
 
       <!-- 账单列表 -->
-      <view class="bill-list" wx:if="{{billList.length > 0}}">
-        <view
-          class="bill-item"
-          wx:for="{{billList}}"
-          wx:key="_id"
-          data-id="{{item._id}}"
-          bindtap="goToBillDetail"
-        >
-          <view class="bill-left">
-            <view class="bill-icon {{item.type === 'income' ? 'income-bg' : 'expense-bg'}}">
-              <text class="bill-emoji">{{item.icon || (item.type === 'income' ? '💰' : '💸')}}</text>
-            </view>
-            <view class="bill-info">
-              <text class="bill-category">{{item.category}}</text>
-              <text class="bill-note">{{item.note || '无备注'}}</text>
-            </view>
-          </view>
-          <view class="bill-right">
-            <text class="bill-amount {{item.type === 'income' ? 'income' : 'expense'}}">
-              {{item.type === 'income' ? '+' : '-'}}￥{{item.amountStr}}
-            </text>
-            <text class="bill-date">{{item.date}}</text>
-          </view>
+      <view class="tab-content" wx:if="{{currentTab === 'bills'}}">
+        <!-- 空状态 -->
+        <view class="empty-state" wx:if="{{billList.length === 0 && !loading}}">
+          <text class="empty-text">暂无账单记录</text>
         </view>
-      </view>
-    </view>
 
-    <!-- 转账记录列表 -->
-    <view class="tab-content" wx:if="{{currentTab === 'transfers'}}">
-      <!-- 加载状态 -->
-      <view class="loading-state" wx:if="{{loadingTransfers}}">
-        <view class="loading-spinner-small"></view>
-        <text class="loading-text">加载中...</text>
-      </view>
-
-      <!-- 空状态 -->
-      <view class="empty-state" wx:if="{{transferList.length === 0 && !loadingTransfers}}">
-        <text class="empty-text">暂无转账记录</text>
-      </view>
-
-      <!-- 转账列表 -->
-      <view class="transfer-list" wx:if="{{transferList.length > 0 && !loadingTransfers}}">
-        <view
-          class="transfer-item"
-          wx:for="{{transferList}}"
-          wx:key="_id"
-          data-id="{{item._id}}"
-          bindtap="goToTransferDetail"
-        >
-          <view class="transfer-left">
-            <view class="transfer-icon">
-              <text class="transfer-emoji">💸</text>
-            </view>
-            <view class="transfer-info">
-              <view class="transfer-route">
-                <text class="route-account">{{item.fromAccountName}}</text>
-                <text class="route-arrow">→</text>
-                <text class="route-account">{{item.toAccountName}}</text>
+        <!-- 账单列表 -->
+        <view class="bill-list" wx:if="{{billList.length > 0}}">
+          <view
+            class="bill-item"
+            wx:for="{{billList}}"
+            wx:key="_id"
+            data-id="{{item._id}}"
+            bindtap="goToBillDetail"
+          >
+            <view class="bill-left">
+              <view class="bill-icon {{item.type === 'income' ? 'income-bg' : 'expense-bg'}}">
+                <text class="bill-emoji">{{item.icon || (item.type === 'income' ? '💰' : '💸')}}</text>
               </view>
-              <text class="transfer-date">{{item.date}}</text>
+              <view class="bill-info">
+                <text class="bill-category">{{item.category}}</text>
+                <text class="bill-note">{{item.note || '无备注'}}</text>
+              </view>
+            </view>
+            <view class="bill-right">
+              <text class="bill-amount {{item.type === 'income' ? 'income' : 'expense'}}">
+                {{item.type === 'income' ? '+' : '-'}}￥{{item.amountStr}}
+              </text>
+              <text class="bill-date">{{item.date}}</text>
             </view>
           </view>
-          <view class="transfer-right">
-            <text class="transfer-amount">￥{{item.amountStr}}</text>
-            <text class="transfer-remark" wx:if="{{item.remark}}">{{item.remark}}</text>
+        </view>
+      </view>
+
+      <!-- 转账记录列表 -->
+      <view class="tab-content" wx:if="{{currentTab === 'transfers'}}">
+        <!-- 加载状态 -->
+        <view class="loading-state" wx:if="{{loadingTransfers}}">
+          <view class="loading-spinner-small"></view>
+          <text class="loading-text">加载中...</text>
+        </view>
+
+        <!-- 空状态 -->
+        <view class="empty-state" wx:if="{{transferList.length === 0 && !loadingTransfers}}">
+          <text class="empty-text">暂无转账记录</text>
+        </view>
+
+        <!-- 转账列表 -->
+        <view class="transfer-list" wx:if="{{transferList.length > 0 && !loadingTransfers}}">
+          <view
+            class="transfer-item"
+            wx:for="{{transferList}}"
+            wx:key="_id"
+            data-id="{{item._id}}"
+            bindtap="goToTransferDetail"
+          >
+            <view class="transfer-left">
+              <view class="transfer-icon">
+                <text class="transfer-emoji">💸</text>
+              </view>
+              <view class="transfer-info">
+                <view class="transfer-route">
+                  <text class="route-account">{{item.fromAccountName}}</text>
+                  <text class="route-arrow">→</text>
+                  <text class="route-account">{{item.toAccountName}}</text>
+                </view>
+                <text class="transfer-date">{{item.date}}</text>
+              </view>
+            </view>
+            <view class="transfer-right">
+              <text class="transfer-amount">￥{{item.amountStr}}</text>
+              <text class="transfer-remark" wx:if="{{item.remark}}">{{item.remark}}</text>
+            </view>
           </view>
         </view>
       </view>
     </view>
-  </view>
 
-  <!-- 底部留白 -->
-  <view class="bottom-spacer"></view>
+    <!-- 底部留白 -->
+    <view class="bottom-spacer"></view>
 
-  <!-- 底部操作按钮 -->
-  <view class="action-bar">
-    <view class="action-btn btn-delete" bindtap="deleteAccount">
-      <text class="btn-text">删除</text>
+    <!-- 底部操作按钮 -->
+    <view class="action-bar">
+      <view class="action-btn btn-delete" bindtap="deleteAccount">
+        <text class="btn-text">删除</text>
+      </view>
+      <view class="action-btn btn-transfer" bindtap="goToTransfer">
+        <text class="btn-text">转账</text>
+      </view>
+      <view class="action-btn btn-add" bindtap="goToAddBill">
+        <text class="btn-text">记一笔</text>
+      </view>
     </view>
-    <view class="action-btn btn-transfer" bindtap="goToTransfer">
-      <text class="btn-text">转账</text>
-    </view>
-    <view class="action-btn btn-add" bindtap="goToAddBill">
-      <text class="btn-text">记一笔</text>
-    </view>
-  </view>
-
-  <!-- 加载状态 -->
-  <view class="loading-mask" wx:if="{{loading}}">
-    <view class="loading-spinner"></view>
-  </view>
+  </block>
 </view>

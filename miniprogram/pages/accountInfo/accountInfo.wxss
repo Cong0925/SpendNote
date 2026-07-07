@@ -556,3 +556,147 @@ page {
     transform: rotate(360deg);
   }
 }
+
+/* ============ 骨架屏样式 ============ */
+/* 脉冲动画 */
+@keyframes skeleton-pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.skeleton-pulse {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* 骨架屏基础元素 */
+.skeleton-icon,
+.skeleton-name,
+.skeleton-type,
+.skeleton-label,
+.skeleton-amount,
+.skeleton-stat-label,
+.skeleton-stat-value,
+.skeleton-tab-text,
+.skeleton-item-icon,
+.skeleton-item-title,
+.skeleton-item-subtitle,
+.skeleton-item-amount,
+.skeleton-item-date {
+  background: #E5E7EB;
+  border-radius: 8rpx;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* 账户信息卡片骨架屏 */
+.skeleton-icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 24rpx;
+  flex-shrink: 0;
+}
+
+.skeleton-name {
+  width: 160rpx;
+  height: 34rpx;
+  margin-bottom: 12rpx;
+}
+
+.skeleton-type {
+  width: 80rpx;
+  height: 24rpx;
+}
+
+.skeleton-label {
+  width: 120rpx;
+  height: 28rpx;
+}
+
+.skeleton-amount {
+  width: 180rpx;
+  height: 40rpx;
+}
+
+/* 收支统计骨架屏 */
+.skeleton-stat-label {
+  width: 64rpx;
+  height: 24rpx;
+  margin-bottom: 12rpx;
+}
+
+.skeleton-stat-value {
+  width: 120rpx;
+  height: 32rpx;
+}
+
+/* Tab栏骨架屏 */
+.skeleton-tab-text {
+  width: 96rpx;
+  height: 30rpx;
+}
+
+/* 列表骨架屏 */
+.list-skeleton {
+  padding: 0;
+}
+
+.list-item-skeleton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.list-item-skeleton:last-child {
+  border-bottom: none;
+}
+
+.skeleton-item-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+}
+
+.skeleton-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-item-title {
+  width: 120rpx;
+  height: 30rpx;
+  margin-bottom: 8rpx;
+}
+
+.skeleton-item-subtitle {
+  width: 80rpx;
+  height: 24rpx;
+}
+
+.skeleton-item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.skeleton-item-amount {
+  width: 100rpx;
+  height: 30rpx;
+  margin-bottom: 8rpx;
+}
+
+.skeleton-item-date {
+  width: 80rpx;
+  height: 22rpx;
+}

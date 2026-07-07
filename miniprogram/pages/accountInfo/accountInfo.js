@@ -40,6 +40,8 @@ Page({
     currentTab: 'bills',
     // 加载状态
     loading: true,
+    // 骨架屏状态
+    showSkeleton: true,
     // 加载转账记录状态
     loadingTransfers: false
   },
@@ -68,7 +70,7 @@ Page({
    * 加载账户数据
    */
   async loadAccountData(id) {
-    this.setData({ loading: true })
+    this.setData({ loading: true, showSkeleton: true })
 
     try {
       // 加载账户信息
@@ -86,7 +88,7 @@ Page({
         icon: 'none'
       })
     } finally {
-      this.setData({ loading: false })
+      this.setData({ loading: false, showSkeleton: false })
     }
   },
 
