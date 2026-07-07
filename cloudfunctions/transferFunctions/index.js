@@ -25,6 +25,8 @@ exports.main = async (event, context) => {
         return await listTransfers(OPENID, data)
       case 'get':
         return await getTransfer(OPENID, data.id)
+      case 'update':
+        return await updateTransfer(OPENID, data)
       case 'delete':
         return await deleteTransfer(OPENID, data.id)
       default:
@@ -163,6 +165,109 @@ async function getTransfer(openid, id) {
   return {
     success: true,
     data: result.data[0]
+  }
+}
+
+/**
+ * 更新转账记录（含余额调整）
+ */
+async function updateTransfer(openid, data) {
+  const { id, fromAccountId, toAccountId, amount, date, remark } = data
+
+  // 参数校验
+  if (!id) {
+    return { success: false, error: '缺少转账记录ID' }
+  }
+
+  if (!fromAccountId || !toAccountId || !amount || !date) {
+    return { success: false, error: '缺少必填参数' }
+  }
+
+  if (fromAccountId === toAccountId) {
+    return { success: false, error: '转出和转入账户不能相同' }
+  }
+
+  const amountNum = Math.abs(Number(amount))
+  if (isNaN(amountNum) || amountNum <= 0) {
+    return { success: false, error: '金额必须大于0' }
+  }
+
+  // 获取原转账记录
+  const transferResult = await db.collection(TRANSFERS_COLLECTION)
+    .where({ _id: id, _openid: openid })
+    .get()
+
+  if (transferResult.data.length === 0) {
+    return { success: false, error: '转账记录不存在' }
+  }
+
+  const oldTransfer = transferResult.data[0]
+
+  // 获取账户信息
+  const oldFromAccount = await getAccount(oldTransfer.fromAccountId)
+  const oldToAccount = await getAccount(oldTransfer.toAccountId)
+  const newFromAccount = await getAccount(fromAccountId)
+  const newToAccount = await getAccount(toAccountId)
+
+  if (!newFromAccount || !newToAccount) {
+    return { success: false, error: '转账账户不存在' }
+  }
+
+  // 步骤1：恢复原账户余额（与原金额相反）
+  try {
+    // 恢复转出账户：资产账户加回，负债账户减去
+    const oldFromChange = oldFromAccount && oldFromAccount.isDebt ? -oldTransfer.amount : oldTransfer.amount
+    await updateAccountBalance(oldTransfer.fromAccountId, oldFromChange)
+
+    // 恢复转入账户：资产账户减去，负债账户加回
+    const oldToChange = oldToAccount && oldToAccount.isDebt ? oldTransfer.amount : -oldTransfer.amount
+    await updateAccountBalance(oldTransfer.toAccountId, oldToChange)
+  } catch (err) {
+    console.error('更新转账记录时恢复原账户余额失败：', err)
+    return { success: false, error: '余额恢复失败，请重试' }
+  }
+
+  // 步骤2：应用新账户余额（与新金额相同）
+  try {
+    // 转出账户：资产账户减少，负债账户增加
+    const newFromChange = newFromAccount.isDebt ? amountNum : -amountNum
+    await updateAccountBalance(fromAccountId, newFromChange)
+
+    // 转入账户：资产账户增加，负债账户减少
+    const newToChange = newToAccount.isDebt ? -amountNum : amountNum
+    await updateAccountBalance(toAccountId, newToChange)
+  } catch (err) {
+    console.error('更新转账记录时应用新账户余额失败，恢复原余额：', err)
+    // 回滚：恢复原账户余额
+    try {
+      const rollbackFromChange = oldFromAccount && oldFromAccount.isDebt ? oldTransfer.amount : -oldTransfer.amount
+      await updateAccountBalance(oldTransfer.fromAccountId, rollbackFromChange)
+
+      const rollbackToChange = oldToAccount && oldToAccount.isDebt ? -oldTransfer.amount : oldTransfer.amount
+      await updateAccountBalance(oldTransfer.toAccountId, rollbackToChange)
+    } catch (rollbackErr) {
+      console.error('回滚原账户余额失败：', rollbackErr)
+    }
+    return { success: false, error: '余额更新失败，请重试' }
+  }
+
+  // 步骤3：更新转账记录
+  const updateData = {
+    fromAccountId,
+    toAccountId,
+    amount: amountNum,
+    date,
+    remark: remark || '',
+    updatedAt: db.serverDate()
+  }
+
+  const result = await db.collection(TRANSFERS_COLLECTION)
+    .doc(id)
+    .update({ data: updateData })
+
+  return {
+    success: true,
+    data: { updated: result.stats.updated }
   }
 }
 

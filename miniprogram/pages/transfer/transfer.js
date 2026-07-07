@@ -11,6 +11,10 @@ Page({
   data: {
     // 当前账户ID（从上一页传入）
     accountId: '',
+    // 转账记录ID（查看/编辑模式）
+    transferId: '',
+    // 页面模式：add（新增）/ view（查看）/ edit（编辑）
+    mode: 'add',
     // 表单数据
     form: {
       fromAccountId: '',
@@ -36,7 +40,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    const { accountId } = options
+    const { accountId, transferId } = options
     const today = this.formatDate(new Date())
 
     // 设置默认日期为今天
@@ -44,6 +48,15 @@ Page({
       accountId,
       'form.date': today
     })
+
+    // 如果有 transferId，进入查看模式
+    if (transferId) {
+      this.setData({
+        mode: 'view',
+        transferId
+      })
+      wx.setNavigationBarTitle({ title: '转账详情' })
+    }
 
     // 加载账户列表
     this.loadAccountList()
@@ -67,14 +80,71 @@ Page({
         const accountList = res.result.data || []
         this.setData({ accountList })
 
-        // 根据当前账户类型设置默认值
-        this.setDefaultAccount(accountList)
+        // 如果是查看或编辑模式，加载转账记录
+        if (this.data.mode === 'view' || this.data.mode === 'edit') {
+          await this.loadTransferData(accountList)
+        } else {
+          // 根据当前账户类型设置默认值
+          this.setDefaultAccount(accountList)
+        }
       }
     } catch (err) {
       console.error('加载账户列表失败：', err)
     } finally {
       this.setData({ loadingAccounts: false })
     }
+  },
+
+  /**
+   * 加载转账记录数据（查看/编辑模式）
+   */
+  async loadTransferData(accountList) {
+    wx.showLoading({ title: '加载中...' })
+
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'transferFunctions',
+        data: {
+          action: 'get',
+          data: { id: this.data.transferId }
+        }
+      })
+
+      if (res.result.success) {
+        const transfer = res.result.data
+        // 根据账户ID获取账户名称
+        const fromAccount = accountList.find(item => item._id === transfer.fromAccountId)
+        const toAccount = accountList.find(item => item._id === transfer.toAccountId)
+
+        this.setData({
+          form: {
+            fromAccountId: transfer.fromAccountId,
+            fromAccountName: fromAccount ? fromAccount.name : '',
+            fromAmount: transfer.amount.toString(),
+            toAccountId: transfer.toAccountId,
+            toAccountName: toAccount ? toAccount.name : '',
+            toAmount: transfer.amount.toString(),
+            date: transfer.date,
+            remark: transfer.remark || ''
+          }
+        })
+      } else {
+        wx.showToast({ title: '加载转账记录失败', icon: 'none' })
+      }
+    } catch (err) {
+      console.error('加载转账记录失败：', err)
+      wx.showToast({ title: '加载失败', icon: 'none' })
+    } finally {
+      wx.hideLoading()
+    }
+  },
+
+  /**
+   * 切换到编辑模式
+   */
+  switchToEdit() {
+    this.setData({ mode: 'edit' })
+    wx.setNavigationBarTitle({ title: '编辑转账' })
   },
 
   /**
@@ -195,7 +265,7 @@ Page({
    * 保存转账
    */
   async saveTransfer() {
-    const { form } = this.data
+    const { form, mode, transferId } = this.data
 
     // 参数校验
     if (!form.fromAccountId) {
@@ -249,17 +319,31 @@ Page({
         remark: form.remark
       }
 
-      const res = await wx.cloud.callFunction({
-        name: 'transferFunctions',
-        data: {
-          action: 'add',
-          data
-        }
-      })
+      let res
+      if (mode === 'edit') {
+        // 编辑模式
+        data.id = transferId
+        res = await wx.cloud.callFunction({
+          name: 'transferFunctions',
+          data: {
+            action: 'update',
+            data
+          }
+        })
+      } else {
+        // 新增模式
+        res = await wx.cloud.callFunction({
+          name: 'transferFunctions',
+          data: {
+            action: 'add',
+            data
+          }
+        })
+      }
 
       if (res.result.success) {
         wx.showToast({
-          title: '转账成功',
+          title: mode === 'edit' ? '修改成功' : '转账成功',
           icon: 'success'
         })
 
@@ -269,14 +353,14 @@ Page({
         }, 1500)
       } else {
         wx.showToast({
-          title: res.result.error || '转账失败',
+          title: res.result.error || (mode === 'edit' ? '修改失败' : '转账失败'),
           icon: 'none'
         })
       }
     } catch (err) {
       console.error('保存转账失败：', err)
       wx.showToast({
-        title: '转账失败',
+        title: mode === 'edit' ? '修改失败' : '转账失败',
         icon: 'none'
       })
     } finally {

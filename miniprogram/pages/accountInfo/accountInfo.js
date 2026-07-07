@@ -337,14 +337,13 @@ Page({
   },
 
   /**
-   * 跳转到转账记录详情（预留）
+   * 跳转到转账记录修改页面
    */
   goToTransferDetail(e) {
     const { id } = e.currentTarget.dataset
-    // 转账记录暂无详情页，可以显示toast提示
-    wx.showToast({
-      title: '转账记录详情开发中',
-      icon: 'none'
+    const { account } = this.data
+    wx.navigateTo({
+      url: `/pages/transfer/transfer?accountId=${account._id}&transferId=${id}`
     })
   },
 
