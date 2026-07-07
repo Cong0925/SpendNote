@@ -161,6 +161,7 @@ Page({
     categoryStats: [],
     displayStats: [],
     donutGradient: '',
+    legendColumns: 1, // 图例列数
     loading: false,
     activeTab: 'expense',
     // 月度趋势
@@ -172,6 +173,9 @@ Page({
     showTooltip: false,
     selectedMonth: null,
     tooltipData: null,
+    // 甜甜圈点击
+    showDonutTooltip: false,
+    donutTooltipData: null,
     // 时间范围选择
     rangeStartDate: '',
     rangeEndDate: '',
@@ -360,6 +364,9 @@ Page({
         const incomeUnit = formatAmountWithUnit(totalIncome)
         const balanceUnit = formatAmountWithUnit(balance)
 
+        // 计算图例列数（每列最多6个）
+        const legendColumns = Math.ceil(displayStats.length / 6) || 1
+
         this.setData({
           totalExpenseStr: formatAmount(totalExpense),
           totalIncomeStr: formatAmount(totalIncome),
@@ -374,7 +381,8 @@ Page({
           balanceUnit: balanceUnit.unit,
           categoryStats: stats.categoryStats,
           displayStats,
-          donutGradient
+          donutGradient,
+          legendColumns
         })
 
         // 年度模式下加载月度趋势
@@ -511,5 +519,77 @@ Page({
       selectedMonth: null,
       tooltipData: null
     })
+  },
+
+  // 点击甜甜圈图表
+  onDonutTap(e) {
+    const { displayStats, showDonutTooltip } = this.data
+
+    // 如果已显示tooltip，则隐藏
+    if (showDonutTooltip) {
+      this.setData({ showDonutTooltip: false, donutTooltipData: null })
+      return
+    }
+
+    // 没有数据时不处理
+    if (!displayStats || displayStats.length === 0) return
+
+    // 获取点击位置
+    const touch = e.touches[0]
+    const query = wx.createSelectorQuery()
+    query.select('.donut-chart').boundingClientRect(rect => {
+      if (!rect) return
+
+      // 计算点击位置相对于甜甜圈中心的坐标
+      const centerX = rect.width / 2
+      const centerY = rect.height / 2
+      const x = touch.clientX - rect.left - centerX
+      const y = touch.clientY - rect.top - centerY
+
+      // 计算点击角度（从12点钟方向顺时针）
+      let angle = Math.atan2(x, -y) * (180 / Math.PI)
+      if (angle < 0) angle += 360
+
+      // 计算点击位置到中心的距离，判断是否在甜甜圈环内
+      const distance = Math.sqrt(x * x + y * y)
+      const outerRadius = rect.width / 2
+      const innerRadius = outerRadius * 0.6 // 内圈比例
+
+      // 如果点击在中心空白区域或外圈外，不处理
+      if (distance < innerRadius || distance > outerRadius) {
+        this.setData({ showDonutTooltip: false, donutTooltipData: null })
+        return
+      }
+
+      // 根据角度找到对应的分类
+      let accumulated = 0
+      let selectedIndex = -1
+      const total = displayStats.reduce((sum, item) => sum + item.amount, 0)
+
+      for (let i = 0; i < displayStats.length; i++) {
+        const item = displayStats[i]
+        const segmentAngle = (item.amount / total) * 360
+        if (angle >= accumulated && angle < accumulated + segmentAngle) {
+          selectedIndex = i
+          break
+        }
+        accumulated += segmentAngle
+      }
+
+      // 找到对应的分类，显示tooltip
+      if (selectedIndex >= 0) {
+        this.setData({
+          showDonutTooltip: true,
+          donutTooltipData: displayStats[selectedIndex]
+        })
+      } else {
+        this.setData({ showDonutTooltip: false, donutTooltipData: null })
+      }
+    }).exec()
+  },
+
+  // 隐藏甜甜圈tooltip
+  hideDonutTooltip() {
+    this.setData({ showDonutTooltip: false, donutTooltipData: null })
   }
 })

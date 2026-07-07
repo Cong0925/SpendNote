@@ -106,7 +106,6 @@
           <view class="legend-item" wx:for="{{[1,2,3,4,5]}}" wx:key="*this">
             <view class="skeleton-dot"></view>
             <text class="skeleton-text skeleton-name"></text>
-            <text class="skeleton-text skeleton-percent"></text>
           </view>
         </view>
       </view>
@@ -136,18 +135,22 @@
 
     <block wx:if="{{categoryStats.length > 0 && !loading}}">
       <view class="donut-wrapper">
-        <view class="donut-chart">
+        <view class="donut-chart" bindtap="onDonutTap">
           <view class="donut-ring" style="background: conic-gradient({{donutGradient}})"></view>
           <view class="donut-center">
             <text class="donut-center-amount">¥{{activeTab === 'expense' ? totalExpenseStr : totalIncomeStr}}</text>
             <text class="donut-center-label">{{activeTab === 'expense' ? '总支出' : '总收入'}}</text>
           </view>
+          <!-- 点击分类提示 -->
+          <view class="donut-tooltip {{showDonutTooltip ? 'show' : ''}}" wx:if="{{donutTooltipData}}">
+            <text class="donut-tooltip-name">{{donutTooltipData.category}}</text>
+            <text class="donut-tooltip-percent">{{donutTooltipData.percentStr}}%</text>
+          </view>
         </view>
-        <view class="donut-legend">
-          <view class="legend-item" wx:for="{{displayStats}}" wx:key="category" wx:if="{{index < 5}}">
+        <view class="donut-legend" style="column-count: {{legendColumns}}">
+          <view class="legend-item" wx:for="{{displayStats}}" wx:key="category">
             <view class="legend-dot" style="background: {{item.color}}"></view>
             <text class="legend-name">{{item.category}}</text>
-            <text class="legend-percent">{{item.percentStr}}%</text>
           </view>
         </view>
       </view>

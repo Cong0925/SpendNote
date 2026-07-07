@@ -313,11 +313,11 @@ page {
 }
 
 .donut-chart {
-  width: 200rpx;
-  height: 200rpx;
+  width: 180rpx;
+  height: 180rpx;
   position: relative;
   flex-shrink: 0;
-  margin-right: 32rpx;
+  margin-right: 40rpx;
 }
 
 .donut-ring {
@@ -355,17 +355,67 @@ page {
   margin-top: 2rpx;
 }
 
-.donut-legend {
-  flex: 1;
+/* ============ 甜甜圈点击提示 ============ */
+.donut-tooltip {
+  position: absolute;
+  bottom: -10rpx;
+  left: 50%;
+  transform: translateX(-50%) translateY(10rpx);
+  background: var(--color-text);
+  color: #ffffff;
+  padding: 12rpx 20rpx;
+  border-radius: var(--radius-md);
   display: flex;
   flex-direction: column;
-  gap: 14rpx;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 10;
+  white-space: nowrap;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.2);
+}
+
+.donut-tooltip.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.donut-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -8rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 8rpx solid transparent;
+  border-right: 8rpx solid transparent;
+  border-bottom: 8rpx solid var(--color-text);
+}
+
+.donut-tooltip-name {
+  font-size: 24rpx;
+  font-weight: 600;
+  margin-bottom: 4rpx;
+}
+
+.donut-tooltip-percent {
+  font-size: 28rpx;
+  font-weight: 700;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+}
+
+.donut-legend {
+  flex: 1;
+  column-gap: 24rpx;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
   gap: 10rpx;
+  break-inside: avoid;
+  margin-bottom: 14rpx;
 }
 
 .legend-dot {
@@ -386,6 +436,7 @@ page {
   color: var(--color-text);
   font-weight: 600;
   font-family: 'SF Pro Display', -apple-system, sans-serif;
+  display: none; /* 隐藏百分比，点击图表时显示 */
 }
 
 /* ============ 统计列表 ============ */
@@ -1006,11 +1057,6 @@ page {
 
 .skeleton-name {
   width: 80rpx;
-  height: 28rpx;
-}
-
-.skeleton-percent {
-  width: 60rpx;
   height: 28rpx;
 }
 
