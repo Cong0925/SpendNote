@@ -10,16 +10,20 @@
       <view class="skeleton-line skeleton-party-label"></view>
     </view>
     <!-- 金额信息骨架屏 -->
-    <view class="amount-row skeleton-amount-row">
-      <view class="amount-item skeleton-amount-item">
-        <view class="skeleton-line skeleton-amount-label"></view>
-        <view class="skeleton-line skeleton-amount-value"></view>
+    <view class="amount-section skeleton-amount-section">
+      <!-- 已收/未收骨架屏 -->
+      <view class="amount-detail-row skeleton-amount-detail-row">
+        <view class="amount-item skeleton-amount-item">
+          <view class="skeleton-line skeleton-amount-label"></view>
+          <view class="skeleton-line skeleton-amount-value"></view>
+        </view>
+        <view class="amount-item skeleton-amount-item">
+          <view class="skeleton-line skeleton-amount-label"></view>
+          <view class="skeleton-line skeleton-amount-value"></view>
+        </view>
       </view>
-      <view class="amount-item skeleton-amount-item">
-        <view class="skeleton-line skeleton-amount-label"></view>
-        <view class="skeleton-line skeleton-amount-value"></view>
-      </view>
-      <view class="amount-item skeleton-amount-item">
+      <!-- 总额骨架屏 -->
+      <view class="amount-total-row skeleton-amount-total-row">
         <view class="skeleton-line skeleton-amount-label"></view>
         <view class="skeleton-line skeleton-amount-value"></view>
       </view>
@@ -35,18 +39,22 @@
     </view>
 
     <!-- 金额信息 -->
-    <view class="amount-row">
-      <view class="amount-item">
+    <view class="amount-section">
+      <!-- 已收/未收一行 -->
+      <view class="amount-detail-row">
+        <view class="amount-item">
+          <text class="amount-label">已{{loanInfo.type === 'lend' ? '收' : '还'}}</text>
+          <text class="amount-value received">￥{{loanInfo.paidAmountStr}}</text>
+        </view>
+        <view class="amount-item">
+          <text class="amount-label">未{{loanInfo.type === 'lend' ? '收' : '还'}}</text>
+          <text class="amount-value remaining">￥{{loanInfo.remainingStr}}</text>
+        </view>
+      </view>
+      <!-- 总额单独一行 -->
+      <view class="amount-total-row">
         <text class="amount-label">总额</text>
         <text class="amount-value">￥{{loanInfo.amountStr}}</text>
-      </view>
-      <view class="amount-item">
-        <text class="amount-label">已{{loanInfo.type === 'lend' ? '收' : '还'}}</text>
-        <text class="amount-value received">￥{{loanInfo.paidAmountStr}}</text>
-      </view>
-      <view class="amount-item">
-        <text class="amount-label">未{{loanInfo.type === 'lend' ? '收' : '还'}}</text>
-        <text class="amount-value remaining">￥{{loanInfo.remainingStr}}</text>
       </view>
     </view>
   </view>
