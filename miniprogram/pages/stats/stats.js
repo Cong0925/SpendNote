@@ -381,6 +381,7 @@ Page({
 
   // 加载月度趋势数据
   async loadMonthlyTrend(dateStr) {
+    this.setData({ loading: true })
     try {
       const year = parseInt(dateStr.split('-')[0])
       const { monthlyTrend, maxMonthlyAmount, yAxisLabels } = await loadMonthlyTrendData(year)
@@ -390,10 +391,12 @@ Page({
         yAxisLabels,
         showTooltip: false,
         selectedMonth: null,
-        tooltipData: null
+        tooltipData: null,
+        loading: false
       })
     } catch (error) {
       console.error('加载月度趋势失败:', error)
+      this.setData({ loading: false })
     }
   },
 

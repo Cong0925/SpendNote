@@ -181,6 +181,55 @@
     </block>
   </view>
 
+  <!-- 月度趋势骨架屏（仅年度模式加载中显示） -->
+  <view class="trend-section" wx:if="{{viewMode === 'year' && loading && monthlyTrend.length === 0}}">
+    <view class="trend-card">
+      <view class="trend-header">
+        <view class="skeleton-line skeleton-trend-title"></view>
+        <view class="trend-legend">
+          <view class="trend-legend-item">
+            <view class="skeleton-line skeleton-legend-dot"></view>
+            <view class="skeleton-line skeleton-legend-text"></view>
+          </view>
+          <view class="trend-legend-item">
+            <view class="skeleton-line skeleton-legend-dot"></view>
+            <view class="skeleton-line skeleton-legend-text"></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="bar-chart-container">
+        <!-- Y轴刻度 -->
+        <view class="y-axis">
+          <view class="skeleton-line skeleton-y-label"></view>
+          <view class="skeleton-line skeleton-y-label"></view>
+          <view class="skeleton-line skeleton-y-label"></view>
+          <view class="skeleton-line skeleton-y-label"></view>
+          <view class="skeleton-line skeleton-y-label"></view>
+        </view>
+
+        <!-- 柱状图区域 -->
+        <view class="bar-chart">
+          <view class="grid-lines">
+            <view class="grid-line"></view>
+            <view class="grid-line"></view>
+            <view class="grid-line"></view>
+            <view class="grid-line"></view>
+            <view class="grid-line"></view>
+          </view>
+
+          <view class="bar-group" wx:for="{{[1,2,3,4,5,6,7,8,9,10,11,12]}}" wx:key="*this">
+            <view class="bars">
+              <view class="skeleton-bar expense"></view>
+              <view class="skeleton-bar income"></view>
+            </view>
+            <view class="skeleton-line skeleton-bar-label"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
   <!-- 月度趋势柱状图（仅年度模式显示） -->
   <view class="trend-section" wx:if="{{viewMode === 'year' && monthlyTrend.length > 0}}">
     <view class="trend-card" bindtap="hideTooltip">

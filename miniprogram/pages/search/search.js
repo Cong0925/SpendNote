@@ -23,7 +23,9 @@ Page({
     categoryFilter: '',
     billTypeFilter: '',
     // 所有账单（用于搜索）
-    allBills: []
+    allBills: [],
+    // 是否有初始查询参数（从统计页面进入时为true）
+    hasInitialQuery: false
   },
 
   onLoad(options) {
@@ -37,12 +39,17 @@ Page({
       categoryFilter: decodeURIComponent(options.category || ''),
       billTypeFilter: options.billType || ''
     })
+
+    // 判断是否有初始查询参数
+    const hasInitialQuery = !!(options.category || options.billType || options.startDate || options.endDate)
+    this.setData({ hasInitialQuery, loading: hasInitialQuery })
+
     this.loadAllBills()
   },
 
   // 加载账单用于搜索（有日期范围则按范围加载，否则加载所有）
   async loadAllBills() {
-    const { startDate, endDate, categoryFilter, billTypeFilter } = this.data
+    const { startDate, endDate, categoryFilter, billTypeFilter, hasInitialQuery } = this.data
 
     try {
       let res
@@ -72,16 +79,19 @@ Page({
         }))
         // 获取账户名称
         const allBills = await this.fetchAccountNames(bills)
-        this.setData({ allBills })
+        this.setData({ allBills, loading: false })
 
         // 如果有分类筛选，自动展示筛选结果
         if (categoryFilter) {
           this.setData({ searchKeyword: categoryFilter })
           this._showFilteredResults(allBills, categoryFilter)
         }
+      } else {
+        this.setData({ loading: false })
       }
     } catch (error) {
       console.error('【搜索页面】加载账单失败', error)
+      this.setData({ loading: false })
     }
   },
 

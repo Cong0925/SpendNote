@@ -397,6 +397,113 @@ page {
   animation: spin 0.8s linear infinite;
 }
 
+/* ============ 骨架屏样式 ============ */
+@keyframes skeleton-pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+.skeleton-line {
+  display: inline-block;
+  background: var(--color-border);
+  border-radius: 8rpx;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* 汇总卡片骨架屏 */
+.skeleton-summary-label {
+  width: 60rpx;
+  height: 28rpx;
+}
+
+.skeleton-summary-value {
+  width: 80rpx;
+  height: 36rpx;
+}
+
+.skeleton-item-label {
+  width: 60rpx;
+  height: 24rpx;
+  margin-bottom: 8rpx;
+}
+
+.skeleton-item-value {
+  width: 100rpx;
+  height: 30rpx;
+}
+
+/* 搜索结果骨架屏 */
+.skeleton-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 8rpx;
+  margin-top: 16rpx;
+}
+
+.skeleton-group-date {
+  width: 120rpx;
+  height: 28rpx;
+}
+
+.skeleton-group-summary {
+  display: flex;
+  gap: 16rpx;
+}
+
+.skeleton-group-text {
+  width: 80rpx;
+  height: 22rpx;
+}
+
+.skeleton-bill-card {
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  margin-bottom: 12rpx;
+  box-shadow: var(--shadow-sm);
+}
+
+.skeleton-icon-wrap {
+  background: var(--color-border) !important;
+}
+
+.skeleton-icon {
+  width: 40rpx;
+  height: 40rpx;
+  background: var(--color-bg);
+  border-radius: 50%;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-bill-name {
+  width: 120rpx;
+  height: 28rpx;
+}
+
+.skeleton-account-tag {
+  width: 80rpx;
+  height: 24rpx;
+  border-radius: 12rpx;
+}
+
+.skeleton-bill-note {
+  width: 160rpx;
+  height: 22rpx;
+  margin-top: 8rpx;
+}
+
+.skeleton-bill-amount {
+  width: 100rpx;
+  height: 32rpx;
+  margin-bottom: 8rpx;
+}
+
+.skeleton-bill-date {
+  width: 80rpx;
+  height: 22rpx;
+}
+
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
