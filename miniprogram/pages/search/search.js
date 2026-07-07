@@ -47,6 +47,24 @@ Page({
     this.loadAllBills()
   },
 
+  onShow() {
+    // 从详情页返回时，如果有初始查询参数，重新加载数据
+    if (this.data.hasInitialQuery && this.data.searched) {
+      // 清空已有数据，显示骨架屏
+      this.setData({
+        loading: true,
+        searchResult: [],
+        searched: false,
+        searchTotal: 0,
+        searchIncomeStr: '0.00',
+        searchExpenseStr: '0.00',
+        searchBalanceStr: '0.00',
+        searchBalance: 0
+      })
+      this.loadAllBills()
+    }
+  },
+
   // 加载账单用于搜索（有日期范围则按范围加载，否则加载所有）
   async loadAllBills() {
     const { startDate, endDate, categoryFilter, billTypeFilter, hasInitialQuery } = this.data
@@ -272,24 +290,13 @@ Page({
 
   // 获取账户名称
   async fetchAccountNames(bills) {
-    // 提取所有不重复的 accountId
-    const accountIds = [...new Set(bills.filter(bill => bill.accountId).map(bill => bill.accountId))]
-
-    // 没有关联账户，标记为无账户
-    if (accountIds.length === 0) {
-      return bills.map(bill => ({
-        ...bill,
-        accountName: '无账户'
-      }))
-    }
-
     try {
-      // 批量获取账户信息
+      // 获取所有账户信息
       const accountRes = await wx.cloud.callFunction({
         name: 'accountFunctions',
         data: {
-          action: 'listByIds',
-          data: { ids: accountIds }
+          action: 'list',
+          data: {}
         }
       })
 

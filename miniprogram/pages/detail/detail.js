@@ -47,11 +47,33 @@ Page({
 
       if (res.result.success) {
         const bill = res.result.data
+        let accountName = '无账户'
+
+        // 如果有关联账户，获取账户名称
+        if (bill.accountId) {
+          try {
+            const accountRes = await wx.cloud.callFunction({
+              name: 'accountFunctions',
+              data: {
+                action: 'get',
+                data: { id: bill.accountId }
+              }
+            })
+
+            if (accountRes.result.success && accountRes.result.data) {
+              accountName = accountRes.result.data.name
+            }
+          } catch (error) {
+            console.error('获取账户信息失败:', error)
+          }
+        }
+
         this.setData({
           billDetail: {
             ...bill,
             amount: parseFloat(bill.amount) || 0,
-            amountStr: formatAmount(bill.amount)
+            amountStr: formatAmount(bill.amount),
+            accountName
           }
         })
       } else {

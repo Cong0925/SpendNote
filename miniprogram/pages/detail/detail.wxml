@@ -13,52 +13,95 @@
   </view>
 
   <!-- 内容区域 -->
-  <view class="content-area" wx:if="{{billDetail}}">
-    <!-- 账单信息卡片 -->
-    <view class="info-card">
+  <view class="content-area">
+    <!-- 骨架屏：加载中状态 -->
+    <view class="info-card skeleton-card" wx:if="{{loading}}">
       <view class="info-row">
-        <text class="info-label">分类</text>
+        <view class="skeleton-line skeleton-label"></view>
         <view class="info-value-wrap">
-          <text class="info-icon">{{billDetail.icon}}</text>
-          <text class="info-value">{{billDetail.category}}</text>
+          <view class="skeleton-line skeleton-icon"></view>
+          <view class="skeleton-line skeleton-value"></view>
         </view>
       </view>
       <view class="info-divider"></view>
 
       <view class="info-row">
-        <text class="info-label">金额</text>
-        <text class="info-value amount {{billDetail.type === 'expense' ? 'expense' : 'income'}}">
-          {{billDetail.type === 'expense' ? '-' : '+'}}¥{{billDetail.amountStr}}
-        </text>
+        <view class="skeleton-line skeleton-label"></view>
+        <view class="skeleton-line skeleton-amount"></view>
       </view>
       <view class="info-divider"></view>
 
       <view class="info-row">
-        <text class="info-label">日期</text>
-        <text class="info-value">{{billDetail.date}}</text>
+        <view class="skeleton-line skeleton-label"></view>
+        <view class="skeleton-line skeleton-value"></view>
       </view>
       <view class="info-divider"></view>
 
       <view class="info-row">
-        <text class="info-label">备注</text>
-        <text class="info-value {{billDetail.note ? '' : 'empty'}}">{{billDetail.note || '无'}}</text>
+        <view class="skeleton-line skeleton-label"></view>
+        <view class="skeleton-line skeleton-value-long"></view>
+      </view>
+      <view class="info-divider"></view>
+
+      <view class="info-row">
+        <view class="skeleton-line skeleton-label"></view>
+        <view class="skeleton-line skeleton-value"></view>
       </view>
     </view>
 
-    <!-- 操作按钮 -->
-    <view class="action-buttons">
-      <view class="action-btn delete" bindtap="deleteBill">
-        <text>删除</text>
-      </view>
-      <view class="action-btn edit" bindtap="editBill">
-        <text>修改</text>
-      </view>
+    <view class="action-buttons skeleton-buttons" wx:if="{{loading}}">
+      <view class="action-btn skeleton-btn"></view>
+      <view class="action-btn skeleton-btn"></view>
     </view>
-  </view>
 
-  <!-- 加载状态 -->
-  <view class="loading-state" wx:if="{{loading}}">
-    <view class="loading-spinner"></view>
-    <text>加载中...</text>
+    <!-- 实际内容：数据加载完成 -->
+    <block wx:if="{{!loading && billDetail}}">
+      <!-- 账单信息卡片 -->
+      <view class="info-card">
+        <view class="info-row">
+          <text class="info-label">分类</text>
+          <view class="info-value-wrap">
+            <text class="info-icon">{{billDetail.icon}}</text>
+            <text class="info-value">{{billDetail.category}}</text>
+          </view>
+        </view>
+        <view class="info-divider"></view>
+
+        <view class="info-row">
+          <text class="info-label">金额</text>
+          <text class="info-value amount {{billDetail.type === 'expense' ? 'expense' : 'income'}}">
+            {{billDetail.type === 'expense' ? '-' : '+'}}¥{{billDetail.amountStr}}
+          </text>
+        </view>
+        <view class="info-divider"></view>
+
+        <view class="info-row">
+          <text class="info-label">日期</text>
+          <text class="info-value">{{billDetail.date}}</text>
+        </view>
+        <view class="info-divider"></view>
+
+        <view class="info-row">
+          <text class="info-label">备注</text>
+          <text class="info-value {{billDetail.note ? '' : 'empty'}}">{{billDetail.note || '无'}}</text>
+        </view>
+        <view class="info-divider"></view>
+
+        <view class="info-row">
+          <text class="info-label">账户</text>
+          <text class="info-value {{billDetail.accountName === '无账户' ? 'empty' : ''}}">{{billDetail.accountName || '无账户'}}</text>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="action-buttons">
+        <view class="action-btn delete" bindtap="deleteBill">
+          <text>删除</text>
+        </view>
+        <view class="action-btn edit" bindtap="editBill">
+          <text>修改</text>
+        </view>
+      </view>
+    </block>
   </view>
 </view>
