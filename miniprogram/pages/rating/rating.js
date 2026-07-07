@@ -41,7 +41,9 @@ Page({
     loading: false,
     page: 1,
     pageSize: 10,
-    currentFilter: 'all'
+    currentFilter: 'all',
+    showSkeleton: true,  // 初次加载骨架屏显示状态
+    showListSkeleton: false  // 切换筛选时列表骨架屏显示状态
   },
 
   onLoad() {
@@ -72,6 +74,8 @@ Page({
   async loadData() {
     await this.loadExistingRating()
     await this.loadReviews()
+    // 数据加载完成后隐藏骨架屏
+    this.setData({ showSkeleton: false })
   },
 
   onShow() {
@@ -161,12 +165,15 @@ Page({
           badCount,
           hasImageCount,
           avgRating: avgRating.toFixed(1),
-          hasMore: formattedList.length === this.data.pageSize
+          hasMore: formattedList.length === this.data.pageSize,
+          showSkeleton: false,  // 初次加载完成后隐藏骨架屏
+          showListSkeleton: false  // 列表数据加载完成后隐藏列表骨架屏
         })
       }
     } catch (error) {
       console.error('加载评价列表失败:', error)
       wx.showToast({ title: '加载失败', icon: 'none' })
+      this.setData({ showSkeleton: false, showListSkeleton: false })  // 加载失败也隐藏骨架屏
     } finally {
       this.setData({ loading: false })
     }
@@ -187,7 +194,8 @@ Page({
       page: 1,
       reviews: [],
       filteredReviews: [],
-      hasMore: true
+      hasMore: true,
+      showListSkeleton: true  // 切换筛选时显示列表骨架屏
     })
     this.loadReviews()
   },
