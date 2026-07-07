@@ -169,6 +169,23 @@
             </view>
           </view>
         </view>
+
+        <!-- 加载更多提示 -->
+        <view class="load-more" wx:if="{{billList.length > 0}}">
+          <!-- 加载中 -->
+          <view wx:if="{{loadingMoreBills}}" class="loading-more">
+            <view class="loading-spinner-small"></view>
+            <text class="loading-text">加载中...</text>
+          </view>
+          <!-- 还有更多数据 -->
+          <view wx:elif="{{hasMoreBills}}" class="load-more-text" bindtap="loadMoreBills">
+            <text>点击加载更多</text>
+          </view>
+          <!-- 全部加载完成 -->
+          <view wx:else class="no-more">
+            <text>已加载所有数据</text>
+          </view>
+        </view>
       </view>
 
       <!-- 转账记录列表 -->
@@ -210,6 +227,23 @@
               <text class="transfer-amount">￥{{item.amountStr}}</text>
               <text class="transfer-remark" wx:if="{{item.remark}}">{{item.remark}}</text>
             </view>
+          </view>
+        </view>
+
+        <!-- 加载更多提示 -->
+        <view class="load-more" wx:if="{{transferList.length > 0}}">
+          <!-- 加载中 -->
+          <view wx:if="{{loadingMoreTransfers}}" class="loading-more">
+            <view class="loading-spinner-small"></view>
+            <text class="loading-text">加载中...</text>
+          </view>
+          <!-- 还有更多数据 -->
+          <view wx:elif="{{hasMoreTransfers}}" class="load-more-text" bindtap="loadMoreTransfers">
+            <text>点击加载更多</text>
+          </view>
+          <!-- 全部加载完成 -->
+          <view wx:else class="no-more">
+            <text>已加载所有数据</text>
           </view>
         </view>
       </view>

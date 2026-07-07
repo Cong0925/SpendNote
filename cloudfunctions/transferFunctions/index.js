@@ -114,10 +114,10 @@ async function addTransfer(openid, data) {
 }
 
 /**
- * 获取转账记录列表
+ * 获取转账记录列表（支持分页）
  */
 async function listTransfers(openid, params = {}) {
-  const { accountId, page = 1, pageSize = 50 } = params
+  const { accountId, page = 1, pageSize = 10 } = params
 
   let whereCondition = { _openid: openid }
 
@@ -132,17 +132,26 @@ async function listTransfers(openid, params = {}) {
     }
   }
 
+  const skip = (page - 1) * pageSize
+
   const result = await db.collection(TRANSFERS_COLLECTION)
     .where(whereCondition)
     .orderBy('date', 'desc')
     .orderBy('createdAt', 'desc')
-    .skip((page - 1) * pageSize)
+    .skip(skip)
     .limit(pageSize)
     .get()
 
+  // 获取总数
+  const countResult = await db.collection(TRANSFERS_COLLECTION)
+    .where(whereCondition)
+    .count()
+
   return {
     success: true,
-    data: result.data
+    data: result.data,
+    total: countResult.total,
+    hasMore: skip + result.data.length < countResult.total
   }
 }
 

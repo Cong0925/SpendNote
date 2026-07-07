@@ -39,7 +39,7 @@ exports.main = async (event, context) => {
       case 'list':
         return await listBills(OPENID, data)
       case 'listByAccount':
-        return await listBillsByAccount(OPENID, data.accountId)
+        return await listBillsByAccount(OPENID, data)
       case 'getStats':
         return await getBillStats(OPENID, data)
       case 'getBillsByDateRange':
@@ -292,23 +292,35 @@ async function listBills(openid, params = {}) {
 }
 
 /**
- * 根据账户ID获取账单列表
+ * 根据账户ID获取账单列表（支持分页）
  */
-async function listBillsByAccount(openid, accountId) {
+async function listBillsByAccount(openid, data) {
+  const { accountId, page = 1, pageSize = 20 } = data
+
   if (!accountId) {
     return { success: false, error: '缺少账户ID' }
   }
+
+  const skip = (page - 1) * pageSize
 
   const result = await db.collection(BILLS_COLLECTION)
     .where({ _openid: openid, accountId })
     .orderBy('date', 'desc')
     .orderBy('created_at', 'desc')
-    .limit(100)
+    .skip(skip)
+    .limit(pageSize)
     .get()
+
+  // 获取总数用于判断是否还有更多数据
+  const countResult = await db.collection(BILLS_COLLECTION)
+    .where({ _openid: openid, accountId })
+    .count()
 
   return {
     success: true,
-    data: result.data
+    data: result.data,
+    total: countResult.total,
+    hasMore: skip + result.data.length < countResult.total
   }
 }
 

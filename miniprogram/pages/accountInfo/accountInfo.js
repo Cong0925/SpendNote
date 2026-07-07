@@ -43,7 +43,17 @@ Page({
     // 骨架屏状态
     showSkeleton: true,
     // 加载转账记录状态
-    loadingTransfers: false
+    loadingTransfers: false,
+    // 账单分页相关
+    billPage: 1,
+    billPageSize: 10,
+    hasMoreBills: true,
+    loadingMoreBills: false,
+    // 转账记录分页相关
+    transferPage: 1,
+    transferPageSize: 10,
+    hasMoreTransfers: true,
+    loadingMoreTransfers: false
   },
 
   /**
@@ -60,9 +70,9 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    // 如果已有账户ID，刷新数据
+    // 如果已有账户ID，刷新数据（从子页面返回时不需要显示骨架屏）
     if (this.data.account._id) {
-      this.loadAccountData(this.data.account._id)
+      this.refreshData(this.data.account._id)
     }
   },
 
@@ -73,12 +83,12 @@ Page({
     this.setData({ loading: true, showSkeleton: true })
 
     try {
-      // 加载账户信息
-      await this.loadAccountInfo(id)
-      // 加载账单数据
-      await this.loadBills(id)
-      // 加载转账记录
-      await this.loadTransfers(id)
+      // 并行加载账户信息、账单数据、转账记录（无依赖关系）
+      await Promise.all([
+        this.loadAccountInfo(id),
+        this.loadBills(id),
+        this.loadTransfers(id)
+      ])
       // 统计入账和出账（包含账单和转账）
       this.calculateStats(id)
     } catch (err) {
@@ -89,6 +99,32 @@ Page({
       })
     } finally {
       this.setData({ loading: false, showSkeleton: false })
+    }
+  },
+
+  /**
+   * 刷新数据（不显示骨架屏，用于从子页面返回时）
+   */
+  async refreshData(id) {
+    // 重置分页状态，从第1页开始加载
+    this.setData({
+      billPage: 1,
+      hasMoreBills: true,
+      transferPage: 1,
+      hasMoreTransfers: true
+    })
+
+    try {
+      // 并行加载账户信息、账单数据、转账记录
+      await Promise.all([
+        this.loadAccountInfo(id),
+        this.loadBills(id),
+        this.loadTransfers(id)
+      ])
+      // 统计入账和出账
+      this.calculateStats(id)
+    } catch (err) {
+      console.error('刷新数据失败：', err)
     }
   },
 
@@ -123,54 +159,90 @@ Page({
   },
 
   /**
-   * 加载账单数据
+   * 加载账单数据（分页）
    */
-  async loadBills(accountId) {
+  async loadBills(accountId, isLoadMore = false) {
+    const { billPage, billPageSize } = this.data
+
+    // 如果是加载更多，设置加载状态
+    if (isLoadMore) {
+      this.setData({ loadingMoreBills: true })
+    }
+
     try {
       const res = await wx.cloud.callFunction({
         name: 'billFunctions',
         data: {
           action: 'listByAccount',
-          data: { accountId }
+          data: {
+            accountId,
+            page: billPage,
+            pageSize: billPageSize
+          }
         }
       })
 
       if (res.result.success) {
-        const billList = res.result.data || []
+        const newBills = res.result.data || []
+        const hasMore = res.result.hasMore
+
         // 格式化账单金额
-        const formattedBillList = billList.map(bill => ({
+        const formattedBills = newBills.map(bill => ({
           ...bill,
           amountStr: formatAmount(bill.amount)
         }))
 
-        this.setData({ billList: formattedBillList })
+        // 如果是加载更多，追加到列表；否则替换
+        const billList = isLoadMore
+          ? [...this.data.billList, ...formattedBills]
+          : formattedBills
+
+        this.setData({
+          billList,
+          hasMoreBills: hasMore,
+          billPage: isLoadMore ? billPage + 1 : 2,
+          loadingMoreBills: false
+        })
       }
     } catch (err) {
       console.error('获取账单数据失败：', err)
+      this.setData({ loadingMoreBills: false })
     }
   },
 
   /**
-   * 加载转账记录
+   * 加载转账记录（分页）
    */
-  async loadTransfers(accountId) {
-    this.setData({ loadingTransfers: true })
+  async loadTransfers(accountId, isLoadMore = false) {
+    const { transferPage, transferPageSize } = this.data
+
+    // 如果是加载更多，设置加载状态
+    if (isLoadMore) {
+      this.setData({ loadingMoreTransfers: true })
+    } else {
+      this.setData({ loadingTransfers: true })
+    }
 
     try {
       const res = await wx.cloud.callFunction({
         name: 'transferFunctions',
         data: {
           action: 'list',
-          data: { accountId }
+          data: {
+            accountId,
+            page: transferPage,
+            pageSize: transferPageSize
+          }
         }
       })
 
       if (res.result.success) {
-        const transferList = res.result.data || []
+        const newTransfers = res.result.data || []
+        const hasMore = res.result.hasMore
 
         // 获取所有相关账户的名称
         const accountIds = new Set()
-        transferList.forEach(transfer => {
+        newTransfers.forEach(transfer => {
           accountIds.add(transfer.fromAccountId)
           accountIds.add(transfer.toAccountId)
         })
@@ -179,7 +251,7 @@ Page({
         const accountNames = await this.fetchAccountNames(Array.from(accountIds))
 
         // 格式化转账记录
-        const formattedTransferList = transferList.map(transfer => ({
+        const formattedTransfers = newTransfers.map(transfer => ({
           ...transfer,
           amountStr: formatAmount(transfer.amount),
           fromAccountName: accountNames[transfer.fromAccountId] || '未知账户',
@@ -188,10 +260,21 @@ Page({
           isOut: transfer.fromAccountId === accountId
         }))
 
-        this.setData({ transferList: formattedTransferList })
+        // 如果是加载更多，追加到列表；否则替换
+        const transferList = isLoadMore
+          ? [...this.data.transferList, ...formattedTransfers]
+          : formattedTransfers
+
+        this.setData({
+          transferList,
+          hasMoreTransfers: hasMore,
+          transferPage: isLoadMore ? transferPage + 1 : 2,
+          loadingMoreTransfers: false
+        })
       }
     } catch (err) {
       console.error('获取转账记录失败：', err)
+      this.setData({ loadingMoreTransfers: false })
     } finally {
       this.setData({ loadingTransfers: false })
     }
@@ -241,6 +324,34 @@ Page({
     wx.navigateTo({
       url: `/pages/accountDetail/accountDetail?id=${account._id}`
     })
+  },
+
+  /**
+   * 上拉加载更多账单
+   */
+  async loadMoreBills() {
+    const { hasMoreBills, loadingMoreBills, currentTab, account } = this.data
+
+    // 只有账单tab且有更多数据时才加载
+    if (currentTab !== 'bills' || !hasMoreBills || loadingMoreBills) {
+      return
+    }
+
+    await this.loadBills(account._id, true)
+  },
+
+  /**
+   * 上拉加载更多转账记录
+   */
+  async loadMoreTransfers() {
+    const { hasMoreTransfers, loadingMoreTransfers, currentTab, account } = this.data
+
+    // 只有转账tab且有更多数据时才加载
+    if (currentTab !== 'transfers' || !hasMoreTransfers || loadingMoreTransfers) {
+      return
+    }
+
+    await this.loadTransfers(account._id, true)
   },
 
   /**

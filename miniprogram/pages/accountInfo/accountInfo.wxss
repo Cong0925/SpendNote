@@ -258,6 +258,32 @@ page {
   color: #9CA3AF;
 }
 
+/* ============ 加载更多 ============ */
+.load-more {
+  padding: 24rpx 0;
+  text-align: center;
+}
+
+.loading-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.load-more-text {
+  font-size: 26rpx;
+  color: #2563EB;
+}
+
+.load-more-text:active {
+  opacity: 0.7;
+}
+
+.no-more {
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
 .bill-item {
   display: flex;
   align-items: center;
