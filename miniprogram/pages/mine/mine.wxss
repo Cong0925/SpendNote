@@ -14,6 +14,7 @@ page {
   overflow: hidden;
   background: var(--color-bg);
   box-sizing: border-box;
+  padding-bottom: 100rpx;
 }
 
 /* ============ 用户卡片 ============ */
@@ -555,6 +556,47 @@ page {
 .stats-total-number {
   font-weight: 700;
   color: #DC2626;
+}
+
+/* 数据统计骨架屏 */
+.skeleton-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.skeleton-line {
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 8rpx;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-number {
+  width: 80rpx;
+  height: 44rpx;
+  margin-bottom: 6rpx;
+}
+
+.skeleton-label {
+  width: 60rpx;
+  height: 22rpx;
+}
+
+.skeleton-total {
+  padding-top: 16rpx;
+  border-top: 1rpx solid rgba(0, 0, 0, 0.06);
+}
+
+.skeleton-total-text {
+  width: 280rpx;
+  height: 24rpx;
 }
 
 /* 警告卡片 */

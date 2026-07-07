@@ -16,6 +16,7 @@ Page({
     loading: false,
     // 数据统计
     dataStats: null,
+    loadingStats: false,  // 数据统计加载状态
     showClearModal: false,
     clearStep: 0 // 0: 确认, 1: 输入确认文字
   },
@@ -52,7 +53,8 @@ Page({
   resetTemporaryStates() {
     this.setData({
       showClearModal: false,     // 重置清除数据弹窗
-      clearStep: 0               // 重置清除步骤
+      clearStep: 0,              // 重置清除步骤
+      loadingStats: false        // 重置数据统计加载状态
     })
   },
 
@@ -373,6 +375,7 @@ Page({
 
   // 加载数据统计
   async loadDataStats() {
+    this.setData({ loadingStats: true })
     try {
       console.log('开始获取数据统计...')
       const res = await wx.cloud.callFunction({
@@ -382,9 +385,10 @@ Page({
 
       console.log('获取数据统计结果:', res)
       if (res.result && res.result.success) {
-        this.setData({ dataStats: res.result.data })
+        this.setData({ dataStats: res.result.data, loadingStats: false })
       } else {
         console.error('获取数据统计失败:', res.result)
+        this.setData({ loadingStats: false })
         wx.showToast({
           title: '获取数据失败',
           icon: 'none'
@@ -392,6 +396,7 @@ Page({
       }
     } catch (error) {
       console.error('获取数据统计异常:', error)
+      this.setData({ loadingStats: false })
       wx.showToast({
         title: '获取数据失败',
         icon: 'none'
@@ -401,7 +406,7 @@ Page({
 
   // 关闭清除数据弹窗
   closeClearModal() {
-    this.setData({ showClearModal: false, clearStep: 0, dataStats: null })
+    this.setData({ showClearModal: false, clearStep: 0, dataStats: null, loadingStats: false })
   },
 
   // 下一步（确认删除）

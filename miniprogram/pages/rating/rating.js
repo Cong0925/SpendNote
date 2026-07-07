@@ -73,7 +73,7 @@ Page({
   // 加载数据
   async loadData() {
     await this.loadExistingRating()
-    await this.loadReviews()
+    await this.loadReviews(false, true)  // 初次加载时更新统计数据
     // 数据加载完成后隐藏骨架屏
     this.setData({ showSkeleton: false })
   },
@@ -127,7 +127,7 @@ Page({
   },
 
   // 加载评价列表
-  async loadReviews(append = false) {
+  async loadReviews(append = false, updateStats = true) {
     if (this.data.loading) return
 
     this.setData({ loading: true })
@@ -155,20 +155,26 @@ Page({
 
         let allReviews = append ? [...this.data.reviews, ...formattedList] : formattedList
 
-        // 后端已处理我的评价置顶逻辑，这里直接使用返回的数据
-        this.setData({
+        // 构建要更新的数据对象
+        const updateData = {
           reviews: allReviews,
           filteredReviews: allReviews,
-          totalCount: total,
-          goodCount,
-          midCount,
-          badCount,
-          hasImageCount,
-          avgRating: avgRating.toFixed(1),
           hasMore: formattedList.length === this.data.pageSize,
           showSkeleton: false,  // 初次加载完成后隐藏骨架屏
           showListSkeleton: false  // 列表数据加载完成后隐藏列表骨架屏
-        })
+        }
+
+        // 只有初次加载或需要更新统计数据时才更新统计信息
+        if (updateStats) {
+          updateData.totalCount = total
+          updateData.goodCount = goodCount
+          updateData.midCount = midCount
+          updateData.badCount = badCount
+          updateData.hasImageCount = hasImageCount
+          updateData.avgRating = avgRating.toFixed(1)
+        }
+
+        this.setData(updateData)
       }
     } catch (error) {
       console.error('加载评价列表失败:', error)
@@ -197,7 +203,7 @@ Page({
       hasMore: true,
       showListSkeleton: true  // 切换筛选时显示列表骨架屏
     })
-    this.loadReviews()
+    this.loadReviews(false, false)  // 切换筛选时不更新统计数据
   },
 
   // 点击星星

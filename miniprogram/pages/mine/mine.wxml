@@ -142,6 +142,32 @@
 
       <!-- 第一步：显示数据统计 -->
       <view class="clear-modal-body" wx:if="{{clearStep === 0}}">
+        <!-- 数据统计骨架屏 -->
+        <view class="clear-stats-card" wx:if="{{!dataStats && loadingStats}}">
+          <view class="stats-grid">
+            <view class="stats-item skeleton-item">
+              <text class="skeleton-line skeleton-number"></text>
+              <text class="skeleton-line skeleton-label"></text>
+            </view>
+            <view class="stats-item skeleton-item">
+              <text class="skeleton-line skeleton-number"></text>
+              <text class="skeleton-line skeleton-label"></text>
+            </view>
+            <view class="stats-item skeleton-item">
+              <text class="skeleton-line skeleton-number"></text>
+              <text class="skeleton-line skeleton-label"></text>
+            </view>
+            <view class="stats-item skeleton-item">
+              <text class="skeleton-line skeleton-number"></text>
+              <text class="skeleton-line skeleton-label"></text>
+            </view>
+          </view>
+          <view class="stats-total skeleton-total">
+            <text class="skeleton-line skeleton-total-text"></text>
+          </view>
+        </view>
+
+        <!-- 数据统计内容 -->
         <view class="clear-stats-card" wx:if="{{dataStats}}">
           <view class="stats-grid">
             <view class="stats-item">
