@@ -157,12 +157,76 @@ page {
   background: #F3F4F6;
 }
 
-/* ============ 账单列表 ============ */
-.bill-section {
+/* ============ Tab切换和记录列表 ============ */
+.record-section {
   background: #ffffff;
   border-radius: 24rpx;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
   overflow: hidden;
+}
+
+.tab-bar {
+  display: flex;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28rpx 0;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #2563EB;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 4rpx;
+  background: #2563EB;
+  border-radius: 2rpx;
+}
+
+.tab-text {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #6B7280;
+}
+
+.tab-item.active .tab-text {
+  color: #2563EB;
+  font-weight: 600;
+}
+
+.tab-badge {
+  margin-left: 8rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  padding: 0 8rpx;
+  background: #E5E7EB;
+  border-radius: 16rpx;
+  font-size: 20rpx;
+  color: #6B7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-item.active .tab-badge {
+  background: #DBEAFE;
+  color: #2563EB;
+}
+
+.tab-content {
+  min-height: 200rpx;
 }
 
 .section-header {
@@ -284,6 +348,130 @@ page {
 
 .bill-date {
   font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+/* ============ 转账记录列表 ============ */
+.transfer-list {
+  /* 转账列表容器 */
+}
+
+.transfer-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.transfer-item:last-child {
+  border-bottom: none;
+}
+
+.transfer-item:active {
+  background: #F9FAFB;
+}
+
+.transfer-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.transfer-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  background: #FEF3C7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
+.transfer-emoji {
+  font-size: 28rpx;
+}
+
+.transfer-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.transfer-route {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4rpx;
+}
+
+.route-account {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #111827;
+  max-width: 160rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.route-arrow {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  margin: 0 8rpx;
+}
+
+.transfer-date {
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+.transfer-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.transfer-amount {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4rpx;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+}
+
+.transfer-remark {
+  font-size: 22rpx;
+  color: #9CA3AF;
+  max-width: 160rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============ 加载状态 ============ */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 0;
+}
+
+.loading-spinner-small {
+  width: 40rpx;
+  height: 40rpx;
+  border: 3rpx solid #E5E7EB;
+  border-top-color: #2563EB;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 16rpx;
+}
+
+.loading-text {
+  font-size: 26rpx;
   color: #9CA3AF;
 }
 

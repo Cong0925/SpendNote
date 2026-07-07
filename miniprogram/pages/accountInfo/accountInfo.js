@@ -34,8 +34,14 @@ Page({
     },
     // 账单列表
     billList: [],
+    // 转账记录列表
+    transferList: [],
+    // 当前显示的tab：bills（账单）/ transfers（转账）
+    currentTab: 'bills',
     // 加载状态
-    loading: true
+    loading: true,
+    // 加载转账记录状态
+    loadingTransfers: false
   },
 
   /**
@@ -69,6 +75,10 @@ Page({
       await this.loadAccountInfo(id)
       // 加载账单数据
       await this.loadBills(id)
+      // 加载转账记录
+      await this.loadTransfers(id)
+      // 统计入账和出账（包含账单和转账）
+      this.calculateStats(id)
     } catch (err) {
       console.error('加载账户数据失败：', err)
       wx.showToast({
@@ -125,36 +135,93 @@ Page({
 
       if (res.result.success) {
         const billList = res.result.data || []
-        // 计算入账和出账
-        let income = 0
-        let expense = 0
-        billList.forEach(bill => {
-          if (bill.type === 'income') {
-            income += bill.amount
-          } else {
-            expense += bill.amount
-          }
-        })
-
         // 格式化账单金额
         const formattedBillList = billList.map(bill => ({
           ...bill,
           amountStr: formatAmount(bill.amount)
         }))
 
-        this.setData({
-          billList: formattedBillList,
-          stats: {
-            income,
-            expense,
-            incomeStr: formatAmount(income),
-            expenseStr: formatAmount(expense)
-          }
-        })
+        this.setData({ billList: formattedBillList })
       }
     } catch (err) {
       console.error('获取账单数据失败：', err)
     }
+  },
+
+  /**
+   * 加载转账记录
+   */
+  async loadTransfers(accountId) {
+    this.setData({ loadingTransfers: true })
+
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'transferFunctions',
+        data: {
+          action: 'list',
+          data: { accountId }
+        }
+      })
+
+      if (res.result.success) {
+        const transferList = res.result.data || []
+
+        // 获取所有相关账户的名称
+        const accountIds = new Set()
+        transferList.forEach(transfer => {
+          accountIds.add(transfer.fromAccountId)
+          accountIds.add(transfer.toAccountId)
+        })
+
+        // 批量获取账户名称
+        const accountNames = await this.fetchAccountNames(Array.from(accountIds))
+
+        // 格式化转账记录
+        const formattedTransferList = transferList.map(transfer => ({
+          ...transfer,
+          amountStr: formatAmount(transfer.amount),
+          fromAccountName: accountNames[transfer.fromAccountId] || '未知账户',
+          toAccountName: accountNames[transfer.toAccountId] || '未知账户',
+          // 判断当前账户是转出还是转入
+          isOut: transfer.fromAccountId === accountId
+        }))
+
+        this.setData({ transferList: formattedTransferList })
+      }
+    } catch (err) {
+      console.error('获取转账记录失败：', err)
+    } finally {
+      this.setData({ loadingTransfers: false })
+    }
+  },
+
+  /**
+   * 批量获取账户名称
+   */
+  async fetchAccountNames(accountIds) {
+    const accountNames = {}
+
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'accountFunctions',
+        data: {
+          action: 'list'
+        }
+      })
+
+      if (res.result.success) {
+        const accountList = res.result.data || []
+        accountList.forEach(account => {
+          if (accountIds.includes(account._id)) {
+            accountNames[account._id] = account.name
+          }
+        })
+      }
+    } catch (err) {
+      console.error('获取账户名称失败：', err)
+    }
+
+    return accountNames
   },
 
   /**
@@ -259,5 +326,64 @@ Page({
         icon: 'none'
       })
     }
+  },
+
+  /**
+   * 切换tab
+   */
+  switchTab(e) {
+    const tab = e.currentTarget.dataset.tab
+    this.setData({ currentTab: tab })
+  },
+
+  /**
+   * 跳转到转账记录详情（预留）
+   */
+  goToTransferDetail(e) {
+    const { id } = e.currentTarget.dataset
+    // 转账记录暂无详情页，可以显示toast提示
+    wx.showToast({
+      title: '转账记录详情开发中',
+      icon: 'none'
+    })
+  },
+
+  /**
+   * 统计入账和出账（包含账单和转账）
+   */
+  calculateStats(accountId) {
+    let income = 0
+    let expense = 0
+
+    // 统计账单数据
+    const { billList } = this.data
+    billList.forEach(bill => {
+      if (bill.type === 'income') {
+        income += bill.amount
+      } else {
+        expense += bill.amount
+      }
+    })
+
+    // 统计转账记录
+    const { transferList } = this.data
+    transferList.forEach(transfer => {
+      if (transfer.isOut) {
+        // 转出：出账增加
+        expense += transfer.amount
+      } else {
+        // 转入：入账增加
+        income += transfer.amount
+      }
+    })
+
+    this.setData({
+      stats: {
+        income,
+        expense,
+        incomeStr: formatAmount(income),
+        expenseStr: formatAmount(expense)
+      }
+    })
   }
 })

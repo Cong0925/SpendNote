@@ -69,9 +69,23 @@ async function addTransfer(openid, data) {
 
   const result = await db.collection(TRANSFERS_COLLECTION).add({ data: transfer })
 
-  // 更新账户余额（转出扣减、转入增加）
+  // 获取两个账户的信息，判断是否为负债账户
+  const fromAccount = await getAccount(fromAccountId)
+  const toAccount = await getAccount(toAccountId)
+
+  if (!fromAccount || !toAccount) {
+    console.error('转账账户不存在，回滚已创建的转账记录')
+    await db.collection(TRANSFERS_COLLECTION).doc(result._id).remove()
+    return { success: false, error: '转账账户不存在' }
+  }
+
+  // 更新账户余额（需要考虑负债账户的特殊逻辑）
+  // 资产账户：余额为正数，转出减少，转入增加
+  // 负债账户：余额为正数表示欠款，转出增加（欠款减少），转入减少（欠款增加）
   try {
-    await updateAccountBalance(fromAccountId, -amountNum)
+    // 转出账户：资产账户减少，负债账户增加
+    const fromChange = fromAccount.isDebt ? amountNum : -amountNum
+    await updateAccountBalance(fromAccountId, fromChange)
   } catch (err) {
     console.error('转账后更新转出账户余额失败，回滚已创建的转账记录：', err)
     await db.collection(TRANSFERS_COLLECTION).doc(result._id).remove()
@@ -79,11 +93,14 @@ async function addTransfer(openid, data) {
   }
 
   try {
-    await updateAccountBalance(toAccountId, amountNum)
+    // 转入账户：资产账户增加，负债账户减少
+    const toChange = toAccount.isDebt ? -amountNum : amountNum
+    await updateAccountBalance(toAccountId, toChange)
   } catch (err) {
     console.error('转账后更新转入账户余额失败，回滚已创建的转账记录和转出账户余额：', err)
     // 回滚：恢复转出账户余额 + 删除已创建的转账记录
-    await updateAccountBalance(fromAccountId, amountNum)
+    const fromChange = fromAccount.isDebt ? -amountNum : amountNum
+    await updateAccountBalance(fromAccountId, fromChange)
     await db.collection(TRANSFERS_COLLECTION).doc(result._id).remove()
     return { success: false, error: '转入账户余额更新失败，请重试' }
   }
@@ -168,9 +185,19 @@ async function deleteTransfer(openid, id) {
 
   const transfer = transferResult.data[0]
 
-  // 恢复账户余额（转出加回、转入减去）
-  await updateAccountBalance(transfer.fromAccountId, transfer.amount)
-  await updateAccountBalance(transfer.toAccountId, -transfer.amount)
+  // 获取两个账户的信息，判断是否为负债账户
+  const fromAccount = await getAccount(transfer.fromAccountId)
+  const toAccount = await getAccount(transfer.toAccountId)
+
+  // 恢复账户余额（需要考虑负债账户的特殊逻辑）
+  // 恢复操作与添加操作相反
+  // 转出账户：资产账户加回，负债账户减去
+  const fromChange = fromAccount && fromAccount.isDebt ? -transfer.amount : transfer.amount
+  await updateAccountBalance(transfer.fromAccountId, fromChange)
+
+  // 转入账户：资产账户减去，负债账户加回
+  const toChange = toAccount && toAccount.isDebt ? transfer.amount : -transfer.amount
+  await updateAccountBalance(transfer.toAccountId, toChange)
 
   // 余额恢复成功后，删除转账记录
   const result = await db.collection(TRANSFERS_COLLECTION)
@@ -205,4 +232,19 @@ async function updateAccountBalance(accountId, amountChange) {
   if (result.stats.updated === 0) {
     throw new Error(`账户 ${accountId} 不存在或更新失败`)
   }
+}
+
+/**
+ * 获取单个账户信息
+ */
+async function getAccount(accountId) {
+  if (!accountId) {
+    return null
+  }
+
+  const result = await db.collection('accounts')
+    .doc(accountId)
+    .get()
+
+  return result.data || null
 }

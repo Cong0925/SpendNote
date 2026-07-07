@@ -61,41 +61,94 @@
     </view>
   </view>
 
-  <!-- 账单列表 -->
-  <view class="bill-section">
-    <view class="section-header">
-      <text class="section-title">账单记录</text>
-      <text class="section-count">共{{billList.length}}笔</text>
-    </view>
-
-    <!-- 空状态 -->
-    <view class="empty-state" wx:if="{{billList.length === 0 && !loading}}">
-      <text class="empty-text">暂无账单记录</text>
+  <!-- 账单和转账记录区域 -->
+  <view class="record-section">
+    <!-- Tab切换 -->
+    <view class="tab-bar">
+      <view class="tab-item {{currentTab === 'bills' ? 'active' : ''}}" data-tab="bills" bindtap="switchTab">
+        <text class="tab-text">账单记录</text>
+        <view class="tab-badge" wx:if="{{billList.length > 0}}">{{billList.length}}</view>
+      </view>
+      <view class="tab-item {{currentTab === 'transfers' ? 'active' : ''}}" data-tab="transfers" bindtap="switchTab">
+        <text class="tab-text">转账记录</text>
+        <view class="tab-badge" wx:if="{{transferList.length > 0}}">{{transferList.length}}</view>
+      </view>
     </view>
 
     <!-- 账单列表 -->
-    <view class="bill-list" wx:if="{{billList.length > 0}}">
-      <view
-        class="bill-item"
-        wx:for="{{billList}}"
-        wx:key="_id"
-        data-id="{{item._id}}"
-        bindtap="goToBillDetail"
-      >
-        <view class="bill-left">
-          <view class="bill-icon {{item.type === 'income' ? 'income-bg' : 'expense-bg'}}">
-            <text class="bill-emoji">{{item.icon || (item.type === 'income' ? '💰' : '💸')}}</text>
+    <view class="tab-content" wx:if="{{currentTab === 'bills'}}">
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{billList.length === 0 && !loading}}">
+        <text class="empty-text">暂无账单记录</text>
+      </view>
+
+      <!-- 账单列表 -->
+      <view class="bill-list" wx:if="{{billList.length > 0}}">
+        <view
+          class="bill-item"
+          wx:for="{{billList}}"
+          wx:key="_id"
+          data-id="{{item._id}}"
+          bindtap="goToBillDetail"
+        >
+          <view class="bill-left">
+            <view class="bill-icon {{item.type === 'income' ? 'income-bg' : 'expense-bg'}}">
+              <text class="bill-emoji">{{item.icon || (item.type === 'income' ? '💰' : '💸')}}</text>
+            </view>
+            <view class="bill-info">
+              <text class="bill-category">{{item.category}}</text>
+              <text class="bill-note">{{item.note || '无备注'}}</text>
+            </view>
           </view>
-          <view class="bill-info">
-            <text class="bill-category">{{item.category}}</text>
-            <text class="bill-note">{{item.note || '无备注'}}</text>
+          <view class="bill-right">
+            <text class="bill-amount {{item.type === 'income' ? 'income' : 'expense'}}">
+              {{item.type === 'income' ? '+' : '-'}}￥{{item.amountStr}}
+            </text>
+            <text class="bill-date">{{item.date}}</text>
           </view>
         </view>
-        <view class="bill-right">
-          <text class="bill-amount {{item.type === 'income' ? 'income' : 'expense'}}">
-            {{item.type === 'income' ? '+' : '-'}}￥{{item.amountStr}}
-          </text>
-          <text class="bill-date">{{item.date}}</text>
+      </view>
+    </view>
+
+    <!-- 转账记录列表 -->
+    <view class="tab-content" wx:if="{{currentTab === 'transfers'}}">
+      <!-- 加载状态 -->
+      <view class="loading-state" wx:if="{{loadingTransfers}}">
+        <view class="loading-spinner-small"></view>
+        <text class="loading-text">加载中...</text>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{transferList.length === 0 && !loadingTransfers}}">
+        <text class="empty-text">暂无转账记录</text>
+      </view>
+
+      <!-- 转账列表 -->
+      <view class="transfer-list" wx:if="{{transferList.length > 0 && !loadingTransfers}}">
+        <view
+          class="transfer-item"
+          wx:for="{{transferList}}"
+          wx:key="_id"
+          data-id="{{item._id}}"
+          bindtap="goToTransferDetail"
+        >
+          <view class="transfer-left">
+            <view class="transfer-icon">
+              <text class="transfer-emoji">💸</text>
+            </view>
+            <view class="transfer-info">
+              <view class="transfer-route">
+                <text class="route-account">{{item.fromAccountName}}</text>
+                <text class="route-arrow">→</text>
+                <text class="route-account">{{item.toAccountName}}</text>
+              </view>
+              <text class="transfer-date">{{item.date}}</text>
+            </view>
+          </view>
+          <view class="transfer-right">
+            <text class="transfer-amount">￥{{item.amountStr}}</text>
+            <text class="transfer-remark" wx:if="{{item.remark}}">{{item.remark}}</text>
+          </view>
         </view>
       </view>
     </view>

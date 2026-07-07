@@ -31,6 +31,13 @@ page {
 .form-left {
   flex: 1;
   display: flex;
+  align-items: center;
+  padding-right: 24rpx;
+}
+
+.form-left-account {
+  flex: 1;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   padding-right: 24rpx;
