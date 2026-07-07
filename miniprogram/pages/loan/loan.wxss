@@ -298,3 +298,120 @@ page {
     transform: translateY(0);
   }
 }
+
+/* ============ 骨架屏样式 ============ */
+@keyframes skeleton-pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+.skeleton-hero {
+  pointer-events: none;
+}
+
+.skeleton-type-tabs {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.skeleton-tab-item {
+  width: 120rpx;
+  height: 64rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-amount-display {
+  text-align: right;
+}
+
+.skeleton-amount-label {
+  width: 100rpx;
+  height: 24rpx;
+  background: rgba(255, 255, 255, 0.2);
+  margin-left: auto;
+  margin-bottom: 8rpx;
+}
+
+.skeleton-amount-value {
+  width: 180rpx;
+  height: 48rpx;
+  background: rgba(255, 255, 255, 0.3);
+  margin-left: auto;
+}
+
+/* ============ 列表项骨架屏 ============ */
+.skeleton-loan-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid var(--color-divider);
+}
+
+.skeleton-loan-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.skeleton-circle {
+  border-radius: 50%;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-icon-placeholder {
+  width: 80rpx;
+  height: 80rpx;
+  background: var(--color-border);
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.skeleton-loan-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.skeleton-person-name {
+  width: 160rpx;
+  height: 30rpx;
+  background: var(--color-border);
+  margin-bottom: 8rpx;
+}
+
+.skeleton-loan-date {
+  width: 120rpx;
+  height: 24rpx;
+  background: var(--color-border);
+}
+
+.skeleton-loan-right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.skeleton-loan-total {
+  width: 140rpx;
+  height: 32rpx;
+  background: var(--color-border);
+  margin-left: auto;
+  margin-bottom: 8rpx;
+}
+
+.skeleton-loan-status {
+  width: 180rpx;
+  height: 22rpx;
+  background: var(--color-border);
+  margin-left: auto;
+}
+
+.skeleton-line {
+  display: inline-block;
+  background: var(--color-border);
+  border-radius: 8rpx;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}

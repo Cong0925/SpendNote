@@ -2,13 +2,31 @@
   借款详情页面
 -->
 <view class="container">
-  <!-- 加载状态 -->
-  <view class="loading-container" wx:if="{{loading}}">
-    <view class="loading-spinner"></view>
-    <text class="loading-text">加载中...</text>
+  <!-- 骨架屏：借款信息卡片 -->
+  <view class="info-card skeleton-info-card" wx:if="{{loading}}">
+    <!-- 借出方/借入方骨架屏 -->
+    <view class="party-row skeleton-party-row">
+      <view class="skeleton-line skeleton-party-label"></view>
+      <view class="skeleton-line skeleton-party-label"></view>
+    </view>
+    <!-- 金额信息骨架屏 -->
+    <view class="amount-row skeleton-amount-row">
+      <view class="amount-item skeleton-amount-item">
+        <view class="skeleton-line skeleton-amount-label"></view>
+        <view class="skeleton-line skeleton-amount-value"></view>
+      </view>
+      <view class="amount-item skeleton-amount-item">
+        <view class="skeleton-line skeleton-amount-label"></view>
+        <view class="skeleton-line skeleton-amount-value"></view>
+      </view>
+      <view class="amount-item skeleton-amount-item">
+        <view class="skeleton-line skeleton-amount-label"></view>
+        <view class="skeleton-line skeleton-amount-value"></view>
+      </view>
+    </view>
   </view>
 
-  <!-- 借款信息卡片 -->
+  <!-- 借款信息卡片：实际内容 -->
   <view class="info-card" wx:if="{{loanInfo && !loading}}">
     <!-- 借出方/借入方 -->
     <view class="party-row">
@@ -35,15 +53,26 @@
 
   <!-- 操作记录列表 -->
   <view class="payment-list">
-    <view class="list-title">操作记录</view>
+    <view class="list-title" wx:if="{{!loading}}">操作记录</view>
 
-    <!-- 加载状态 -->
-    <view class="list-loading" wx:if="{{loading}}">
-      <view class="loading-spinner"></view>
-      <text class="loading-text">加载中...</text>
+    <!-- 骨架屏：操作记录列表 -->
+    <view wx:if="{{loading}}">
+      <view class="skeleton-payment-item" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="skeleton-payment-left">
+          <view class="skeleton-circle skeleton-payment-icon"></view>
+          <view class="skeleton-payment-info">
+            <view class="skeleton-line skeleton-payment-type"></view>
+            <view class="skeleton-line skeleton-payment-date"></view>
+          </view>
+        </view>
+        <view class="skeleton-payment-right">
+          <view class="skeleton-line skeleton-payment-amount"></view>
+          <view class="skeleton-line skeleton-payment-arrow"></view>
+        </view>
+      </view>
     </view>
 
-    <!-- 记录列表 -->
+    <!-- 记录列表：实际内容 -->
     <view
       class="payment-item"
       wx:for="{{paymentList}}"
@@ -51,7 +80,7 @@
       data-id="{{item._id}}"
       data-type="{{item.type}}"
       bindtap="goToPaymentDetail"
-      wx:if="{{!loading}}"
+      wx:if="{{!loading && paymentList.length > 0}}"
     >
       <view class="payment-left">
         <view class="payment-icon {{item.type === 'initial' ? 'initial-icon' : (item.type === 'receive' ? 'receive-icon' : 'repay-icon')}}">

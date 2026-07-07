@@ -3,8 +3,24 @@
 -->
 <view class="container">
   <scroll-view class="scroll-area" scroll-y enhanced show-scrollbar="{{false}}">
-  <!-- 顶部区域 -->
-  <view class="hero-card">
+  <!-- 骨架屏：顶部区域 -->
+  <view class="hero-card skeleton-hero" wx:if="{{loading}}">
+    <view class="hero-content">
+      <!-- 类型切换骨架屏 -->
+      <view class="type-tabs skeleton-type-tabs">
+        <view class="skeleton-tab-item"></view>
+        <view class="skeleton-tab-item"></view>
+      </view>
+      <!-- 金额显示骨架屏 -->
+      <view class="amount-display skeleton-amount-display">
+        <view class="skeleton-line skeleton-amount-label"></view>
+        <view class="skeleton-line skeleton-amount-value"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 顶部区域：实际内容 -->
+  <view class="hero-card" wx:if="{{!loading}}">
     <!-- 类型切换和金额显示在同一行 -->
     <view class="hero-content">
       <!-- 类型切换 -->
@@ -35,19 +51,31 @@
 
   <!-- 借款记录列表 -->
   <view class="loan-list">
-    <!-- 加载状态 - 只在列表区域显示 -->
-    <view class="list-loading" wx:if="{{loading}}">
-      <view class="loading-spinner"></view>
-      <text class="loading-text">加载中...</text>
+    <!-- 骨架屏：列表区域 -->
+    <view wx:if="{{loading}}">
+      <view class="skeleton-loan-item" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="skeleton-loan-left">
+          <view class="skeleton-circle skeleton-icon-placeholder"></view>
+          <view class="skeleton-loan-info">
+            <view class="skeleton-line skeleton-person-name"></view>
+            <view class="skeleton-line skeleton-loan-date"></view>
+          </view>
+        </view>
+        <view class="skeleton-loan-right">
+          <view class="skeleton-line skeleton-loan-total"></view>
+          <view class="skeleton-line skeleton-loan-status"></view>
+        </view>
+      </view>
     </view>
 
+    <!-- 实际内容：列表 -->
     <view
       class="loan-item"
       wx:for="{{loanList}}"
       wx:key="_id"
       data-id="{{item._id}}"
       bindtap="goToLoanDetail"
-      wx:if="{{!loading}}"
+      wx:if="{{!loading && loanList.length > 0}}"
     >
       <view class="loan-left">
         <view class="loan-icon {{currentType === 'lend' ? 'lend-icon' : 'borrow-icon'}}">
