@@ -18,6 +18,9 @@ Page({
       bankName: '',
       bankId: '',
       bankCardLast4: '',
+      creditLimit: '',
+      billDay: '',
+      repayDay: '',
       remark: ''
     }
   },
@@ -60,6 +63,9 @@ Page({
             balance: account.balance.toString(),
             bankName: account.bankName || '',
             bankCardLast4: account.bankCardLast4 || '',
+            creditLimit: account.creditLimit ? account.creditLimit.toString() : '',
+            billDay: account.billDay ? account.billDay.toString() : '',
+            repayDay: account.repayDay ? account.repayDay.toString() : '',
             remark: account.remark || ''
           }
         })
@@ -81,6 +87,30 @@ Page({
 
   onCardLast4Input(e) {
     this.setData({ 'form.bankCardLast4': e.detail.value.replace(/\D/g, '').slice(0, 4) })
+  },
+
+  onCreditLimitInput(e) {
+    this.setData({ 'form.creditLimit': e.detail.value })
+  },
+
+  onBillDayInput(e) {
+    const value = e.detail.value.replace(/\D/g, '').slice(0, 2)
+    const num = parseInt(value)
+    if (num > 0 && num <= 31) {
+      this.setData({ 'form.billDay': value })
+    } else if (value === '') {
+      this.setData({ 'form.billDay': '' })
+    }
+  },
+
+  onRepayDayInput(e) {
+    const value = e.detail.value.replace(/\D/g, '').slice(0, 2)
+    const num = parseInt(value)
+    if (num > 0 && num <= 31) {
+      this.setData({ 'form.repayDay': value })
+    } else if (value === '') {
+      this.setData({ 'form.repayDay': '' })
+    }
   },
 
   onRemarkInput(e) {
@@ -111,6 +141,9 @@ Page({
         balance: Math.abs(Number(form.balance)),
         bankName: form.bankName,
         bankCardLast4: form.bankCardLast4,
+        creditLimit: form.creditLimit ? Math.abs(Number(form.creditLimit)) : null,
+        billDay: form.billDay ? parseInt(form.billDay) : null,
+        repayDay: form.repayDay ? parseInt(form.repayDay) : null,
         remark: form.remark
       }
 

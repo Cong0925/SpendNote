@@ -59,6 +59,74 @@
       />
     </view>
 
+    <!-- 信用卡专属字段 -->
+    <block wx:if="{{form.type === 'credit'}}">
+      <!-- 信用额度 -->
+      <view class="form-row">
+        <text class="form-label">信用额度</text>
+        <view class="credit-limit-wrap">
+          <input
+            class="form-input"
+            type="digit"
+            placeholder="0.00"
+            value="{{form.creditLimit}}"
+            bindinput="onCreditLimitInput"
+          />
+        </view>
+      </view>
+
+      <!-- 账单日 -->
+      <view class="form-row">
+        <text class="form-label">账单日（每月）</text>
+        <view class="day-input-wrap">
+          <input
+            class="form-input day-input"
+            type="number"
+            placeholder="1-31"
+            value="{{form.billDay}}"
+            bindinput="onBillDayInput"
+            maxlength="2"
+          />
+          <text class="day-unit">日</text>
+        </view>
+      </view>
+
+      <!-- 还款日 -->
+      <view class="form-row">
+        <text class="form-label">还款日（每月）</text>
+        <view class="day-input-wrap">
+          <input
+            class="form-input day-input"
+            type="number"
+            placeholder="1-31"
+            value="{{form.repayDay}}"
+            bindinput="onRepayDayInput"
+            maxlength="2"
+          />
+          <text class="day-unit">日</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 花呗/京东白条/美团月付专属字段 -->
+    <block wx:if="{{form.type === 'huabei' || form.type === 'jd' || form.type === 'mt'}}">
+      <!-- 还款日 -->
+      <view class="form-row">
+        <text class="form-label">还款日（每月）</text>
+        <view class="day-input-wrap">
+          <input
+            class="form-input day-input"
+            type="number"
+            placeholder="1-31"
+            value="{{form.repayDay}}"
+            bindinput="onRepayDayInput"
+            maxlength="2"
+          />
+          <text class="day-unit">日</text>
+        </view>
+      </view>
+    </block>
+
     <!-- 备注 -->
     <view class="form-row">
       <text class="form-label">备注</text>

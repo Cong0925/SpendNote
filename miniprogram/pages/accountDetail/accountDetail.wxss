@@ -162,6 +162,29 @@ page {
   color: #9CA3AF;
 }
 
+/* ============ 信用卡专属样式 ============ */
+.credit-limit-wrap {
+  display: flex;
+  align-items: center;
+}
+
+
+.day-input-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.day-input {
+  width: 100rpx;
+  text-align: right;
+}
+
+.day-unit {
+  font-size: 28rpx;
+  color: #6B7280;
+  margin-left: 8rpx;
+}
+
 /* ============ 操作按钮区域 ============ */
 .action-section {
   position: fixed;

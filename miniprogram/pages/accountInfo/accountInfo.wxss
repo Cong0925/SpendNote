@@ -87,6 +87,33 @@ page {
   color: #DC2626;
 }
 
+/* ============ 信用卡专属信息 ============ */
+.card-extra {
+  border-top: 1rpx solid #F3F4F6;
+  padding-top: 24rpx;
+  margin-top: 24rpx;
+  display: flex;
+  justify-content: space-between;
+}
+
+.extra-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.extra-label {
+  font-size: 22rpx;
+  color: #9CA3AF;
+  margin-bottom: 8rpx;
+}
+
+.extra-value {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #374151;
+}
+
 /* ============ 收支统计 ============ */
 .stats-card {
   background: #ffffff;

@@ -99,6 +99,10 @@ Page({
         account.typeText = ACCOUNT_TYPE_MAP[account.type] || account.type
         // 格式化余额
         account.balanceStr = formatAmount(account.balance)
+        // 格式化信用额度
+        if (account.creditLimit) {
+          account.creditLimitStr = formatAmount(account.creditLimit)
+        }
         this.setData({ account })
       }
     } catch (err) {
@@ -176,7 +180,7 @@ Page({
   goToBillDetail(e) {
     const { id } = e.currentTarget.dataset
     wx.navigateTo({
-      url: `/pages/detail/detail?id=${id}`
+      url: `/pages/detail/detail?billId=${id}`
     })
   },
 

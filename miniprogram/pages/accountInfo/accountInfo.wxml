@@ -22,6 +22,30 @@
         {{account.isDebt ? '-' : ''}}￥{{account.balanceStr || '0.00'}}
       </text>
     </view>
+
+    <!-- 信用卡专属信息 -->
+    <view class="card-extra" wx:if="{{account.type === 'credit'}}">
+      <view class="extra-item" wx:if="{{account.creditLimit}}">
+        <text class="extra-label">信用额度</text>
+        <text class="extra-value">￥{{account.creditLimitStr}}</text>
+      </view>
+      <view class="extra-item" wx:if="{{account.billDay}}">
+        <text class="extra-label">账单日</text>
+        <text class="extra-value">每月{{account.billDay}}日</text>
+      </view>
+      <view class="extra-item" wx:if="{{account.repayDay}}">
+        <text class="extra-label">还款日</text>
+        <text class="extra-value">每月{{account.repayDay}}日</text>
+      </view>
+    </view>
+
+    <!-- 花呗/京东白条/美团月付专属信息 -->
+    <view class="card-extra" wx:if="{{account.type === 'huabei' || account.type === 'jd' || account.type === 'mt'}}">
+      <view class="extra-item" wx:if="{{account.repayDay}}">
+        <text class="extra-label">还款日</text>
+        <text class="extra-value">每月{{account.repayDay}}日</text>
+      </view>
+    </view>
   </view>
 
   <!-- 收支统计 -->

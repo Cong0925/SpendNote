@@ -57,7 +57,7 @@ exports.main = async (event, context) => {
  * 添加账户
  */
 async function addAccount(openid, data) {
-  const { name, type, icon, balance = 0, isDebt, bankName, bankCardLast4, remark, sortOrder = 0 } = data
+  const { name, type, icon, balance = 0, isDebt, bankName, bankCardLast4, creditLimit, billDay, repayDay, remark, sortOrder = 0 } = data
 
   // 参数校验
   if (!name || !type || !icon) {
@@ -80,6 +80,9 @@ async function addAccount(openid, data) {
     isDebt: !!isDebt,
     bankName: bankName || '',
     bankCardLast4: bankCardLast4 || '',
+    creditLimit: creditLimit || null,
+    billDay: billDay || null,
+    repayDay: repayDay || null,
     remark: remark || '',
     sortOrder,
     createdAt: now,
