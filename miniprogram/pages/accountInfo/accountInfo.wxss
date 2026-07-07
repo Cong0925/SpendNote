@@ -518,6 +518,12 @@ page {
   color: #D97706;
 }
 
+.btn-transfer.disabled {
+  background: #F3F4F6;
+  color: #9CA3AF;
+  pointer-events: none;
+}
+
 .btn-add {
   background: #2563EB;
   color: #ffffff;

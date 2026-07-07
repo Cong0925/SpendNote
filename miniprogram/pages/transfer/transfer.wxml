@@ -114,7 +114,7 @@
 <!-- 转出账户选择弹窗 -->
 <account-picker
   show="{{showFromAccountPicker}}"
-  accountList="{{accountList}}"
+  accountList="{{fromAccountList}}"
   selectedId="{{form.fromAccountId}}"
   loading="{{loadingAccounts}}"
   bind:close="onFromAccountPickerClose"
@@ -124,7 +124,7 @@
 <!-- 转入账户选择弹窗 -->
 <account-picker
   show="{{showToAccountPicker}}"
-  accountList="{{accountList}}"
+  accountList="{{toAccountList}}"
   selectedId="{{form.toAccountId}}"
   loading="{{loadingAccounts}}"
   bind:close="onToAccountPickerClose"

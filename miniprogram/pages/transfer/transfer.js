@@ -28,6 +28,14 @@ Page({
     },
     // 账户列表
     accountList: [],
+    // 可选的转出账户列表（排除负债账户和已清零的账户）
+    fromAccountList: [],
+    // 可选的转入账户列表（排除已清零的负债账户）
+    toAccountList: [],
+    // 当前选中的转入负债账户余额（用于金额限制）
+    selectedToDebtBalance: 0,
+    // 当前选中的转出账户余额（用于金额限制）
+    selectedFromBalance: 0,
     // 加载状态
     loading: false,
     // 账户选择弹窗状态
@@ -78,7 +86,26 @@ Page({
 
       if (res.result.success) {
         const accountList = res.result.data || []
-        this.setData({ accountList })
+
+        // 转出账户：排除所有负债账户（负债账户不能转出）
+        const fromAccounts = accountList.filter(account => {
+          return !account.isDebt
+        })
+
+        // 转入账户：排除已清零的负债账户
+        const toAccounts = accountList.filter(account => {
+          // 负债账户且余额为0，不可选
+          if (account.isDebt && account.balance === 0) {
+            return false
+          }
+          return true
+        })
+
+        this.setData({
+          accountList,
+          fromAccountList: fromAccounts,
+          toAccountList: toAccounts
+        })
 
         // 如果是查看或编辑模式，加载转账记录
         if (this.data.mode === 'view' || this.data.mode === 'edit') {
@@ -157,15 +184,23 @@ Page({
     if (currentAccount) {
       if (currentAccount.isDebt) {
         // 负债类型：转入账户默认选择当前账户
+        // 记录负债账户余额用于金额限制
+        let selectedToDebtBalance = 0
+        if (currentAccount.balance > 0) {
+          selectedToDebtBalance = currentAccount.balance
+        }
         this.setData({
           'form.toAccountId': currentAccount._id,
-          'form.toAccountName': currentAccount.name
+          'form.toAccountName': currentAccount.name,
+          selectedToDebtBalance
         })
       } else {
         // 非负债类型：转出账户默认选择当前账户
+        // 记录转出账户余额用于金额限制
         this.setData({
           'form.fromAccountId': currentAccount._id,
-          'form.fromAccountName': currentAccount.name
+          'form.fromAccountName': currentAccount.name,
+          selectedFromBalance: currentAccount.balance
         })
       }
     }
@@ -175,7 +210,19 @@ Page({
    * 选择转出账户
    */
   selectFromAccount() {
-    this.setData({ showFromAccountPicker: true })
+    // 过滤掉已选择的转入账户
+    const { toAccountList, form } = this.data
+    let availableFromAccounts = toAccountList
+
+    // 如果已选转入账户，从转出列表中排除
+    if (form.toAccountId) {
+      availableFromAccounts = toAccountList.filter(account => account._id !== form.toAccountId)
+    }
+
+    this.setData({
+      fromAccountList: availableFromAccounts,
+      showFromAccountPicker: true
+    })
   },
 
   /**
@@ -190,9 +237,16 @@ Page({
    */
   onFromAccountSelect(e) {
     const { id, name } = e.detail
+    const { accountList } = this.data
+
+    // 查找选中的账户信息，记录余额
+    const selectedAccount = accountList.find(account => account._id === id)
+    const selectedFromBalance = selectedAccount ? selectedAccount.balance : 0
+
     this.setData({
       'form.fromAccountId': id || '',
       'form.fromAccountName': name || '',
+      selectedFromBalance,
       showFromAccountPicker: false
     })
   },
@@ -201,7 +255,27 @@ Page({
    * 选择转入账户
    */
   selectToAccount() {
-    this.setData({ showToAccountPicker: true })
+    // 过滤掉已选择的转出账户
+    const { accountList, form } = this.data
+
+    // 转入账户：排除已清零的负债账户 + 已选的转出账户
+    let availableToAccounts = accountList.filter(account => {
+      // 负债账户且余额为0，不可选
+      if (account.isDebt && account.balance === 0) {
+        return false
+      }
+      return true
+    })
+
+    // 如果已选转出账户，从转入列表中排除
+    if (form.fromAccountId) {
+      availableToAccounts = availableToAccounts.filter(account => account._id !== form.fromAccountId)
+    }
+
+    this.setData({
+      toAccountList: availableToAccounts,
+      showToAccountPicker: true
+    })
   },
 
   /**
@@ -216,9 +290,21 @@ Page({
    */
   onToAccountSelect(e) {
     const { id, name } = e.detail
+    const { accountList } = this.data
+
+    // 查找选中的账户信息
+    const selectedAccount = accountList.find(account => account._id === id)
+
+    // 如果是负债账户，记录余额用于金额限制
+    let selectedToDebtBalance = 0
+    if (selectedAccount && selectedAccount.isDebt && selectedAccount.balance > 0) {
+      selectedToDebtBalance = selectedAccount.balance
+    }
+
     this.setData({
       'form.toAccountId': id || '',
       'form.toAccountName': name || '',
+      selectedToDebtBalance,
       showToAccountPicker: false
     })
   },
@@ -227,9 +313,21 @@ Page({
    * 输入转出金额
    */
   onFromAmountInput(e) {
+    let value = e.detail.value
+    const { selectedFromBalance } = this.data
+
+    // 如果转出账户有余额限制，超过时自动调整为最大值
+    if (selectedFromBalance > 0 && Number(value) > selectedFromBalance) {
+      value = selectedFromBalance.toString()
+      wx.showToast({
+        title: '已自动调整为账户最大余额',
+        icon: 'none'
+      })
+    }
+
     this.setData({
-      'form.fromAmount': e.detail.value,
-      'form.toAmount': e.detail.value
+      'form.fromAmount': value,
+      'form.toAmount': value
     })
   },
 
@@ -237,9 +335,30 @@ Page({
    * 输入转入金额
    */
   onToAmountInput(e) {
+    let value = e.detail.value
+    const { selectedToDebtBalance, selectedFromBalance } = this.data
+
+    // 如果转入账户是负债账户，金额超过负债余额时自动调整为最大值
+    if (selectedToDebtBalance > 0 && Number(value) > selectedToDebtBalance) {
+      value = selectedToDebtBalance.toString()
+      wx.showToast({
+        title: '已自动调整为最大可转账金额',
+        icon: 'none'
+      })
+    }
+
+    // 同时检查转出账户余额限制
+    if (selectedFromBalance > 0 && Number(value) > selectedFromBalance) {
+      value = selectedFromBalance.toString()
+      wx.showToast({
+        title: '已自动调整为账户最大余额',
+        icon: 'none'
+      })
+    }
+
     this.setData({
-      'form.fromAmount': e.detail.value,
-      'form.toAmount': e.detail.value
+      'form.fromAmount': value,
+      'form.toAmount': value
     })
   },
 
@@ -298,6 +417,28 @@ Page({
         icon: 'none'
       })
       return
+    }
+
+    // 检查转出账户余额限制
+    const { selectedFromBalance, selectedToDebtBalance, accountList } = this.data
+    if (selectedFromBalance > 0 && Number(form.fromAmount) > selectedFromBalance) {
+      wx.showToast({
+        title: '转出金额不能大于账户余额',
+        icon: 'none'
+      })
+      return
+    }
+
+    // 检查负债账户金额限制
+    if (selectedToDebtBalance > 0) {
+      const toAccount = accountList.find(account => account._id === form.toAccountId)
+      if (toAccount && toAccount.isDebt && Number(form.fromAmount) > selectedToDebtBalance) {
+        wx.showToast({
+          title: '转入金额不能大于负债余额',
+          icon: 'none'
+        })
+        return
+      }
     }
 
     if (!form.date) {

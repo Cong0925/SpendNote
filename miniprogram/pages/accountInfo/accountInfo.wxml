@@ -223,7 +223,7 @@
       <view class="action-btn btn-delete" bindtap="deleteAccount">
         <text class="btn-text">删除</text>
       </view>
-      <view class="action-btn btn-transfer" bindtap="goToTransfer">
+      <view class="action-btn btn-transfer {{account.isDebt && account.balance === 0 ? 'disabled' : ''}}" bindtap="goToTransfer">
         <text class="btn-text">转账</text>
       </view>
       <view class="action-btn btn-add" bindtap="goToAddBill">

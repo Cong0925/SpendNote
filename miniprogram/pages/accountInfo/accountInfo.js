@@ -268,6 +268,16 @@ Page({
    */
   goToTransfer() {
     const { account } = this.data
+
+    // 如果是负债账户且余额为0（已还清），禁止转账
+    if (account.isDebt && account.balance === 0) {
+      wx.showToast({
+        title: '该账户已还清，无需转账',
+        icon: 'none'
+      })
+      return
+    }
+
     wx.navigateTo({
       url: `/pages/transfer/transfer?accountId=${account._id}`
     })
