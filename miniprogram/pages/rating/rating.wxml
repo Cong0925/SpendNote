@@ -173,8 +173,8 @@
       </button>
     </view>
 
-    <!-- 评分统计展示 - 非编辑模式时显示 -->
-    <view class="stats-showcase" wx:if="{{!isEditing}}">
+    <!-- 评分统计展示 - 非编辑模式且骨架屏隐藏时显示 -->
+    <view class="stats-showcase" wx:if="{{!isEditing && !showSkeleton}}">
       <view class="stats-main">
         <view class="stats-score">
           <text class="score-num">{{avgRating || '0.0'}}</text>
@@ -210,8 +210,8 @@
       </view>
     </view>
 
-    <!-- 筛选栏 - 非编辑模式时显示 -->
-    <view class="filter-section" wx:if="{{!isEditing}}">
+    <!-- 筛选栏 - 非编辑模式且骨架屏隐藏时显示 -->
+    <view class="filter-section" wx:if="{{!isEditing && !showSkeleton}}">
       <view class="filter-wrap">
         <view class="filter-chip {{currentFilter === 'all' ? 'active' : ''}}" bindtap="onFilterChange" data-filter="all">
           <text>全部</text>
@@ -236,8 +236,8 @@
       </view>
     </view>
 
-    <!-- 添加评价入口 - 未评价且非编辑模式时显示 -->
-    <view class="add-rating-entry" wx:if="{{!hasSubmitted && !isEditing}}" bindtap="onAddRating" hidden="{{isEditing}}">
+    <!-- 添加评价入口 - 未评价且非编辑模式且骨架屏隐藏时显示 -->
+    <view class="add-rating-entry" wx:if="{{!hasSubmitted && !isEditing && !showSkeleton}}" bindtap="onAddRating" hidden="{{isEditing}}">
       <view class="entry-bg"></view>
       <view class="entry-content">
         <view class="entry-left">
@@ -301,8 +301,8 @@
       </view>
     </view>
 
-    <!-- 评价列表 - 非编辑模式时显示 -->
-    <view class="review-list" wx:if="{{!isEditing && !showListSkeleton}}">
+    <!-- 评价列表 - 非编辑模式且骨架屏隐藏时显示 -->
+    <view class="review-list" wx:if="{{!isEditing && !showListSkeleton && !showSkeleton}}">
       <view wx:for="{{filteredReviews}}" wx:key="_id" class="review-card {{item.isMine ? 'my-review' : ''}}">
         <!-- 卡片头部 -->
         <view class="card-header">
