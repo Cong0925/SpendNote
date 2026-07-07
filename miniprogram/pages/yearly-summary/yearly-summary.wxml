@@ -5,9 +5,265 @@
     <view class="content-wrapper">
       <!-- 骨架屏 -->
       <view class="skeleton" wx:if="{{loading}}">
-        <view class="skeleton-card"></view>
-        <view class="skeleton-card"></view>
-        <view class="skeleton-card"></view>
+        <!-- 年度标题骨架 -->
+        <view class="skeleton-year-header">
+          <view class="skeleton-year-badge"></view>
+          <view class="skeleton-year-info">
+            <view class="skeleton-line skeleton-title"></view>
+            <view class="skeleton-line skeleton-subtitle"></view>
+          </view>
+          <view class="skeleton-year-deco"></view>
+        </view>
+
+        <!-- 年度总览卡片骨架 -->
+        <view class="skeleton-card">
+          <view class="skeleton-card-header">
+            <view class="skeleton-line skeleton-card-title"></view>
+            <view class="skeleton-line skeleton-card-count"></view>
+          </view>
+          <view class="skeleton-overview-stats">
+            <view class="skeleton-stat-block income"></view>
+            <view class="skeleton-stat-block expense"></view>
+          </view>
+          <view class="skeleton-overview-balance">
+            <view class="skeleton-line skeleton-balance-label"></view>
+            <view class="skeleton-line skeleton-balance-value"></view>
+          </view>
+        </view>
+
+        <!-- 消费分析卡片骨架 -->
+        <view class="skeleton-card">
+          <view class="skeleton-card-header">
+            <view class="skeleton-line skeleton-card-title"></view>
+          </view>
+          <view class="skeleton-analysis-grid">
+            <view class="skeleton-analysis-item">
+              <view class="skeleton-analysis-icon"></view>
+              <view class="skeleton-analysis-content">
+                <view class="skeleton-line skeleton-analysis-label"></view>
+                <view class="skeleton-line skeleton-analysis-value"></view>
+              </view>
+            </view>
+            <view class="skeleton-analysis-item">
+              <view class="skeleton-analysis-icon"></view>
+              <view class="skeleton-analysis-content">
+                <view class="skeleton-line skeleton-analysis-label"></view>
+                <view class="skeleton-line skeleton-analysis-value"></view>
+              </view>
+            </view>
+            <view class="skeleton-analysis-item">
+              <view class="skeleton-analysis-icon"></view>
+              <view class="skeleton-analysis-content">
+                <view class="skeleton-line skeleton-analysis-label"></view>
+                <view class="skeleton-line skeleton-analysis-value"></view>
+              </view>
+            </view>
+            <view class="skeleton-analysis-item">
+              <view class="skeleton-analysis-icon"></view>
+              <view class="skeleton-analysis-content">
+                <view class="skeleton-line skeleton-analysis-label"></view>
+                <view class="skeleton-line skeleton-analysis-value"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 使用信息卡片骨架 -->
+        <view class="skeleton-card">
+          <view class="skeleton-card-header">
+            <view class="skeleton-line skeleton-card-title"></view>
+          </view>
+          <view class="skeleton-usage-content">
+            <view class="skeleton-usage-item">
+              <view class="skeleton-usage-icon"></view>
+              <view class="skeleton-usage-info">
+                <view class="skeleton-line skeleton-usage-label"></view>
+                <view class="skeleton-line skeleton-usage-value"></view>
+              </view>
+            </view>
+            <view class="skeleton-usage-divider"></view>
+            <view class="skeleton-usage-item">
+              <view class="skeleton-usage-icon"></view>
+              <view class="skeleton-usage-info">
+                <view class="skeleton-line skeleton-usage-label"></view>
+                <view class="skeleton-line skeleton-usage-value"></view>
+              </view>
+            </view>
+            <view class="skeleton-usage-divider"></view>
+            <view class="skeleton-usage-item">
+              <view class="skeleton-usage-icon"></view>
+              <view class="skeleton-usage-info">
+                <view class="skeleton-line skeleton-usage-label"></view>
+                <view class="skeleton-line skeleton-usage-value"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 支出分类排行骨架 -->
+        <view class="skeleton-card">
+          <view class="skeleton-card-header">
+            <view class="skeleton-line skeleton-card-title"></view>
+          </view>
+          <view class="skeleton-rank-list">
+            <view class="skeleton-rank-item">
+              <view class="skeleton-rank-num"></view>
+              <view class="skeleton-rank-icon"></view>
+              <view class="skeleton-rank-info">
+                <view class="skeleton-line skeleton-rank-name"></view>
+                <view class="skeleton-rank-bar"></view>
+              </view>
+              <view class="skeleton-rank-amount">
+                <view class="skeleton-line skeleton-rank-value"></view>
+                <view class="skeleton-line skeleton-rank-percent"></view>
+              </view>
+            </view>
+            <view class="skeleton-rank-item">
+              <view class="skeleton-rank-num"></view>
+              <view class="skeleton-rank-icon"></view>
+              <view class="skeleton-rank-info">
+                <view class="skeleton-line skeleton-rank-name"></view>
+                <view class="skeleton-rank-bar"></view>
+              </view>
+              <view class="skeleton-rank-amount">
+                <view class="skeleton-line skeleton-rank-value"></view>
+                <view class="skeleton-line skeleton-rank-percent"></view>
+              </view>
+            </view>
+            <view class="skeleton-rank-item">
+              <view class="skeleton-rank-num"></view>
+              <view class="skeleton-rank-icon"></view>
+              <view class="skeleton-rank-info">
+                <view class="skeleton-line skeleton-rank-name"></view>
+                <view class="skeleton-rank-bar"></view>
+              </view>
+              <view class="skeleton-rank-amount">
+                <view class="skeleton-line skeleton-rank-value"></view>
+                <view class="skeleton-line skeleton-rank-percent"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 月度趋势卡片骨架 -->
+        <view class="skeleton-card">
+          <view class="skeleton-card-header">
+            <view class="skeleton-line skeleton-card-title"></view>
+            <view class="skeleton-trend-legend">
+              <view class="skeleton-trend-legend-item"></view>
+              <view class="skeleton-trend-legend-item"></view>
+            </view>
+          </view>
+          <view class="skeleton-chart">
+            <view class="skeleton-y-axis">
+              <view class="skeleton-line skeleton-y-label"></view>
+              <view class="skeleton-line skeleton-y-label"></view>
+              <view class="skeleton-line skeleton-y-label"></view>
+              <view class="skeleton-line skeleton-y-label"></view>
+              <view class="skeleton-line skeleton-y-label"></view>
+            </view>
+            <view class="skeleton-bar-chart">
+              <view class="skeleton-grid-lines">
+                <view class="skeleton-grid-line"></view>
+                <view class="skeleton-grid-line"></view>
+                <view class="skeleton-grid-line"></view>
+                <view class="skeleton-grid-line"></view>
+                <view class="skeleton-grid-line"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 鼓励语卡片骨架 -->
+        <view class="skeleton-card skeleton-encourage">
+          <view class="skeleton-encourage-icon"></view>
+          <view class="skeleton-line skeleton-encourage-text"></view>
+          <view class="skeleton-line skeleton-encourage-text short"></view>
+        </view>
       </view>
 
       <!-- 实际内容 -->

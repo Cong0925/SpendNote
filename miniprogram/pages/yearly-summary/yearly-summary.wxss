@@ -662,17 +662,438 @@
 }
 
 /* ========== 骨架屏样式 ========== */
+/* 骨架屏基础动画 */
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-line {
+  background: linear-gradient(90deg, #F0F2F5 25%, #E5E7EB 50%, #F0F2F5 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 8rpx;
+}
+
+/* 年度标题骨架 */
+.skeleton-year-header {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 28rpx;
+  margin: 16rpx 0 24rpx;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 20rpx;
+  gap: 20rpx;
+}
+
+.skeleton-year-badge {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 16rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  flex-shrink: 0;
+}
+
+.skeleton-year-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.skeleton-title {
+  width: 120rpx;
+  height: 32rpx;
+}
+
+.skeleton-subtitle {
+  width: 180rpx;
+  height: 24rpx;
+}
+
+.skeleton-year-deco {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+/* 卡片通用骨架样式 */
 .skeleton-card {
-  height: 200rpx;
   background: var(--color-card, #FFFFFF);
   border-radius: var(--radius-xl, 32rpx);
+  padding: 28rpx;
   margin-bottom: 20rpx;
+  box-shadow: var(--shadow-card, 0 2rpx 8rpx rgba(0, 0, 0, 0.04));
+}
+
+.skeleton-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.skeleton-card-title {
+  width: 180rpx;
+  height: 30rpx;
+}
+
+.skeleton-card-count {
+  width: 80rpx;
+  height: 24rpx;
+}
+
+/* 年度总览骨架 */
+.skeleton-overview-stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.skeleton-stat-block {
+  flex: 1;
+  height: 120rpx;
+  border-radius: var(--radius-lg, 24rpx);
   background: linear-gradient(90deg, #F0F2F5 25%, #E5E7EB 50%, #F0F2F5 75%);
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s infinite;
 }
 
-@keyframes skeleton-loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+.skeleton-stat-block.income {
+  background: linear-gradient(90deg, #DCFCE7 25%, #BBF7D0 50%, #DCFCE7 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-stat-block.expense {
+  background: linear-gradient(90deg, #FEE2E2 25%, #FECACA 50%, #FEE2E2 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-overview-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid var(--color-border, #E5E7EB);
+}
+
+.skeleton-balance-label {
+  width: 80rpx;
+  height: 26rpx;
+}
+
+.skeleton-balance-value {
+  width: 120rpx;
+  height: 32rpx;
+}
+
+/* 消费分析骨架 */
+.skeleton-analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+}
+
+.skeleton-analysis-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: var(--color-bg, #F5F7FA);
+  border-radius: var(--radius-lg, 24rpx);
+}
+
+.skeleton-analysis-icon {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
+.skeleton-analysis-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8rpx;
+}
+
+.skeleton-analysis-label {
+  width: 80rpx;
+  height: 20rpx;
+}
+
+.skeleton-analysis-value {
+  width: 60rpx;
+  height: 28rpx;
+}
+
+/* 使用信息骨架 */
+.skeleton-usage-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.skeleton-usage-item {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
+.skeleton-usage-icon {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
+.skeleton-usage-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.skeleton-usage-label {
+  width: 80rpx;
+  height: 20rpx;
+}
+
+.skeleton-usage-value {
+  width: 60rpx;
+  height: 30rpx;
+}
+
+.skeleton-usage-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin: 0 8rpx;
+}
+
+/* 支出分类排行骨架 */
+.skeleton-rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.skeleton-rank-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx;
+  background: var(--color-bg, #F5F7FA);
+  border-radius: var(--radius-lg, 24rpx);
+}
+
+.skeleton-rank-num {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.skeleton-rank-icon {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 8rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.skeleton-rank-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.skeleton-rank-name {
+  width: 100rpx;
+  height: 24rpx;
+}
+
+.skeleton-rank-bar {
+  height: 8rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4rpx;
+}
+
+.skeleton-rank-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-left: 16rpx;
+  gap: 4rpx;
+}
+
+.skeleton-rank-value {
+  width: 80rpx;
+  height: 26rpx;
+}
+
+.skeleton-rank-percent {
+  width: 60rpx;
+  height: 20rpx;
+}
+
+/* 月度趋势骨架 */
+.skeleton-trend-legend {
+  display: flex;
+  gap: 20rpx;
+}
+
+.skeleton-trend-legend-item {
+  width: 80rpx;
+  height: 22rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-chart {
+  display: flex;
+  gap: 12rpx;
+  height: 280rpx;
+}
+
+.skeleton-y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding-bottom: 40rpx;
+}
+
+.skeleton-y-label {
+  width: 60rpx;
+  height: 18rpx;
+}
+
+.skeleton-bar-chart {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 8rpx;
+  height: 100%;
+  padding-bottom: 40rpx;
+  position: relative;
+}
+
+.skeleton-grid-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 40rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.skeleton-grid-line {
+  height: 1rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  opacity: 0.5;
+}
+
+.skeleton-bar-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.skeleton-bars {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 4rpx;
+  width: 100%;
+}
+
+.skeleton-bar {
+  flex: 1;
+  border-radius: 4rpx 4rpx 0 0;
+  min-height: 4rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-bar.expense {
+  background: linear-gradient(90deg, #FEE2E2 25%, #FECACA 50%, #FEE2E2 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-bar.income {
+  background: linear-gradient(90deg, #DCFCE7 25%, #BBF7D0 50%, #DCFCE7 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-bar-label {
+  position: absolute;
+  bottom: 0;
+  width: 40rpx;
+  height: 18rpx;
+}
+
+/* 鼓励语骨架 */
+.skeleton-encourage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 28rpx;
+}
+
+.skeleton-encourage-icon {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin-bottom: 16rpx;
+}
+
+.skeleton-encourage-text {
+  width: 280rpx;
+  height: 28rpx;
+  margin-bottom: 8rpx;
+}
+
+.skeleton-encourage-text.short {
+  width: 180rpx;
+  height: 28rpx;
 }
