@@ -153,8 +153,10 @@ Page({
    * 获取操作类型文本
    */
   getPaymentTypeText(type) {
+    // 根据借款类型和操作类型显示不同的文本
+    const loanType = this.data.loanInfo?.type
     const typeMap = {
-      initial: '借出',
+      initial: loanType === 'lend' ? '借出' : '借入',
       receive: '收款',
       repay: '还款'
     }

@@ -136,6 +136,41 @@ page {
   transform: scale(0.98);
 }
 
+/* ============ 已完成状态样式 ============ */
+.loan-item.completed {
+  opacity: 0.6;
+  background: #f9fafb;
+}
+
+.loan-item.completed .loan-icon {
+  background: #e5e7eb;
+}
+
+.loan-item.completed .loan-person {
+  color: #9ca3af;
+}
+
+.loan-item.completed .loan-date {
+  color: #9ca3af;
+}
+
+.loan-item.completed .loan-total {
+  color: #9ca3af;
+}
+
+.loan-item.completed .loan-status text {
+  color: #9ca3af;
+}
+
+.loan-status-tag {
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  background: #e5e7eb;
+  color: #6b7280;
+  margin-left: 8rpx;
+}
+
 .loan-left {
   display: flex;
   align-items: center;

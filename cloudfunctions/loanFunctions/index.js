@@ -262,11 +262,10 @@ async function listLoans(openid, params = {}) {
   }
 
   if (status) {
+    // 如果指定了状态，只显示该状态的记录
     whereCondition.status = status
-  } else {
-    // 默认只显示进行中的
-    whereCondition.status = 'pending'
   }
+  // 如果没有指定状态，显示所有状态的记录（包括 pending 和 completed）
 
   const result = await db.collection(LOANS_COLLECTION)
     .where(whereCondition)

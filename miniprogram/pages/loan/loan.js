@@ -26,6 +26,18 @@ Page({
   },
 
   /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad(options) {
+    // 接收从上一个页面传递的 type 参数
+    if (options.type && ['lend', 'borrow'].includes(options.type)) {
+      this.setData({
+        currentType: options.type
+      })
+    }
+  },
+
+  /**
    * 生命周期函数--监听页面显示
    */
   onShow() {

@@ -266,9 +266,10 @@ Page({
   /**
    * 跳转到借款记账页面
    */
-  goToLoan() {
+  goToLoan(e) {
+    const type = e.currentTarget.dataset.type || 'lend'
     wx.navigateTo({
-      url: '/pages/loan/loan'
+      url: `/pages/loan/loan?type=${type}`
     })
   }
 })

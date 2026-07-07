@@ -54,7 +54,7 @@
 
     <!-- 加载完成 -->
     <block wx:else>
-      <view class="loan-item" bindtap="goToLoan">
+      <view class="loan-item" bindtap="goToLoan" data-type="lend">
         <view class="loan-left">
           <view class="loan-icon lend-icon">
             <image class="loan-icon-img" src="/images/loan/lend.png" mode="aspectFit" />
@@ -69,7 +69,7 @@
         </view>
       </view>
 
-      <view class="loan-item" bindtap="goToLoan">
+      <view class="loan-item" bindtap="goToLoan" data-type="borrow">
         <view class="loan-left">
           <view class="loan-icon borrow-icon">
             <image class="loan-icon-img" src="/images/loan/borrow.png" mode="aspectFit" />
