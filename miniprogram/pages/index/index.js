@@ -74,6 +74,15 @@ Page({
    * 检查登录状态
    */
   async checkLogin() {
+    // 优先使用app的登录状态（已包含7天有效期验证）
+    if (app.globalData.isLoggedIn) {
+      this.setData({ isLoggedIn: true })
+      this.initDate()
+      this.loadBills()
+      return
+    }
+
+    // 如果app状态未确定，尝试从本地存储获取
     const userInfo = await app.getUserInfo()
 
     if (!userInfo) {

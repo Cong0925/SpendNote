@@ -22,14 +22,17 @@ Page({
   },
 
   onLoad() {
-    const currentYear = new Date().getFullYear()
-    this.setData({ year: currentYear })
-    this.loadUserInfo()
-    this.loadOverview()
+    this.checkLogin()
   },
 
   onShow() {
     const app = getApp()
+
+    // 检查登录状态
+    if (!app.globalData.isLoggedIn) {
+      wx.redirectTo({ url: '/pages/login/login' })
+      return
+    }
 
     // 检测是否发生了 Tab 切换
     if (app.checkTabBarChange('pages/mine/mine')) {
@@ -43,6 +46,21 @@ Page({
     }
 
     // 加载数据
+    this.loadOverview()
+  },
+
+  /**
+   * 检查登录状态
+   */
+  checkLogin() {
+    const app = getApp()
+    if (!app.globalData.isLoggedIn) {
+      wx.redirectTo({ url: '/pages/login/login' })
+      return
+    }
+    const currentYear = new Date().getFullYear()
+    this.setData({ year: currentYear })
+    this.loadUserInfo()
     this.loadOverview()
   },
 
@@ -466,15 +484,43 @@ Page({
       title: '退出登录',
       content: '确定要退出登录吗？',
       confirmColor: '#e57373',
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          // 清除本地缓存
-          wx.removeStorageSync('userInfo')
-          // 清除全局用户信息
-          const app = getApp()
-          app.globalData.userInfo = null
-          // 跳转到登录页
-          wx.redirectTo({ url: '/pages/login/login' })
+          wx.showLoading({ title: '退出中...' })
+
+          try {
+            // 删除数据库中的用户记录
+            await wx.cloud.callFunction({
+              name: 'user',
+              data: {
+                action: 'deleteUser'
+              }
+            })
+
+            // 清除本地缓存
+            wx.removeStorageSync('userInfo')
+            wx.removeStorageSync('loginTime')
+
+            // 清除全局用户信息
+            const app = getApp()
+            app.globalData.userInfo = null
+            app.globalData.isLoggedIn = false
+
+            wx.hideLoading()
+
+            // 跳转到登录页
+            wx.redirectTo({ url: '/pages/login/login' })
+          } catch (err) {
+            wx.hideLoading()
+            console.error('退出登录失败：', err)
+            // 即使删除数据库失败，也清除本地信息
+            wx.removeStorageSync('userInfo')
+            wx.removeStorageSync('loginTime')
+            const app = getApp()
+            app.globalData.userInfo = null
+            app.globalData.isLoggedIn = false
+            wx.redirectTo({ url: '/pages/login/login' })
+          }
         }
       }
     })

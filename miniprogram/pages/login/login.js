@@ -146,7 +146,9 @@ Page({
 
       // 缓存用户信息到本地
       wx.setStorageSync('userInfo', userInfo)
+      wx.setStorageSync('loginTime', Date.now()) // 保存登录时间
       app.globalData.userInfo = userInfo
+      app.globalData.isLoggedIn = true
 
       // 5. 跳转到主页
       wx.switchTab({ url: '/pages/index/index' })

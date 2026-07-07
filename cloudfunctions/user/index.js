@@ -130,5 +130,19 @@ exports.main = async (event, context) => {
     }
   }
 
+  // 删除用户记录（用于退出登录）
+  if (action === 'deleteUser') {
+    try {
+      await db.collection('users')
+        .where({ _openid: wxContext.OPENID })
+        .remove()
+
+      return { success: true }
+    } catch (err) {
+      console.error('删除用户记录失败：', err)
+      return { success: false, error: err }
+    }
+  }
+
   return { success: false, error: '未知操作' }
 }

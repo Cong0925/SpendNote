@@ -180,8 +180,7 @@ Page({
   },
 
   onLoad() {
-    this.initDate()
-    this.loadStats()
+    this.checkLogin()
   },
 
   onShow() {
@@ -198,7 +197,20 @@ Page({
       this.getTabBar().setData({ selected: 1 })
     }
 
-    // 加载数据
+    // 检查登录状态
+    this.checkLogin()
+  },
+
+  /**
+   * 检查登录状态
+   */
+  checkLogin() {
+    const app = getApp()
+    if (!app.globalData.isLoggedIn) {
+      wx.redirectTo({ url: '/pages/login/login' })
+      return
+    }
+    this.initDate()
     this.loadStats()
   },
 

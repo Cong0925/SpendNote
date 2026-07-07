@@ -57,6 +57,12 @@ Page({
   onShow() {
     const app = getApp()
 
+    // 检查登录状态
+    if (!app.globalData.isLoggedIn) {
+      wx.redirectTo({ url: '/pages/login/login' })
+      return
+    }
+
     // 检测是否发生了 Tab 切换
     if (app.checkTabBarChange('pages/account/account')) {
       // 发生了 Tab 切换，重置临时状态
