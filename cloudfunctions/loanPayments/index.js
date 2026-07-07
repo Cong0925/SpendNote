@@ -114,7 +114,7 @@ async function addPayment(openid, data) {
 
   // 如果是操作记录（收款/还款），更新主记录的 paidAmount
   if (type !== 'initial') {
-    await updateLoanPaidAmount(openid, loanId, amount, loan)
+    await updateLoanPaidAmount(openid, loanId, amount, loan, accountId)
   }
 
   return {
@@ -161,20 +161,23 @@ async function updatePayment(openid, data) {
     updateData.date = new Date(updateData.date)
   }
 
-  // 如果金额变化，需要更新主记录
-  if (updateData.amount && updateData.amount !== oldPayment.amount) {
+  // 如果金额或账户变化，需要更新主记录和账户余额
+  const amountChanged = updateData.amount !== undefined && updateData.amount !== oldPayment.amount
+
+  // 计算金额差值
+  const amountDiff = amountChanged ? (updateData.amount - oldPayment.amount) : 0
+
+  // 检查更新后的金额是否超过剩余
+  if (amountChanged) {
     const loanResult = await db.collection(LOANS_COLLECTION)
       .where({ _id: oldPayment.loanId, _openid: openid })
-      .get()
+    .get()
 
     if (loanResult.data.length === 0) {
       return { success: false, error: '关联的借款记录不存在' }
     }
 
     const loan = loanResult.data[0]
-    const amountDiff = updateData.amount - oldPayment.amount
-
-    // 检查更新后的金额是否超过剩余
     const newPaidAmount = loan.paidAmount + amountDiff
     if (roundNumber(newPaidAmount) > roundNumber(loan.amount)) {
       return { success: false, error: '金额不能超过借款总额' }
@@ -193,31 +196,64 @@ async function updatePayment(openid, data) {
           updatedAt: db.serverDate()
         }
       })
+  }
 
-    // 联动更新账户余额
-    if (oldPayment.accountId && amountDiff !== 0) {
-      let balanceChange = 0
-      if (oldPayment.type === 'receive') {
-        // 收款：金额增加，账户余额增加
-        balanceChange = amountDiff
-      } else if (oldPayment.type === 'repay') {
-        // 还款：金额增加，账户余额减少
-        balanceChange = -amountDiff
+  // 联动更新账户余额（统一逻辑：撤销旧记录 + 应用新记录）
+  const oldAccountId = oldPayment.accountId
+  const newAccountId = updateData.accountId !== undefined ? updateData.accountId : oldPayment.accountId
+  const oldAmount = oldPayment.amount
+  const newAmount = updateData.amount !== undefined ? updateData.amount : oldPayment.amount
+
+  // 从旧账户扣除旧金额（撤销旧记录）
+  if (oldAccountId && oldAmount !== 0) {
+    let oldBalanceChange = 0
+    if (oldPayment.type === 'receive') {
+      // 收款：撤销旧记录，账户余额减少
+      oldBalanceChange = -oldAmount
+    } else if (oldPayment.type === 'repay') {
+      // 还款：撤销旧记录，账户余额增加
+      oldBalanceChange = oldAmount
+    }
+
+    if (oldBalanceChange !== 0) {
+      try {
+        await db.collection('accounts')
+          .where({ _id: oldAccountId, _openid: openid })
+          .update({
+            data: {
+              balance: _.inc(oldBalanceChange),
+              updatedAt: db.serverDate()
+            }
+          })
+      } catch (err) {
+        console.error('更新旧账户余额异常：', err)
       }
+    }
+  }
 
-      if (balanceChange !== 0) {
-        try {
-          await db.collection('accounts')
-            .where({ _id: oldPayment.accountId, _openid: openid })
-            .update({
-              data: {
-                balance: _.inc(balanceChange),
-                updatedAt: db.serverDate()
-              }
-            })
-        } catch (err) {
-          console.error('更新账户余额异常：', err)
-        }
+  // 向新账户增加新金额（应用新记录）
+  if (newAccountId && newAmount !== 0) {
+    let newBalanceChange = 0
+    if (oldPayment.type === 'receive') {
+      // 收款：应用新记录，账户余额增加
+      newBalanceChange = newAmount
+    } else if (oldPayment.type === 'repay') {
+      // 还款：应用新记录，账户余额减少
+      newBalanceChange = -newAmount
+    }
+
+    if (newBalanceChange !== 0) {
+      try {
+        await db.collection('accounts')
+          .where({ _id: newAccountId, _openid: openid })
+          .update({
+            data: {
+              balance: _.inc(newBalanceChange),
+              updatedAt: db.serverDate()
+            }
+          })
+      } catch (err) {
+        console.error('更新新账户余额异常：', err)
       }
     }
   }
@@ -363,7 +399,7 @@ async function listPayments(openid, loanId) {
 /**
  * 更新主记录的 paidAmount（内部方法）
  */
-async function updateLoanPaidAmount(openid, loanId, amount, loan) {
+async function updateLoanPaidAmount(openid, loanId, amount, loan, paymentAccountId) {
   const amountNum = Number(amount)
   const newPaidAmount = loan.paidAmount + amountNum
 
@@ -390,10 +426,13 @@ async function updateLoanPaidAmount(openid, loanId, amount, loan) {
     balanceChange = -amountNum
   }
 
-  if (loan.accountId && balanceChange !== 0) {
+  // 使用本次操作的 accountId，而不是原始借款的 accountId
+  const targetAccountId = paymentAccountId || loan.accountId
+
+  if (targetAccountId && balanceChange !== 0) {
     try {
       await db.collection('accounts')
-        .where({ _id: loan.accountId, _openid: openid })
+        .where({ _id: targetAccountId, _openid: openid })
         .update({
           data: {
             balance: _.inc(balanceChange),

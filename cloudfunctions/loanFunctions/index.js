@@ -41,7 +41,7 @@ exports.main = async (event, context) => {
       case 'getSummary':
         return await getLoanSummary(OPENID)
       case 'updatePaid':
-        return await updatePaidAmount(OPENID, data.id, data.amount)
+        return await updatePaidAmount(OPENID, data.id, data.amount, data.accountId)
       default:
         return { success: false, error: '未知操作类型' }
     }
@@ -329,7 +329,7 @@ async function getLoanSummary(openid) {
 /**
  * 更新已收/已还金额
  */
-async function updatePaidAmount(openid, id, amount) {
+async function updatePaidAmount(openid, id, amount, paymentAccountId) {
   if (!id || amount === undefined) {
     return { success: false, error: '缺少参数' }
   }
@@ -386,11 +386,14 @@ async function updatePaidAmount(openid, id, amount) {
     balanceChange = -amountNum
   }
 
+  // 使用本次操作的 accountId，而不是原始借款的 accountId
+  const targetAccountId = paymentAccountId || loan.accountId
+
   // 如果有关联账户，更新账户余额
-  if (loan.accountId && balanceChange !== 0) {
+  if (targetAccountId && balanceChange !== 0) {
     try {
       const accountResult = await db.collection('accounts')
-        .where({ _id: loan.accountId, _openid: openid })
+        .where({ _id: targetAccountId, _openid: openid })
         .update({
           data: {
             balance: _.inc(balanceChange),
@@ -399,7 +402,7 @@ async function updatePaidAmount(openid, id, amount) {
         })
 
       if (accountResult.stats.updated === 0) {
-        console.error('更新账户余额失败：账户不存在或无权限')
+        console.error('更新账户余额失败：账户不存在或无权限，accountId:', targetAccountId)
       }
     } catch (err) {
       console.error('更新账户余额异常：', err)

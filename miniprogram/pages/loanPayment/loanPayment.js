@@ -170,17 +170,6 @@ Page({
   },
 
   /**
-   * 账户选择
-   */
-  onAccountSelect(e) {
-    const account = e.detail
-    this.setData({
-      'form.accountId': account._id,
-      'form.accountName': account.name
-    })
-  },
-
-  /**
    * 备注输入
    */
   onRemarkInput(e) {
