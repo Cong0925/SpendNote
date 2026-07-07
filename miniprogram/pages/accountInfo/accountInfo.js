@@ -1,6 +1,7 @@
 /**
- * 账户详情页面
- * 显示账户信息、账单列表和操作按钮
+ * 账户详情页面 - 完全重构
+ * 功能：显示账户信息、收支统计、账单记录、操作按钮
+ * 设计：参考统计页面和账单详情页面的风格
  */
 const app = getApp()
 const { formatAmount } = require('../../utils/formatAmount')
@@ -96,12 +97,6 @@ Page({
         const account = res.result.data
         // 转换账户类型为中文
         account.typeText = ACCOUNT_TYPE_MAP[account.type] || account.type
-        // 生成标题（银行名称+类型）
-        if (account.bankName) {
-          account.title = `${account.bankName}${account.typeText}`
-        } else {
-          account.title = account.typeText
-        }
         // 格式化余额
         account.balanceStr = formatAmount(account.balance)
         this.setData({ account })
@@ -159,7 +154,14 @@ Page({
   },
 
   /**
-   * 跳转到账户详情修改页面
+   * 返回上一页
+   */
+  goBack() {
+    wx.navigateBack()
+  },
+
+  /**
+   * 跳转到账户编辑页面
    */
   goToAccountDetail() {
     const { account } = this.data
@@ -179,7 +181,7 @@ Page({
   },
 
   /**
-   * 跳转到新增账单页面
+   * 跳转到记一笔页面
    */
   goToAddBill() {
     const { account } = this.data

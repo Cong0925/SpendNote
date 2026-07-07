@@ -1,22 +1,36 @@
 <!--
-  账户详情页面 - 显示账户信息、账单列表和操作按钮
+  账户详情页面 - 简化版
+  采用系统默认导航栏，简化顶部设计
 -->
-<view class="container">
-  <!-- 顶部余额/应还区域 -->
-  <view class="balance-card {{account.isDebt ? 'debt-card' : 'asset-card'}}">
-    <view class="balance-label">{{account.isDebt ? '应还' : '余额'}}</view>
-    <view class="balance-value" bindtap="goToAccountDetail">
-      <text class="balance-amount">{{account.isDebt ? '￥-' : '￥'}}{{account.balanceStr || '0.00'}}</text>
-      <text class="edit-icon">✎</text>
+<view class="page">
+  <!-- 账户信息卡片 -->
+  <view class="account-card">
+    <view class="card-header">
+      <view class="icon-wrap">
+        <image class="account-icon" src="{{account.icon}}" mode="aspectFit"></image>
+      </view>
+      <view class="info-wrap">
+        <text class="account-name">{{account.name}}</text>
+        <text class="account-type">{{account.typeText}}</text>
+      </view>
+    </view>
+
+    <!-- 余额显示 -->
+    <view class="balance-wrap">
+      <text class="balance-label">{{account.isDebt ? '应还金额' : '账户余额'}}</text>
+      <text class="balance-amount {{account.isDebt ? 'debt' : 'asset'}}">
+        {{account.isDebt ? '-' : ''}}￥{{account.balanceStr || '0.00'}}
+      </text>
     </view>
   </view>
 
-  <!-- 入账/出账统计 -->
-  <view class="stats-row">
+  <!-- 收支统计 -->
+  <view class="stats-card">
     <view class="stat-item">
       <text class="stat-label">入账</text>
       <text class="stat-value income">￥{{stats.incomeStr || '0.00'}}</text>
     </view>
+    <view class="stat-divider"></view>
     <view class="stat-item">
       <text class="stat-label">出账</text>
       <text class="stat-value expense">￥{{stats.expenseStr || '0.00'}}</text>
@@ -24,51 +38,58 @@
   </view>
 
   <!-- 账单列表 -->
-  <view class="bill-list">
-    <view class="bill-header">
-      <text class="bill-title">账单记录</text>
-      <text class="bill-count">共{{billList.length}}笔</text>
+  <view class="bill-section">
+    <view class="section-header">
+      <text class="section-title">账单记录</text>
+      <text class="section-count">共{{billList.length}}笔</text>
     </view>
 
-    <view class="bill-empty" wx:if="{{billList.length === 0}}">
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{billList.length === 0 && !loading}}">
       <text class="empty-text">暂无账单记录</text>
     </view>
 
-    <view
-      class="bill-item"
-      wx:for="{{billList}}"
-      wx:key="_id"
-      data-id="{{item._id}}"
-      bindtap="goToBillDetail"
-    >
-      <view class="bill-left">
-        <view class="bill-icon {{item.type === 'income' ? 'income-icon' : 'expense-icon'}}">
-          <text>{{item.icon || (item.type === 'income' ? '💰' : '💸')}}</text>
+    <!-- 账单列表 -->
+    <view class="bill-list" wx:if="{{billList.length > 0}}">
+      <view
+        class="bill-item"
+        wx:for="{{billList}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="goToBillDetail"
+      >
+        <view class="bill-left">
+          <view class="bill-icon {{item.type === 'income' ? 'income-bg' : 'expense-bg'}}">
+            <text class="bill-emoji">{{item.icon || (item.type === 'income' ? '💰' : '💸')}}</text>
+          </view>
+          <view class="bill-info">
+            <text class="bill-category">{{item.category}}</text>
+            <text class="bill-note">{{item.note || '无备注'}}</text>
+          </view>
         </view>
-        <view class="bill-info">
-          <text class="bill-category">{{item.category}}</text>
-          <text class="bill-note">{{item.note || '无备注'}}</text>
+        <view class="bill-right">
+          <text class="bill-amount {{item.type === 'income' ? 'income' : 'expense'}}">
+            {{item.type === 'income' ? '+' : '-'}}￥{{item.amountStr}}
+          </text>
+          <text class="bill-date">{{item.date}}</text>
         </view>
-      </view>
-      <view class="bill-right">
-        <text class="bill-amount {{item.type === 'income' ? 'income-amount' : 'expense-amount'}}">
-          {{item.type === 'income' ? '+' : '-'}}￥{{item.amountStr}}
-        </text>
-        <text class="bill-date">{{item.date}}</text>
       </view>
     </view>
   </view>
 
+  <!-- 底部留白 -->
+  <view class="bottom-spacer"></view>
+
   <!-- 底部操作按钮 -->
-  <view class="action-buttons">
-    <view class="action-btn delete-btn" bindtap="deleteAccount">
+  <view class="action-bar">
+    <view class="action-btn btn-delete" bindtap="deleteAccount">
       <text class="btn-text">删除</text>
     </view>
-    <view class="action-btn bill-btn" bindtap="goToAddBill">
-      <text class="btn-text">收支</text>
+    <view class="action-btn btn-transfer" bindtap="goToTransfer">
+      <text class="btn-text">转账</text>
     </view>
-    <view class="action-btn transfer-btn" bindtap="goToTransfer">
-      <text class="btn-text">还款</text>
+    <view class="action-btn btn-add" bindtap="goToAddBill">
+      <text class="btn-text">记一笔</text>
     </view>
   </view>
 
