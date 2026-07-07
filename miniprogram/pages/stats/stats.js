@@ -364,8 +364,16 @@ Page({
         const incomeUnit = formatAmountWithUnit(totalIncome)
         const balanceUnit = formatAmountWithUnit(balance)
 
-        // 计算图例列数（每列最多6个）
-        const legendColumns = Math.ceil(displayStats.length / 6) || 1
+        // 计算图例列数（最佳3列）
+        const count = displayStats.length
+        let legendColumns
+        if (count <= 18) {
+          // 少于18条：3列或更少（每列3-6条）
+          legendColumns = count <= 3 ? 1 : count <= 8 ? Math.ceil(count / 3) : 3
+        } else {
+          // 超过18条：增加列数（每列最多6条）
+          legendColumns = Math.ceil(count / 6)
+        }
 
         this.setData({
           totalExpenseStr: formatAmount(totalExpense),
