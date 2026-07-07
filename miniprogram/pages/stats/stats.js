@@ -531,13 +531,7 @@ Page({
 
   // 点击甜甜圈图表
   onDonutTap(e) {
-    const { displayStats, showDonutTooltip } = this.data
-
-    // 如果已显示tooltip，则隐藏
-    if (showDonutTooltip) {
-      this.setData({ showDonutTooltip: false, donutTooltipData: null })
-      return
-    }
+    const { displayStats } = this.data
 
     // 没有数据时不处理
     if (!displayStats || displayStats.length === 0) return
@@ -563,7 +557,7 @@ Page({
       const outerRadius = rect.width / 2
       const innerRadius = outerRadius * 0.6 // 内圈比例
 
-      // 如果点击在中心空白区域或外圈外，不处理
+      // 如果点击在中心空白区域或外圈外，隐藏tooltip
       if (distance < innerRadius || distance > outerRadius) {
         this.setData({ showDonutTooltip: false, donutTooltipData: null })
         return
@@ -599,5 +593,17 @@ Page({
   // 隐藏甜甜圈tooltip
   hideDonutTooltip() {
     this.setData({ showDonutTooltip: false, donutTooltipData: null })
+  },
+
+  // 点击甜甜圈包装器（非图表区域）
+  onDonutWrapperTap() {
+    this.setData({ showDonutTooltip: false, donutTooltipData: null })
+  },
+
+  // 点击页面其他区域
+  onPageTap() {
+    if (this.data.showDonutTooltip) {
+      this.setData({ showDonutTooltip: false, donutTooltipData: null })
+    }
   }
 })

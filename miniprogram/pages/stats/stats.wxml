@@ -1,5 +1,5 @@
 <!--pages/stats/stats.wxml-->
-<view class="container">
+<view class="container" bindtap="onPageTap">
   <scroll-view class="scroll-area" scroll-y enhanced show-scrollbar="{{false}}">
   <!-- 使用自定义导航组件 -->
   <custom-nav
@@ -134,8 +134,8 @@
     </block>
 
     <block wx:if="{{categoryStats.length > 0 && !loading}}">
-      <view class="donut-wrapper">
-        <view class="donut-chart" bindtap="onDonutTap">
+      <view class="donut-wrapper" bindtap="onDonutWrapperTap">
+        <view class="donut-chart" catchtap="onDonutTap">
           <view class="donut-ring" style="background: conic-gradient({{donutGradient}})"></view>
           <view class="donut-center">
             <text class="donut-center-amount">¥{{activeTab === 'expense' ? totalExpenseStr : totalIncomeStr}}</text>
