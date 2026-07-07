@@ -17,6 +17,32 @@ page {
   box-shadow: var(--shadow-card);
 }
 
+.form-row {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid var(--color-divider);
+}
+
+.form-row:last-child {
+  border-bottom: none;
+}
+
+.form-left {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 24rpx;
+}
+
+.form-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 .form-item {
   display: flex;
   align-items: center;
@@ -29,31 +55,31 @@ page {
 }
 
 .form-label {
-  width: 160rpx;
-  font-size: 30rpx;
-  color: var(--color-text);
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
   font-weight: 500;
+  margin-right: 16rpx;
   flex-shrink: 0;
 }
 
-.form-account-row {
-  flex: 1;
+.form-account {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
 }
 
 .form-account-name {
   font-size: 30rpx;
   color: var(--color-text);
-  margin-right: 16rpx;
+  margin-right: 8rpx;
   flex-shrink: 0;
 }
 
 .form-amount-input {
   display: flex;
   align-items: center;
-  flex-shrink: 0;
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  padding: 12rpx 16rpx;
 }
 
 .input-prefix {
@@ -67,6 +93,7 @@ page {
   text-align: right;
   font-size: 30rpx;
   color: var(--color-text);
+  font-weight: 600;
 }
 
 .form-picker {
@@ -84,7 +111,7 @@ page {
 .picker-arrow {
   font-size: 32rpx;
   color: var(--color-text-tertiary);
-  margin-left: 12rpx;
+  margin-left: 8rpx;
 }
 
 /* ============ 保存按钮 ============ */

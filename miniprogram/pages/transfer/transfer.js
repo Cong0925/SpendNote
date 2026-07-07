@@ -158,7 +158,8 @@ Page({
    */
   onFromAmountInput(e) {
     this.setData({
-      'form.fromAmount': e.detail.value
+      'form.fromAmount': e.detail.value,
+      'form.toAmount': e.detail.value
     })
   },
 
@@ -167,6 +168,7 @@ Page({
    */
   onToAmountInput(e) {
     this.setData({
+      'form.fromAmount': e.detail.value,
       'form.toAmount': e.detail.value
     })
   },
