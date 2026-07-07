@@ -175,18 +175,26 @@ Page({
   // 选择图标
   selectIcon(e) {
     const icon = e.currentTarget.dataset.icon
+    // 查找图标对应的默认名称
+    const iconData = this.data.builtinIcons.find(item => item.icon === icon)
+    const name = iconData ? iconData.name : ''
     this.setData({
       selectedIcon: icon,
-      'newCategory.icon': icon
+      'newCategory.icon': icon,
+      'newCategory.name': name
     })
   },
 
   // 选择编辑图标
   selectEditIcon(e) {
     const icon = e.currentTarget.dataset.icon
+    // 查找图标对应的默认名称
+    const iconData = this.data.builtinIcons.find(item => item.icon === icon)
+    const name = iconData ? iconData.name : ''
     this.setData({
       selectedIcon: icon,
-      'editingCategory.icon': icon
+      'editingCategory.icon': icon,
+      'editingCategory.name': name
     })
   },
 
@@ -199,8 +207,22 @@ Page({
       return
     }
 
+    // 名称长度限制：最多4个字
+    if (newCategory.name.trim().length > 4) {
+      wx.showToast({ title: '分类名称最多4个字', icon: 'none' })
+      return
+    }
+
     if (!newCategory.icon) {
       wx.showToast({ title: '请选择图标', icon: 'none' })
+      return
+    }
+
+    // 前端重名检查
+    const categories = activeTab === 'expense' ? this.data.expenseCategories : this.data.incomeCategories
+    const isDuplicate = categories.some(item => item.name === newCategory.name.trim())
+    if (isDuplicate) {
+      wx.showToast({ title: '该分类已存在', icon: 'none' })
       return
     }
 
@@ -241,6 +263,22 @@ Page({
 
     if (!editingCategory.name.trim()) {
       wx.showToast({ title: '请输入分类名称', icon: 'none' })
+      return
+    }
+
+    // 名称长度限制：最多4个字
+    if (editingCategory.name.trim().length > 4) {
+      wx.showToast({ title: '分类名称最多4个字', icon: 'none' })
+      return
+    }
+
+    // 前端重名检查（排除当前编辑的分类）
+    const categories = this.data.activeTab === 'expense' ? this.data.expenseCategories : this.data.incomeCategories
+    const isDuplicate = categories.some(item =>
+      item.name === editingCategory.name.trim() && item._id !== editingCategory._id
+    )
+    if (isDuplicate) {
+      wx.showToast({ title: '该分类已存在', icon: 'none' })
       return
     }
 

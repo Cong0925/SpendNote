@@ -102,7 +102,7 @@
       <!-- 分类名称 -->
       <view class="form-group">
         <text class="form-label">分类名称</text>
-        <input class="form-input" placeholder="请输入分类名称" value="{{newCategory.name}}" bindinput="onInputName" />
+        <input class="form-input" placeholder="请输入分类名称（最多4个字）" value="{{newCategory.name}}" bindinput="onInputName" maxlength="4" />
       </view>
 
       <!-- 选择图标 -->
@@ -141,7 +141,7 @@
       <!-- 分类名称 -->
       <view class="form-group">
         <text class="form-label">分类名称</text>
-        <input class="form-input" placeholder="请输入分类名称" value="{{editingCategory.name}}" bindinput="onEditInputName" />
+        <input class="form-input" placeholder="请输入分类名称（最多4个字）" value="{{editingCategory.name}}" bindinput="onEditInputName" maxlength="4" />
       </view>
 
       <!-- 选择图标 -->
