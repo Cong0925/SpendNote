@@ -20,3 +20,4 @@ docs/error imgs/*
 docs/imgs/*
 .claude/settings.json
 project.private.config.json
+.vscode/*
