@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "给我们评分"
+  "navigationBarTitleText": "给我们评分",
+  "usingComponents": {
+    "van-image": "/miniprogram_npm/@vant/weapp/image/index"
+  }
 }

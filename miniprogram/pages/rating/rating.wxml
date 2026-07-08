@@ -136,7 +136,23 @@
       <view class="image-section">
         <view class="image-list">
           <view wx:for="{{uploadedImages}}" wx:key="index" class="image-item">
-            <image src="{{item}}" mode="aspectFill" class="image-thumb" bindtap="onPreviewImage" data-url="{{item}}" />
+            <view class="image-thumb-wrapper">
+              <!-- 图片加载失败时显示占位图 -->
+              <view class="image-error-slot-small" wx:if="{{imageErrorMap['my'] && imageErrorMap['my'][index]}}">
+                <text class="error-icon-small">🖼️</text>
+              </view>
+              <!-- 正常显示图片 -->
+              <image
+                wx:else
+                src="{{item}}"
+                class="image-thumb"
+                mode="aspectFill"
+                data-url="{{item}}"
+                data-img-idx="{{index}}"
+                bindtap="onPreviewImage"
+                binderror="onMyImageError"
+              />
+            </view>
             <view class="image-delete" catchtap="onDeleteImage" data-index="{{index}}">×</view>
           </view>
           <view class="image-add" wx:if="{{uploadedImages.length < 3}}" bindtap="onChooseImage">
@@ -348,7 +364,25 @@
 
         <!-- 图片 -->
         <view class="card-images" wx:if="{{item.images && item.images.length > 0}}">
-          <image wx:for="{{item.images}}" wx:for-item="img" wx:for-index="imgIdx" wx:key="imgIdx" src="{{img}}" class="review-image" mode="aspectFill" bindtap="onPreviewReviewImage" data-url="{{img}}" />
+          <view wx:for="{{item.images}}" wx:for-item="img" wx:for-index="imgIdx" wx:key="imgIdx" class="review-image-wrapper">
+            <!-- 图片加载失败时显示占位图 -->
+            <view class="image-error-slot" wx:if="{{imageErrorMap[item._id] && imageErrorMap[item._id][imgIdx]}}">
+              <text class="error-icon">🖼️</text>
+              <text class="error-text">图片加载失败</text>
+            </view>
+            <!-- 正常显示图片 -->
+            <image
+              wx:else
+              src="{{img}}"
+              class="review-image"
+              mode="aspectFill"
+              data-url="{{img}}"
+              data-review-idx="{{item._id}}"
+              data-img-idx="{{imgIdx}}"
+              bindtap="onPreviewReviewImage"
+              binderror="onImageError"
+            />
+          </view>
         </view>
 
         <!-- 点赞踩按钮 - 只有非自己的评价才显示 -->

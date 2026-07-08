@@ -43,7 +43,8 @@ Page({
     pageSize: 10,
     currentFilter: 'all',
     showSkeleton: true,  // 初次加载骨架屏显示状态
-    showListSkeleton: false  // 切换筛选时列表骨架屏显示状态
+    showListSkeleton: false,  // 切换筛选时列表骨架屏显示状态
+    imageErrorMap: {}  // 记录图片加载失败状态
   },
 
   onLoad() {
@@ -467,6 +468,32 @@ Page({
       current: url,
       urls: this.data.reviews.reduce((acc, item) => acc.concat(item.images || []), [])
     })
+  },
+
+  // 评价列表图片加载失败处理
+  onImageError(e) {
+    const { reviewIdx, imgIdx } = e.currentTarget.dataset
+    // 使用嵌套对象格式，避免下划线问题
+    const imageErrorMap = { ...this.data.imageErrorMap }
+    if (!imageErrorMap[reviewIdx]) {
+      imageErrorMap[reviewIdx] = {}
+    }
+    imageErrorMap[reviewIdx][imgIdx] = true
+    this.setData({ imageErrorMap })
+    console.warn(`评价图片加载失败: review-${reviewIdx}, img-${imgIdx}`)
+  },
+
+  // 编辑模式图片加载失败处理
+  onMyImageError(e) {
+    const { imgIdx } = e.currentTarget.dataset
+    // 使用特殊前缀 my 标识我的图片
+    const imageErrorMap = { ...this.data.imageErrorMap }
+    if (!imageErrorMap['my']) {
+      imageErrorMap['my'] = {}
+    }
+    imageErrorMap['my'][imgIdx] = true
+    this.setData({ imageErrorMap })
+    console.warn(`我的图片加载失败: img-${imgIdx}`)
   },
 
   // 获取标签文本（保留兼容性）
