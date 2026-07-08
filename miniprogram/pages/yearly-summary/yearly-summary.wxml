@@ -1,0 +1,496 @@
+<!-- pages/yearly-summary/yearly-summary.wxml -->
+<view class="summary-page">
+  <!-- 内容区 -->
+  <scroll-view class="content-scroll" scroll-y>
+    <view class="content-wrapper">
+      <!-- 骨架屏 -->
+      <view class="skeleton" wx:if="{{loading}}">
+        <!-- 年度标题骨架 -->
+        <view class="skeleton-year-header">
+          <view class="skeleton-year-badge"></view>
+          <view class="skeleton-year-info">
+            <view class="skeleton-line skeleton-title"></view>
+            <view class="skeleton-line skeleton-subtitle"></view>
+          </view>
+          <view class="skeleton-year-deco"></view>
+        </view>
+
+        <!-- 年度总览卡片骨架 -->
+        <view class="skeleton-card">
+          <view class="skeleton-card-header">
+            <view class="skeleton-line skeleton-card-title"></view>
+            <view class="skeleton-line skeleton-card-count"></view>
+          </view>
+          <view class="skeleton-overview-stats">
+            <view class="skeleton-stat-block income"></view>
+            <view class="skeleton-stat-block expense"></view>
+          </view>
+          <view class="skeleton-overview-balance">
+            <view class="skeleton-line skeleton-balance-label"></view>
+            <view class="skeleton-line skeleton-balance-value"></view>
+          </view>
+        </view>
+
+        <!-- 消费分析卡片骨架 -->
+        <view class="skeleton-card">
+          <view class="skeleton-card-header">
+            <view class="skeleton-line skeleton-card-title"></view>
+          </view>
+          <view class="skeleton-analysis-grid">
+            <view class="skeleton-analysis-item">
+              <view class="skeleton-analysis-icon"></view>
+              <view class="skeleton-analysis-content">
+                <view class="skeleton-line skeleton-analysis-label"></view>
+                <view class="skeleton-line skeleton-analysis-value"></view>
+              </view>
+            </view>
+            <view class="skeleton-analysis-item">
+              <view class="skeleton-analysis-icon"></view>
+              <view class="skeleton-analysis-content">
+                <view class="skeleton-line skeleton-analysis-label"></view>
+                <view class="skeleton-line skeleton-analysis-value"></view>
+              </view>
+            </view>
+            <view class="skeleton-analysis-item">
+              <view class="skeleton-analysis-icon"></view>
+              <view class="skeleton-analysis-content">
+                <view class="skeleton-line skeleton-analysis-label"></view>
+                <view class="skeleton-line skeleton-analysis-value"></view>
+              </view>
+            </view>
+            <view class="skeleton-analysis-item">
+              <view class="skeleton-analysis-icon"></view>
+              <view class="skeleton-analysis-content">
+                <view class="skeleton-line skeleton-analysis-label"></view>
+                <view class="skeleton-line skeleton-analysis-value"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 使用信息卡片骨架 -->
+        <view class="skeleton-card">
+          <view class="skeleton-card-header">
+            <view class="skeleton-line skeleton-card-title"></view>
+          </view>
+          <view class="skeleton-usage-content">
+            <view class="skeleton-usage-item">
+              <view class="skeleton-usage-icon"></view>
+              <view class="skeleton-usage-info">
+                <view class="skeleton-line skeleton-usage-label"></view>
+                <view class="skeleton-line skeleton-usage-value"></view>
+              </view>
+            </view>
+            <view class="skeleton-usage-divider"></view>
+            <view class="skeleton-usage-item">
+              <view class="skeleton-usage-icon"></view>
+              <view class="skeleton-usage-info">
+                <view class="skeleton-line skeleton-usage-label"></view>
+                <view class="skeleton-line skeleton-usage-value"></view>
+              </view>
+            </view>
+            <view class="skeleton-usage-divider"></view>
+            <view class="skeleton-usage-item">
+              <view class="skeleton-usage-icon"></view>
+              <view class="skeleton-usage-info">
+                <view class="skeleton-line skeleton-usage-label"></view>
+                <view class="skeleton-line skeleton-usage-value"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 支出分类排行骨架 -->
+        <view class="skeleton-card">
+          <view class="skeleton-card-header">
+            <view class="skeleton-line skeleton-card-title"></view>
+          </view>
+          <view class="skeleton-rank-list">
+            <view class="skeleton-rank-item">
+              <view class="skeleton-rank-num"></view>
+              <view class="skeleton-rank-icon"></view>
+              <view class="skeleton-rank-info">
+                <view class="skeleton-line skeleton-rank-name"></view>
+                <view class="skeleton-rank-bar"></view>
+              </view>
+              <view class="skeleton-rank-amount">
+                <view class="skeleton-line skeleton-rank-value"></view>
+                <view class="skeleton-line skeleton-rank-percent"></view>
+              </view>
+            </view>
+            <view class="skeleton-rank-item">
+              <view class="skeleton-rank-num"></view>
+              <view class="skeleton-rank-icon"></view>
+              <view class="skeleton-rank-info">
+                <view class="skeleton-line skeleton-rank-name"></view>
+                <view class="skeleton-rank-bar"></view>
+              </view>
+              <view class="skeleton-rank-amount">
+                <view class="skeleton-line skeleton-rank-value"></view>
+                <view class="skeleton-line skeleton-rank-percent"></view>
+              </view>
+            </view>
+            <view class="skeleton-rank-item">
+              <view class="skeleton-rank-num"></view>
+              <view class="skeleton-rank-icon"></view>
+              <view class="skeleton-rank-info">
+                <view class="skeleton-line skeleton-rank-name"></view>
+                <view class="skeleton-rank-bar"></view>
+              </view>
+              <view class="skeleton-rank-amount">
+                <view class="skeleton-line skeleton-rank-value"></view>
+                <view class="skeleton-line skeleton-rank-percent"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 月度趋势卡片骨架 -->
+        <view class="skeleton-card">
+          <view class="skeleton-card-header">
+            <view class="skeleton-line skeleton-card-title"></view>
+            <view class="skeleton-trend-legend">
+              <view class="skeleton-trend-legend-item"></view>
+              <view class="skeleton-trend-legend-item"></view>
+            </view>
+          </view>
+          <view class="skeleton-chart">
+            <view class="skeleton-y-axis">
+              <view class="skeleton-line skeleton-y-label"></view>
+              <view class="skeleton-line skeleton-y-label"></view>
+              <view class="skeleton-line skeleton-y-label"></view>
+              <view class="skeleton-line skeleton-y-label"></view>
+              <view class="skeleton-line skeleton-y-label"></view>
+            </view>
+            <view class="skeleton-bar-chart">
+              <view class="skeleton-grid-lines">
+                <view class="skeleton-grid-line"></view>
+                <view class="skeleton-grid-line"></view>
+                <view class="skeleton-grid-line"></view>
+                <view class="skeleton-grid-line"></view>
+                <view class="skeleton-grid-line"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+              <view class="skeleton-bar-group">
+                <view class="skeleton-bars">
+                  <view class="skeleton-bar expense"></view>
+                  <view class="skeleton-bar income"></view>
+                </view>
+                <view class="skeleton-line skeleton-bar-label"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 鼓励语卡片骨架 -->
+        <view class="skeleton-card skeleton-encourage">
+          <view class="skeleton-encourage-icon"></view>
+          <view class="skeleton-line skeleton-encourage-text"></view>
+          <view class="skeleton-line skeleton-encourage-text short"></view>
+        </view>
+      </view>
+
+      <!-- 实际内容 -->
+      <view class="actual-content" wx:else>
+        <!-- 年度标题 -->
+        <view class="year-header">
+          <view class="year-badge">
+            <text class="year-num">{{year}}</text>
+          </view>
+          <view class="year-info">
+            <text class="year-text">年度报告</text>
+            <text class="year-sub">你的记账数据一览</text>
+          </view>
+          <view class="year-deco" bindtap="onShowYearPicker">
+            <view class="deco-arrow"></view>
+          </view>
+        </view>
+
+        <!-- 年度总览卡片 -->
+        <view class="overview-card">
+          <view class="card-header">
+            <text class="card-title">💰 年度总览</text>
+            <text class="card-count">{{totalCount}}笔</text>
+          </view>
+          <view class="overview-stats">
+            <view class="stat-block income">
+              <text class="stat-label">总收入</text>
+              <text class="stat-value">¥{{totalIncomeStr}}</text>
+            </view>
+            <view class="stat-block expense">
+              <text class="stat-label">总支出</text>
+              <text class="stat-value">¥{{totalExpenseStr}}</text>
+            </view>
+          </view>
+          <view class="overview-balance">
+            <text class="balance-label">结余</text>
+            <text class="balance-value {{balance >= 0 ? 'positive' : 'negative'}}">¥{{balanceStr}}</text>
+          </view>
+        </view>
+
+        <!-- 消费分析卡片 -->
+        <view class="analysis-card">
+          <view class="card-header">
+            <text class="card-title">📊 消费分析</text>
+          </view>
+          <view class="analysis-grid">
+            <view class="analysis-item">
+              <view class="analysis-icon">📅</view>
+              <view class="analysis-content">
+                <text class="analysis-label">日均消费</text>
+                <text class="analysis-value">¥{{dailyAvgExpense}}</text>
+              </view>
+            </view>
+            <view class="analysis-item">
+              <view class="analysis-icon">💰</view>
+              <view class="analysis-content">
+                <text class="analysis-label">日均收入</text>
+                <text class="analysis-value">¥{{dailyAvgIncome}}</text>
+              </view>
+            </view>
+            <view class="analysis-item">
+              <view class="analysis-icon">🏦</view>
+              <view class="analysis-content">
+                <text class="analysis-label">储蓄率</text>
+                <text class="analysis-value">{{savingsRate}}%</text>
+              </view>
+            </view>
+            <view class="analysis-item">
+              <text class="analysis-icon">📝</text>
+              <view class="analysis-content">
+                <text class="analysis-label">记账频率</text>
+                <text class="analysis-value">{{avgBillsPerDay}}笔/天</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 使用信息卡片 -->
+        <view class="usage-card">
+          <view class="card-header">
+            <text class="card-title">⏱️ 使用情况</text>
+          </view>
+          <view class="usage-content">
+            <view class="usage-item">
+              <view class="usage-icon">📅</view>
+              <view class="usage-info">
+                <text class="usage-label">使用天数</text>
+                <text class="usage-value">{{usageDays}}天</text>
+              </view>
+            </view>
+            <view class="usage-divider"></view>
+            <view class="usage-item">
+              <view class="usage-icon">✅</view>
+              <view class="usage-info">
+                <text class="usage-label">记账天数</text>
+                <text class="usage-value">{{bookkeepingDays}}天</text>
+              </view>
+            </view>
+            <view class="usage-divider"></view>
+            <view class="usage-item">
+              <view class="usage-icon">📈</view>
+              <view class="usage-info">
+                <text class="usage-label">记账率</text>
+                <text class="usage-value">{{bookkeepingRate}}%</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 支出分类排行 -->
+        <view class="rank-card" wx:if="{{expenseRankList.length > 0}}">
+          <view class="card-header">
+            <text class="card-title">🏆 支出分类排行</text>
+          </view>
+          <view class="rank-list">
+            <view class="rank-item" wx:for="{{expenseRankList}}" wx:key="name">
+              <view class="rank-num {{index < 3 ? 'top' : ''}}">{{index + 1}}</view>
+              <view class="rank-icon">{{item.icon}}</view>
+              <view class="rank-info">
+                <text class="rank-name">{{item.name}}</text>
+                <view class="rank-bar-bg">
+                  <view class="rank-bar-fill" style="width: {{item.percent}}%"></view>
+                </view>
+              </view>
+              <view class="rank-amount">
+                <text class="rank-value">¥{{item.amountStr}}</text>
+                <text class="rank-percent">{{item.percent}}%</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 月度趋势卡片 -->
+        <view class="trend-card" wx:if="{{monthlyTrend.length > 0}}" bindtap="hideTooltip">
+          <view class="card-header">
+            <text class="card-title">📈 月度趋势</text>
+            <view class="trend-legend">
+              <view class="trend-legend-item">
+                <view class="trend-legend-dot expense"></view>
+                <text>支出</text>
+              </view>
+              <view class="trend-legend-item">
+                <view class="trend-legend-dot income"></view>
+                <text>收入</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 点击信息卡片 -->
+          <view class="trend-tooltip {{showTooltip ? 'show' : ''}}" wx:if="{{tooltipData}}">
+            <view class="tooltip-header">
+              <text class="tooltip-month">{{tooltipData.month}}月</text>
+              <view class="tooltip-close" bindtap="hideTooltip">×</view>
+            </view>
+            <view class="tooltip-content">
+              <view class="tooltip-item">
+                <view class="tooltip-dot expense"></view>
+                <text class="tooltip-label">支出</text>
+                <text class="tooltip-value expense">¥{{tooltipData.expenseStr}}</text>
+              </view>
+              <view class="tooltip-item">
+                <view class="tooltip-dot income"></view>
+                <text class="tooltip-label">收入</text>
+                <text class="tooltip-value income">¥{{tooltipData.incomeStr}}</text>
+              </view>
+              <view class="tooltip-divider"></view>
+              <view class="tooltip-item">
+                <text class="tooltip-label">结余</text>
+                <text class="tooltip-value {{tooltipData.balance >= 0 ? 'income' : 'expense'}}">¥{{tooltipData.balanceStr}}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="bar-chart-container">
+            <!-- Y轴刻度 -->
+            <view class="y-axis">
+              <text class="y-axis-label">{{yAxisLabels[0]}}</text>
+              <text class="y-axis-label">{{yAxisLabels[1]}}</text>
+              <text class="y-axis-label">{{yAxisLabels[2]}}</text>
+              <text class="y-axis-label">{{yAxisLabels[3]}}</text>
+              <text class="y-axis-label">{{yAxisLabels[4]}}</text>
+            </view>
+
+            <!-- 柱状图区域 -->
+            <view class="bar-chart">
+              <!-- 刻度线 -->
+              <view class="grid-lines">
+                <view class="grid-line"></view>
+                <view class="grid-line"></view>
+                <view class="grid-line"></view>
+                <view class="grid-line"></view>
+                <view class="grid-line"></view>
+              </view>
+
+              <!-- 柱状图 -->
+              <view class="bar-group" wx:for="{{monthlyTrend}}" wx:key="month"
+                catchtap="onBarTap" data-index="{{index}}">
+                <view class="bars">
+                  <view class="bar expense-bar {{selectedMonth === item.month ? 'selected' : ''}}"
+                    style="height: {{item.expenseHeight}}%"></view>
+                  <view class="bar income-bar {{selectedMonth === item.month ? 'selected' : ''}}"
+                    style="height: {{item.incomeHeight}}%"></view>
+                </view>
+                <text class="bar-label {{selectedMonth === item.month ? 'selected' : ''}}">{{item.month}}月</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 鼓励语 -->
+        <view class="encourage-card">
+          <view class="encourage-icon">🎉</view>
+          <text class="encourage-text" wx:if="{{totalCount >= 100}}">太棒了！你已经记账{{totalCount}}笔，继续保持！</text>
+          <text class="encourage-text" wx:elif="{{totalCount >= 50}}">不错哦！你已经记账{{totalCount}}笔，继续加油！</text>
+          <text class="encourage-text" wx:elif="{{totalCount >= 10}}">好的开始！你已经记账{{totalCount}}笔，坚持就是胜利！</text>
+          <text class="encourage-text" wx:else>开始记账吧！养成良好的记账习惯，让生活更清晰。</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 年度选择器弹窗 -->
+  <year-picker
+    show="{{showYearPicker}}"
+    currentYear="{{year}}"
+    yearList="{{yearList}}"
+    bind:close="onCloseYearPicker"
+    bind:select="onSelectYear"
+  />
+</view>

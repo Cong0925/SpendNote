@@ -1,0 +1,295 @@
+<!--pages/mine/mine.wxml-->
+<view class="container">
+  <scroll-view class="scroll-area" scroll-y enhanced show-scrollbar="{{false}}">
+  <!-- 用户信息卡片 -->
+  <view class="profile-card animate-fadeIn">
+    <view class="profile-bg"></view>
+    <view class="profile-content">
+      <view class="user-avatar">
+        <image wx:if="{{userInfo && userInfo.avatarUrl}}" src="{{userInfo.avatarUrl}}" class="avatar-img" bindtap="onChangeAvatar" />
+        <view wx:else class="avatar-placeholder" bindtap="onChangeAvatar">
+          <text>👤</text>
+        </view>
+      </view>
+      <view class="user-info" catchtap="noop">
+        <text class="user-name" bindtap="onChangeNickname">{{userInfo.nickName || '点击登录'}}</text>
+        <text class="user-desc">记录每一笔，生活更清晰</text>
+        <text class="edit-hint" bindtap="onChangeNickname">点击修改 ›</text>
+      </view>
+      <!-- 退出按钮 -->
+      <view class="logout-btn" bindtap="onLogout">
+        <image class="logout-icon" src="/images/icons/退出.png" mode="aspectFit"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 年度总结 -->
+  <view class="overview-card animate-slideUp" style="animation-delay: 0.1s" bindtap="goToYearlySummary">
+    <view class="overview-header">
+      <text class="overview-title">📊 {{year}}年度总结</text>
+      <text class="overview-arrow">›</text>
+    </view>
+    <view class="overview-stats">
+      <view class="stat-item">
+        <view class="stat-icon-wrap">
+          <text class="stat-icon">📋</text>
+        </view>
+        <text class="stat-amount">{{totalBills}}</text>
+        <text class="stat-label">总笔数</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <view class="stat-icon-wrap expense">
+          <text class="stat-icon">📤</text>
+        </view>
+        <text class="stat-amount expense">¥{{totalExpenseStr}}</text>
+        <text class="stat-label">总支出</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <view class="stat-icon-wrap income">
+          <text class="stat-icon">📥</text>
+        </view>
+        <text class="stat-amount income">¥{{totalIncomeStr}}</text>
+        <text class="stat-label">总收入</text>
+      </view>
+    </view>
+    <!-- 使用天数 -->
+    <view class="usage-info">
+      <view class="usage-item">
+        <text class="usage-label">使用天数</text>
+        <text class="usage-value">{{usageDays}}天</text>
+      </view>
+      <view class="usage-divider"></view>
+      <view class="usage-item">
+        <text class="usage-label">记账天数</text>
+        <text class="usage-value">{{bookkeepingDays}}天</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-card animate-slideUp" style="animation-delay: 0.15s">
+    <!-- 常用功能 -->
+    <view class="menu-item" bindtap="goToCategory">
+      <view class="menu-icon-wrap">
+        <text class="menu-icon">📂</text>
+      </view>
+      <text class="menu-text">分类管理</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-divider"></view>
+    <view class="menu-item" bindtap="exportData">
+      <view class="menu-icon-wrap">
+        <text class="menu-icon">📤</text>
+      </view>
+      <text class="menu-text">导出数据</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-divider"></view>
+    <!-- 中频功能 -->
+    <view class="menu-item" bindtap="goToRating">
+      <view class="menu-icon-wrap">
+        <text class="menu-icon">⭐</text>
+      </view>
+      <text class="menu-text">给个好评</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-divider"></view>
+    <!-- 低频功能 -->
+    <view class="menu-item" bindtap="goToFeedback">
+      <view class="menu-icon-wrap">
+        <text class="menu-icon">💬</text>
+      </view>
+      <text class="menu-text">问题反馈</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-divider"></view>
+    <view class="menu-item" bindtap="goToHelp">
+      <view class="menu-icon-wrap">
+        <text class="menu-icon">📖</text>
+      </view>
+      <text class="menu-text">使用帮助</text>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-divider"></view>
+    <!-- 危险操作置底 -->
+    <view class="menu-item danger" bindtap="showClearDataModal">
+      <view class="menu-icon-wrap danger">
+        <text class="menu-icon">🗑️</text>
+      </view>
+      <text class="menu-text">清除数据</text>
+      <text class="menu-arrow danger">›</text>
+    </view>
+  </view>
+
+  <!-- 清除数据弹窗 -->
+  <view class="clear-modal-mask" wx:if="{{showClearModal}}" bindtap="closeClearModal">
+    <view class="clear-modal" catchtap="noop">
+      <!-- 顶部图标 -->
+      <view class="clear-modal-icon-wrap">
+        <view class="clear-modal-icon">
+          <text class="icon-trash">🗑️</text>
+        </view>
+        <view class="clear-modal-icon-ring"></view>
+      </view>
+
+      <!-- 标题 -->
+      <view class="clear-modal-header">
+        <text class="clear-modal-title">清除所有数据</text>
+        <text class="clear-modal-subtitle">此操作不可撤销</text>
+      </view>
+
+      <!-- 第一步：显示数据统计 -->
+      <view class="clear-modal-body" wx:if="{{clearStep === 0}}">
+        <!-- 数据统计骨架屏 -->
+        <view class="clear-stats-card" wx:if="{{!dataStats && loadingStats}}">
+          <view class="stats-grid">
+            <view class="stats-item skeleton-item">
+              <text class="skeleton-line skeleton-number"></text>
+              <text class="skeleton-line skeleton-label"></text>
+            </view>
+            <view class="stats-item skeleton-item">
+              <text class="skeleton-line skeleton-number"></text>
+              <text class="skeleton-line skeleton-label"></text>
+            </view>
+            <view class="stats-item skeleton-item">
+              <text class="skeleton-line skeleton-number"></text>
+              <text class="skeleton-line skeleton-label"></text>
+            </view>
+            <view class="stats-item skeleton-item">
+              <text class="skeleton-line skeleton-number"></text>
+              <text class="skeleton-line skeleton-label"></text>
+            </view>
+          </view>
+          <view class="stats-total skeleton-total">
+            <text class="skeleton-line skeleton-total-text"></text>
+          </view>
+        </view>
+
+        <!-- 数据统计内容 -->
+        <view class="clear-stats-card" wx:if="{{dataStats}}">
+          <view class="stats-grid">
+            <view class="stats-item">
+              <text class="stats-number">{{dataStats.bills}}</text>
+              <text class="stats-label">账单</text>
+            </view>
+            <view class="stats-item">
+              <text class="stats-number">{{dataStats.accounts}}</text>
+              <text class="stats-label">账户</text>
+            </view>
+            <view class="stats-item">
+              <text class="stats-number">{{dataStats.loans}}</text>
+              <text class="stats-label">借款</text>
+            </view>
+            <view class="stats-item">
+              <text class="stats-number">{{dataStats.transfers}}</text>
+              <text class="stats-label">转账</text>
+            </view>
+          </view>
+          <view class="stats-total">
+            <text class="stats-total-text">共 <text class="stats-total-number">{{dataStats.total}}</text> 条数据将被永久删除</text>
+          </view>
+        </view>
+
+        <view class="clear-warning-card">
+          <view class="warning-icon-circle">
+            <text>!</text>
+          </view>
+          <view class="warning-content">
+            <text class="warning-title">无法恢复</text>
+            <text class="warning-desc">删除后所有数据将永久丢失，建议先导出备份</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 第二步：二次确认 -->
+      <view class="clear-modal-body" wx:if="{{clearStep === 1}}">
+        <!-- 删除清单 -->
+        <view class="delete-checklist">
+          <view class="checklist-header">
+            <text class="checklist-title">即将删除以下数据</text>
+          </view>
+
+          <view class="checklist-items">
+            <view class="checklist-item">
+              <view class="item-icon">
+                <text>📋</text>
+              </view>
+              <view class="item-content">
+                <text class="item-name">所有账单记录</text>
+                <text class="item-desc">收入与支出明细</text>
+              </view>
+              <view class="item-badge danger">
+                <text>删除</text>
+              </view>
+            </view>
+
+            <view class="checklist-item">
+              <view class="item-icon">
+                <text>💳</text>
+              </view>
+              <view class="item-content">
+                <text class="item-name">所有账户信息</text>
+                <text class="item-desc">银行卡、电子钱包等</text>
+              </view>
+              <view class="item-badge danger">
+                <text>删除</text>
+              </view>
+            </view>
+
+            <view class="checklist-item">
+              <view class="item-icon">
+                <text>🤝</text>
+              </view>
+              <view class="item-content">
+                <text class="item-name">所有借款记录</text>
+                <text class="item-desc">借出与借入明细</text>
+              </view>
+              <view class="item-badge danger">
+                <text>删除</text>
+              </view>
+            </view>
+
+            <view class="checklist-item">
+              <view class="item-icon">
+                <text>🔄</text>
+              </view>
+              <view class="item-content">
+                <text class="item-name">所有转账记录</text>
+                <text class="item-desc">账户间转账明细</text>
+              </view>
+              <view class="item-badge danger">
+                <text>删除</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 警告提示 -->
+        <view class="final-warning-box">
+          <view class="warning-stripe"></view>
+          <view class="warning-body">
+            <view class="warning-icon-wrap">
+              <text class="warning-emoji">⚠️</text>
+            </view>
+            <view class="warning-text-wrap">
+              <text class="warning-main">此操作不可撤销</text>
+              <text class="warning-sub">所有数据将被永久删除，无法恢复</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 底部按钮 -->
+      <view class="clear-modal-footer">
+        <button class="clear-btn cancel" catchtap="closeClearModal">取消</button>
+        <button class="clear-btn next" wx:if="{{clearStep === 0}}" catchtap="nextClearStep">继续</button>
+        <button class="clear-btn danger" wx:if="{{clearStep === 1}}" catchtap="confirmClearData">
+          <text>确认删除</text>
+        </button>
+      </view>
+    </view>
+  </view>
+  </scroll-view>
+</view>

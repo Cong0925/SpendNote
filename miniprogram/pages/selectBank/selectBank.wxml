@@ -1,0 +1,169 @@
+<!--
+  选择银行页面（优化版）
+  柔和渐变背景 + 毛玻璃效果，现代感设计
+-->
+<view class="container">
+  <!-- 装饰性背景元素 -->
+  <view class="bg-decoration">
+    <view class="bg-circle bg-circle-1"></view>
+    <view class="bg-circle bg-circle-2"></view>
+    <view class="bg-circle bg-circle-3"></view>
+  </view>
+
+  <!-- 搜索框 -->
+  <view class="search-section">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        placeholder="搜索银行名称"
+        placeholder-style="color: #94a3b8"
+        value="{{searchText}}"
+        bindinput="onSearchInput"
+      />
+      <view class="clear-btn" wx:if="{{searchText}}" bindtap="clearSearch">
+        <text>×</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索结果 -->
+  <view class="search-results" wx:if="{{isSearching}}">
+    <view class="result-header">
+      <text class="result-count">找到 {{searchResults.length}} 家银行</text>
+    </view>
+    <view class="result-list">
+      <view
+        class="result-item"
+        wx:for="{{searchResults}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        data-name="{{item.name}}"
+        data-icon="{{item.icon}}"
+        bindtap="selectBank"
+      >
+        <image class="result-icon" src="{{item.icon}}" mode="aspectFit"></image>
+        <view class="result-info">
+          <text class="result-name">{{item.name}}</text>
+        </view>
+        <text class="result-arrow">›</text>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{searchResults.length === 0}}">
+      <text class="empty-icon">🔍</text>
+      <text class="empty-text">未找到匹配的银行</text>
+    </view>
+  </view>
+
+  <!-- 正常内容 -->
+  <scroll-view scroll-y class="content-scroll" wx:if="{{!isSearching}}" enhanced show-scrollbar="{{false}}">
+    <!-- 热门银行骨架屏 -->
+    <view class="section" wx:if="{{loadingHot}}">
+      <view class="section-header">
+        <view class="section-title-wrap">
+          <text class="section-icon">🔥</text>
+          <text class="section-title">热门银行</text>
+        </view>
+      </view>
+      <view class="hot-banks-grid">
+        <view class="hot-bank-item skeleton" wx:for="{{8}}" wx:key="*this">
+          <view class="hot-bank-icon-wrap skeleton-icon"></view>
+          <view class="skeleton-text"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 热门银行真实内容 -->
+    <view class="section" wx:if="{{!loadingHot && hotBanks.length > 0}}">
+      <view class="section-header">
+        <view class="section-title-wrap">
+          <text class="section-icon">🔥</text>
+          <text class="section-title">热门银行</text>
+        </view>
+        <text class="section-count">{{hotBanks.length}}</text>
+      </view>
+      <view class="hot-banks-grid">
+        <view
+          class="hot-bank-item"
+          wx:for="{{hotBanks}}"
+          wx:key="_id"
+          data-id="{{item._id}}"
+          data-name="{{item.name}}"
+          data-icon="{{item.icon}}"
+          bindtap="selectBank"
+        >
+          <view class="hot-bank-icon-wrap">
+            <image class="hot-bank-icon" src="{{item.icon}}" mode="aspectFit"></image>
+          </view>
+          <text class="hot-bank-name">{{item.shortName}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 分类银行（每个分类独立加载） -->
+    <view
+      class="section"
+      wx:for="{{categories}}"
+      wx:key="key"
+      wx:if="{{loadingCategoryBanks[item.key] || (categoryBanks[item.key] && categoryBanks[item.key].total > 0)}}"
+    >
+      <view
+        class="section-header"
+        data-category="{{item.key}}"
+        bindtap="toggleCategory"
+      >
+        <view class="section-title-wrap">
+          <text class="section-icon">{{item.icon}}</text>
+          <text class="section-title">{{item.name}}</text>
+          <text class="section-count" wx:if="{{!loadingCategoryBanks[item.key]}}">({{categoryBanks[item.key].total}})</text>
+        </view>
+        <view class="expand-arrow {{expandedCategories[item.key] ? 'expanded' : ''}}">
+          <image class="arrow-icon" src="{{expandedCategories[item.key] ? '/images/icons/arrow-down.png' : '/images/icons/arrow-right.png'}}" mode="aspectFit"></image>
+        </view>
+      </view>
+
+      <!-- 内容骨架屏（该分类加载中） -->
+      <view class="category-skeleton" wx:if="{{loadingCategoryBanks[item.key]}}">
+        <view class="category-skeleton-item" wx:for="{{4}}" wx:key="*this">
+          <view class="skeleton-icon-circle"></view>
+          <view class="category-skeleton-info">
+            <view class="skeleton-text skeleton-name"></view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 真实内容（该分类加载完成） -->
+      <view class="category-list {{expandedCategories[item.key] ? 'expanded' : ''}}" wx:if="{{!loadingCategoryBanks[item.key] && categoryBanks[item.key]}}">
+        <view
+          class="category-item"
+          wx:for="{{categoryBanks[item.key].banks}}"
+          wx:key="_id"
+          wx:for-item="bank"
+          data-id="{{bank._id}}"
+          data-name="{{bank.name}}"
+          data-icon="{{bank.icon}}"
+          bindtap="selectBank"
+        >
+          <image class="category-icon" src="{{bank.icon}}" mode="aspectFit"></image>
+          <view class="category-info">
+            <text class="category-name">{{bank.name}}</text>
+          </view>
+          <text class="category-arrow">›</text>
+        </view>
+
+        <view
+          class="show-more-btn"
+          wx:if="{{categoryBanks[item.key].hasMore && !expandedCategories[item.key]}}"
+          data-category="{{item.key}}"
+          bindtap="toggleCategory"
+        >
+          <text>查看全部 {{categoryBanks[item.key].total}} 家</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部安全区 -->
+    <view class="safe-bottom"></view>
+  </scroll-view>
+</view>

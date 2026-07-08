@@ -1,0 +1,109 @@
+<!--
+  收款/还款操作页面
+-->
+<view class="container">
+  <!-- 借款信息 -->
+  <view class="loan-info" wx:if="{{loanInfo}}">
+    <view class="info-row">
+      <text class="info-label">总额</text>
+      <text class="info-value">￥{{loanInfo.amountStr}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">已{{loanInfo.type === 'lend' ? '收' : '还'}}</text>
+      <text class="info-value">￥{{loanInfo.paidAmountStr}}</text>
+    </view>
+    <view class="info-row highlight">
+      <text class="info-label">可{{loanInfo.type === 'lend' ? '收' : '还'}}</text>
+      <text class="info-value">￥{{loanInfo.remainingStr}}</text>
+    </view>
+  </view>
+
+  <!-- 表单 -->
+  <view class="form-card">
+    <!-- 金额 -->
+    <view class="form-item">
+      <text class="form-label">金额</text>
+      <view class="form-input-wrapper">
+        <text class="currency-symbol">￥</text>
+        <input
+          class="form-input"
+          type="digit"
+          placeholder="请输入金额"
+          value="{{form.amount}}"
+          bindinput="onAmountInput"
+        />
+      </view>
+    </view>
+
+    <!-- 日期 -->
+    <view class="form-item">
+      <text class="form-label">时间</text>
+      <picker mode="date" value="{{form.date}}" bindchange="onDateChange">
+        <view class="form-picker">
+          <text>{{form.date || '请选择日期'}}</text>
+          <text class="picker-arrow">></text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 账户 -->
+    <view class="detail-card">
+      <view class="detail-row">
+        <text class="detail-label">💳 账户</text>
+        <view class="detail-value" bindtap="openAccountPicker">
+          <text>{{form.accountName || '不关联账户'}}</text>
+          <text class="detail-arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 备注 -->
+    <view class="form-item">
+      <text class="form-label">备注</text>
+      <textarea
+        class="form-textarea"
+        placeholder="请输入备注（选填）"
+        value="{{form.remark}}"
+        bindinput="onRemarkInput"
+      />
+    </view>
+
+    <!-- 添加图片 -->
+    <view class="form-item">
+      <text class="form-label">添加图片</text>
+      <view class="image-list">
+        <view class="image-item" wx:for="{{form.images}}" wx:key="*this">
+          <image
+            class="image-preview"
+            src="{{item}}"
+            mode="aspectFill"
+            bindtap="previewImage"
+            data-url="{{item}}"
+          />
+          <view class="image-delete" bindtap="deleteImage" data-index="{{index}}">
+            <text>×</text>
+          </view>
+        </view>
+        <view class="image-add" bindtap="chooseImage" wx:if="{{form.images.length < 4}}">
+          <text class="add-icon">+</text>
+          <text class="add-text">添加图片</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 保存按钮 -->
+<view class="save-btn" bindtap="save">
+  <text>保存</text>
+</view>
+
+<!-- 账户选择弹窗 -->
+<account-picker
+  show="{{showAccountPicker}}"
+  accountList="{{accountList}}"
+  selectedId="{{form.accountId}}"
+  loading="{{loadingAccounts}}"
+  bind:close="onAccountPickerClose"
+  bind:select="onAccountSelect"
+/>

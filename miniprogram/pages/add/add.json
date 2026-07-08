@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "记账",
+  "usingComponents": {
+    "account-picker": "/components/account-picker/index"
+  }
+}

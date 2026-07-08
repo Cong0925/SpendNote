@@ -1,0 +1,132 @@
+<!--
+  转账页面 - 账户间转账功能
+  支持三种模式：add（新增）、view（查看）、edit（编辑）
+-->
+<view class="container">
+  <!-- 转账表单 -->
+  <view class="form-section">
+    <!-- 转出账户 + 金额 -->
+    <view class="form-row">
+      <!-- 左侧：转出账户（标题 + 选择账户，左右结构） -->
+      <view class="form-left-account {{mode === 'view' ? 'disabled' : ''}}" bindtap="selectFromAccount">
+        <text class="form-label">转出账户</text>
+        <view class="form-account">
+          <text class="form-account-name">{{form.fromAccountName || '请选择账户'}}</text>
+          <text class="picker-arrow" wx:if="{{mode !== 'view'}}">›</text>
+        </view>
+      </view>
+      <!-- 右侧：金额输入 -->
+      <view class="form-right">
+        <view class="form-amount-input {{mode === 'view' ? 'disabled' : ''}}">
+          <text class="input-prefix">￥</text>
+          <input
+            class="form-input"
+            type="digit"
+            placeholder="0.00"
+            value="{{form.fromAmount}}"
+            bindinput="onFromAmountInput"
+            disabled="{{mode === 'view'}}"
+          />
+        </view>
+      </view>
+    </view>
+
+    <!-- 转入账户 + 金额 -->
+    <view class="form-row">
+      <!-- 左侧：转入账户（标题 + 选择账户，左右结构） -->
+      <view class="form-left-account {{mode === 'view' ? 'disabled' : ''}}" bindtap="selectToAccount">
+        <text class="form-label">转入账户</text>
+        <view class="form-account">
+          <text class="form-account-name">{{form.toAccountName || '请选择账户'}}</text>
+          <text class="picker-arrow" wx:if="{{mode !== 'view'}}">›</text>
+        </view>
+      </view>
+      <!-- 右侧：金额输入 -->
+      <view class="form-right">
+        <view class="form-amount-input {{mode === 'view' ? 'disabled' : ''}}">
+          <text class="input-prefix">￥</text>
+          <input
+            class="form-input"
+            type="digit"
+            placeholder="0.00"
+            value="{{form.toAmount}}"
+            bindinput="onToAmountInput"
+            disabled="{{mode === 'view'}}"
+          />
+        </view>
+      </view>
+    </view>
+
+    <!-- 日期（左右结构） -->
+    <view class="form-row">
+      <view class="form-left">
+        <text class="form-label">日期</text>
+      </view>
+      <view class="form-right">
+        <picker mode="date" value="{{form.date}}" bindchange="onDateChange" disabled="{{mode === 'view'}}">
+          <view class="form-picker {{mode === 'view' ? 'disabled' : ''}}">
+            <text class="picker-value">{{form.date || '请选择日期'}}</text>
+            <text class="picker-arrow" wx:if="{{mode !== 'view'}}">›</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 备注（左右结构） -->
+    <view class="form-row">
+      <view class="form-left">
+        <text class="form-label">备注</text>
+      </view>
+      <view class="form-right">
+        <input
+          class="form-input remark-input {{mode === 'view' ? 'disabled' : ''}}"
+          placeholder="点击输入备注"
+          value="{{form.remark}}"
+          bindinput="onRemarkInput"
+          disabled="{{mode === 'view'}}"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <!-- 新增模式：显示保存按钮 -->
+  <view class="save-btn" wx:if="{{mode === 'add'}}" bindtap="saveTransfer">
+    <text>保存</text>
+  </view>
+
+  <!-- 查看模式：显示修改按钮 -->
+  <view class="edit-btn" wx:if="{{mode === 'view'}}" bindtap="switchToEdit">
+    <text>修改</text>
+  </view>
+
+  <!-- 编辑模式：显示保存修改按钮 -->
+  <view class="save-btn" wx:if="{{mode === 'edit'}}" bindtap="saveTransfer">
+    <text>保存修改</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-mask" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+  </view>
+</view>
+
+<!-- 转出账户选择弹窗 -->
+<account-picker
+  show="{{showFromAccountPicker}}"
+  accountList="{{fromAccountList}}"
+  selectedId="{{form.fromAccountId}}"
+  loading="{{loadingAccounts}}"
+  bind:close="onFromAccountPickerClose"
+  bind:select="onFromAccountSelect"
+/>
+
+<!-- 转入账户选择弹窗 -->
+<account-picker
+  show="{{showToAccountPicker}}"
+  accountList="{{toAccountList}}"
+  selectedId="{{form.toAccountId}}"
+  loading="{{loadingAccounts}}"
+  bind:close="onToAccountPickerClose"
+  bind:select="onToAccountSelect"
+/>

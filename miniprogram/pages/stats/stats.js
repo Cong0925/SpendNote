@@ -1,0 +1,609 @@
+// pages/stats/stats.js
+const { formatAmountWithUnit, formatAmount } = require('../../utils/formatAmount')
+
+// 日期工具函数（内联避免模块导入问题）
+function formatDate(date) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+function getDisplayDate(dateStr, mode) {
+  const parts = dateStr.split('-')
+  const y = parts[0]
+  const m = parts[1] || '01'
+  switch (mode) {
+    case 'day': return dateStr
+    case 'month': return `${y}-${m}`
+    case 'quarter': return `${y} Q${Math.ceil(parseInt(m) / 3)}`
+    case 'year': return `${y}`
+    default: return dateStr
+  }
+}
+
+function getDateRange(dateStr, mode) {
+  const parts = dateStr.split('-')
+  const y = parseInt(parts[0])
+  const m = parseInt(parts[1]) || 1
+  switch (mode) {
+    case 'day': return { start: dateStr, end: dateStr }
+    case 'month': return {
+      start: `${y}-${String(m).padStart(2, '0')}-01`,
+      end: `${y}-${String(m).padStart(2, '0')}-${new Date(y, m, 0).getDate()}`
+    }
+    case 'quarter': {
+      const q = Math.ceil(m / 3)
+      const qStart = (q - 1) * 3 + 1
+      const qEnd = q * 3
+      return {
+        start: `${y}-${String(qStart).padStart(2, '0')}-01`,
+        end: `${y}-${String(qEnd).padStart(2, '0')}-${new Date(y, qEnd, 0).getDate()}`
+      }
+    }
+    case 'year': return { start: `${y}-01-01`, end: `${y}-12-31` }
+    default: return { start: dateStr, end: dateStr }
+  }
+}
+
+function getQuickTabDateRange(value) {
+  const now = new Date()
+  const realYear = now.getFullYear()
+  const realMonth = now.getMonth() + 1
+  const realDay = now.getDate()
+  const realMonthStr = String(realMonth).padStart(2, '0')
+  const realDayStr = String(realDay).padStart(2, '0')
+  let newDate = '', rangeStartDate = '', rangeEndDate = ''
+  if (value === 'day') {
+    newDate = `${realYear}-${realMonthStr}-${realDayStr}`
+    rangeStartDate = `${realYear}-${realMonthStr}-01`
+    rangeEndDate = newDate
+  } else if (value === 'month') {
+    newDate = `${realYear}-${realMonthStr}`
+    rangeStartDate = `${realYear}-${realMonthStr}-01`
+    const lastDay = new Date(realYear, realMonth, 0).getDate()
+    rangeEndDate = `${realYear}-${realMonthStr}-${String(lastDay).padStart(2, '0')}`
+  } else if (value === 'quarter') {
+    const currentQuarter = Math.ceil(realMonth / 3) - 1
+    const startMonth = currentQuarter * 3 + 1
+    const endMonth = (currentQuarter + 1) * 3
+    newDate = `${realYear}-${String(startMonth).padStart(2, '0')}-01`
+    rangeStartDate = `${realYear}-${String(startMonth).padStart(2, '0')}-01`
+    const lastDay = new Date(realYear, endMonth, 0).getDate()
+    rangeEndDate = `${realYear}-${String(endMonth).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`
+  } else if (value === 'year') {
+    newDate = `${realYear}`
+    rangeStartDate = `${realYear}-01-01`
+    rangeEndDate = `${realYear}-12-31`
+  }
+  return { newDate, rangeStartDate, rangeEndDate }
+}
+
+// 月度趋势数据加载
+async function loadMonthlyTrendData(year) {
+  const res = await wx.cloud.callFunction({
+    name: 'billFunctions',
+    data: { action: 'getMonthlyTrend', data: { year } }
+  })
+  if (!res.result.success) return { monthlyTrend: [], maxMonthlyAmount: 0, yAxisLabels: [] }
+  const trend = res.result.data || []
+  let maxAmount = 0
+  trend.forEach(item => {
+    const total = (item.expense || 0) + (item.income || 0)
+    if (total > maxAmount) maxAmount = total
+  })
+
+  // 计算Y轴刻度（5个刻度线）
+  const yAxisLabels = []
+  for (let i = 4; i >= 0; i--) {
+    const value = maxAmount * (i / 4)
+    yAxisLabels.push(formatAmount(value))
+  }
+
+  // 计算每个月份的数据点位置
+  const monthlyTrend = trend.map((item, index) => {
+    const expense = item.expense || 0
+    const income = item.income || 0
+    const balance = income - expense
+    return {
+      ...item,
+      expenseHeight: maxAmount > 0 ? (expense / maxAmount * 100).toFixed(1) : '0',
+      incomeHeight: maxAmount > 0 ? (income / maxAmount * 100).toFixed(1) : '0',
+      expenseStr: formatAmount(expense),
+      incomeStr: formatAmount(income),
+      balanceStr: formatAmount(balance, { showSign: true }),
+      balance
+    }
+  })
+
+  return { monthlyTrend, maxMonthlyAmount: maxAmount, yAxisLabels }
+}
+
+const CHART_COLORS = [
+  '#2563EB', '#EF4444', '#22C55E', '#F59E0B', '#8B5CF6',
+  '#EC4899', '#06B6D4', '#F97316', '#6366F1', '#14B8A6',
+  '#E11D48', '#7C3AED', '#0EA5E9', '#D946EF', '#84CC16'
+]
+
+Page({
+  data: {
+    viewMode: 'month',
+    viewModes: [
+      { label: '日', value: 'day' },
+      { label: '月', value: 'month' },
+      { label: '季', value: 'quarter' },
+      { label: '年', value: 'year' }
+    ],
+    currentDate: '',
+    dateDisplay: '',
+    // 季度弹窗
+    showQuarter: false,
+    quarterIndex: 0,
+    quarters: [
+      { label: '第一季度 Q1', value: 0 },
+      { label: '第二季度 Q2', value: 1 },
+      { label: '第三季度 Q3', value: 2 },
+      { label: '第四季度 Q4', value: 3 }
+    ],
+    totalExpenseStr: '0.00',
+    totalIncomeStr: '0.00',
+    balanceStr: '0.00',
+    balance: 0,
+    // hero-card 默认状态：带单位的金额
+    totalExpenseValue: '0.00',
+    totalExpenseUnit: '元',
+    totalIncomeValue: '0.00',
+    totalIncomeUnit: '元',
+    balanceValue: '0.00',
+    balanceUnit: '元',
+    // 展开状态：记录当前展开的是哪个金额
+    expandedAmount: null,
+    categoryStats: [],
+    displayStats: [],
+    donutGradient: '',
+    legendColumns: 1, // 图例列数
+    loading: false,
+    activeTab: 'expense',
+    // 月度趋势
+    monthlyTrend: [],
+    maxMonthlyAmount: 0,
+    // Y轴刻度
+    yAxisLabels: ['0', '0', '0', '0', '0'],
+    // 点击交互
+    showTooltip: false,
+    selectedMonth: null,
+    tooltipData: null,
+    // 甜甜圈点击
+    showDonutTooltip: false,
+    donutTooltipData: null,
+    // 时间范围选择
+    rangeStartDate: '',
+    rangeEndDate: '',
+    rangeStartText: '',
+    rangeEndText: ''
+  },
+
+  onLoad() {
+    this.checkLogin()
+  },
+
+  onShow() {
+    const app = getApp()
+
+    // 检测是否发生了 Tab 切换
+    if (app.checkTabBarChange('pages/stats/stats')) {
+      // 发生了 Tab 切换，重置临时状态
+      this.resetTemporaryStates()
+    }
+
+    // 设置自定义 tabBar 选中状态
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 1 })
+    }
+
+    // 检查登录状态
+    this.checkLogin()
+  },
+
+  /**
+   * 检查登录状态
+   */
+  checkLogin() {
+    const app = getApp()
+    if (!app.globalData.isLoggedIn) {
+      wx.redirectTo({ url: '/pages/login/login' })
+      return
+    }
+    this.initDate()
+    this.loadStats()
+  },
+
+  /**
+   * 重置临时状态
+   * 当从其他Tab切换回来时，重置这些状态
+   */
+  resetTemporaryStates() {
+    this.setData({
+      expandedAmount: null,      // 重置展开状态
+      showQuarter: false         // 重置季度弹窗
+    })
+  },
+
+  initDate() {
+    const now = new Date()
+    const date = formatDate(now)
+    const viewMode = this.data.viewMode
+    const { rangeStartDate, rangeEndDate } = getQuickTabDateRange(viewMode === 'quarter' ? 'quarter' : viewMode)
+
+    this.setData({
+      currentDate: date,
+      dateDisplay: getDisplayDate(date, viewMode),
+      rangeStartDate,
+      rangeEndDate,
+      rangeStartText: getDisplayDate(rangeStartDate, viewMode),
+      rangeEndText: getDisplayDate(rangeEndDate, viewMode)
+    })
+  },
+
+  // 处理时间范围变更
+  handleRangeDateChange(e) {
+    const { startDate, endDate } = e.detail
+    const viewMode = this.data.viewMode
+
+    // 根据 viewMode 更新 currentDate
+    let currentDate = this.data.currentDate
+    if (viewMode === 'day') {
+      currentDate = startDate
+    } else if (viewMode === 'month') {
+      const [y, m] = startDate.split('-')
+      currentDate = `${y}-${m}`
+    } else if (viewMode === 'year') {
+      const [y] = startDate.split('-')
+      currentDate = y
+    } else if (viewMode === 'quarter') {
+      const [y, m] = startDate.split('-')
+      currentDate = `${y}-${String(Math.ceil(parseInt(m) / 3) * 3 - 2).padStart(2, '0')}-01`
+    }
+
+    this.setData({
+      currentDate: currentDate,
+      rangeStartDate: startDate,
+      rangeEndDate: endDate,
+      rangeStartText: getDisplayDate(startDate, viewMode),
+      rangeEndText: getDisplayDate(endDate, viewMode)
+    })
+
+    this.loadStats()
+  },
+
+  // 快捷标签切换
+  selectQuickTab(e) {
+    const value = e.currentTarget.dataset.value
+    const { newDate, rangeStartDate, rangeEndDate } = getQuickTabDateRange(value)
+
+    this.setData({
+      viewMode: value,
+      currentDate: newDate,
+      dateDisplay: getDisplayDate(newDate, value),
+      rangeStartDate,
+      rangeEndDate,
+      rangeStartText: getDisplayDate(rangeStartDate, value),
+      rangeEndText: getDisplayDate(rangeEndDate, value)
+    })
+
+    this.loadStats()
+  },
+
+  async loadStats() {
+    if (this.data.loading) return
+    this.setData({ loading: true })
+
+    const { currentDate, viewMode, rangeStartDate, rangeEndDate } = this.data
+
+    let start, end
+    if (viewMode !== 'quarter') {
+      // 使用时间范围
+      start = rangeStartDate
+      end = rangeEndDate
+    } else {
+      // 使用单一日期（季度保持原逻辑）
+      const range = getDateRange(currentDate, viewMode)
+      start = range.start
+      end = range.end
+    }
+
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'billFunctions',
+        data: { action: 'getStatsByDateRange', data: { startDate: start, endDate: end } }
+      })
+
+      if (res.result.success) {
+        const stats = res.result.data
+        const totalExpense = parseFloat(stats.totalExpense) || 0
+        const totalIncome = parseFloat(stats.totalIncome) || 0
+        const balance = parseFloat(stats.balance) || 0
+
+        const total = this.data.activeTab === 'expense' ? totalExpense : totalIncome
+
+        const displayStats = stats.categoryStats
+          .filter(item => item.type === this.data.activeTab)
+          .map((item, index) => {
+            const amount = parseFloat(item.amount) || 0
+            const percent = total > 0 ? (amount / total) * 100 : 0
+            return {
+              ...item,
+              amount,
+              amountStr: formatAmount(amount),
+              percent: percent.toFixed(1),
+              percentStr: percent.toFixed(1),
+              color: CHART_COLORS[index % CHART_COLORS.length]
+            }
+          })
+          .sort((a, b) => b.amount - a.amount)
+
+        let donutGradient = ''
+        if (total > 0 && displayStats.length > 0) {
+          let accumulated = 0
+          const segments = displayStats.map((item) => {
+            const start = accumulated
+            const end = accumulated + (item.amount / total) * 360
+            accumulated = end
+            return `${item.color} ${start}deg ${end}deg`
+          })
+          if (accumulated < 360) {
+            segments.push(`#F0F2F5 ${accumulated}deg 360deg`)
+          }
+          donutGradient = segments.join(', ')
+        } else {
+          donutGradient = '#F0F2F5 0deg 360deg'
+        }
+
+        // hero-card 默认状态：带单位的金额
+        const expenseUnit = formatAmountWithUnit(totalExpense)
+        const incomeUnit = formatAmountWithUnit(totalIncome)
+        const balanceUnit = formatAmountWithUnit(balance)
+
+        // 计算图例列数（最佳3列）
+        const count = displayStats.length
+        let legendColumns
+        if (count <= 18) {
+          // 少于18条：3列或更少（每列3-6条）
+          legendColumns = count <= 3 ? 1 : count <= 8 ? Math.ceil(count / 3) : 3
+        } else {
+          // 超过18条：增加列数（每列最多6条）
+          legendColumns = Math.ceil(count / 6)
+        }
+
+        this.setData({
+          totalExpenseStr: formatAmount(totalExpense),
+          totalIncomeStr: formatAmount(totalIncome),
+          balanceStr: formatAmount(balance, { showSign: true }),
+          balance,
+          // hero-card 默认状态：带单位
+          totalExpenseValue: expenseUnit.value,
+          totalExpenseUnit: expenseUnit.unit,
+          totalIncomeValue: incomeUnit.value,
+          totalIncomeUnit: incomeUnit.unit,
+          balanceValue: balanceUnit.value,
+          balanceUnit: balanceUnit.unit,
+          categoryStats: stats.categoryStats,
+          displayStats,
+          donutGradient,
+          legendColumns
+        })
+
+        // 年度模式下加载月度趋势
+        if (viewMode === 'year') {
+          this.loadMonthlyTrend(start)
+        } else {
+          this.setData({ monthlyTrend: [], maxMonthlyAmount: 0 })
+        }
+      }
+    } catch (error) {
+      console.error('加载统计失败:', error)
+    } finally {
+      this.setData({ loading: false })
+    }
+  },
+
+  // 加载月度趋势数据
+  async loadMonthlyTrend(dateStr) {
+    this.setData({ loading: true })
+    try {
+      const year = parseInt(dateStr.split('-')[0])
+      const { monthlyTrend, maxMonthlyAmount, yAxisLabels } = await loadMonthlyTrendData(year)
+      this.setData({
+        monthlyTrend,
+        maxMonthlyAmount,
+        yAxisLabels,
+        showTooltip: false,
+        selectedMonth: null,
+        tooltipData: null,
+        loading: false
+      })
+    } catch (error) {
+      console.error('加载月度趋势失败:', error)
+      this.setData({ loading: false })
+    }
+  },
+
+  // 季度弹窗
+  showQuarterPicker() {
+    const { currentDate } = this.data
+    const [, m] = currentDate.split('-')
+    this.setData({
+      showQuarter: true,
+      quarterIndex: Math.ceil(parseInt(m || '01') / 3) - 1
+    })
+  },
+
+  hideQuarterPicker() {
+    this.setData({ showQuarter: false })
+  },
+
+  selectQuarter(e) {
+    const value = e.currentTarget.dataset.value
+    const [y] = this.data.currentDate.split('-')
+    const startMonth = value * 3 + 1
+    const newDate = `${y}-${String(startMonth).padStart(2, '0')}-01`
+    this.setData({
+      showQuarter: false,
+      quarterIndex: value,
+      currentDate: newDate,
+      dateDisplay: getDisplayDate(newDate, 'quarter')
+    })
+    this.loadStats()
+  },
+
+  switchTab(e) {
+    // 清空当前数据并显示骨架屏
+    this.setData({
+      activeTab: e.currentTarget.dataset.tab,
+      categoryStats: [],
+      displayStats: [],
+      donutGradient: ''
+    })
+    this.loadStats()
+  },
+
+  // 处理金额点击，展开/收起显示
+  toggleAmountExpand(e) {
+    const { type } = e.currentTarget.dataset
+    const { expandedAmount } = this.data
+
+    // 如果点击已展开的，则收起；否则展开点击的
+    if (expandedAmount === type) {
+      this.setData({ expandedAmount: null })
+    } else {
+      this.setData({ expandedAmount: type })
+    }
+  },
+
+  // 点击分类，跳转搜索页查看该分类的明细
+  goToCategoryDetail(e) {
+    const { category, type } = e.currentTarget.dataset
+    const { rangeStartDate, rangeEndDate, viewMode } = this.data
+    wx.navigateTo({
+      url: `/pages/search/search?category=${encodeURIComponent(category)}&billType=${type}&startDate=${rangeStartDate}&endDate=${rangeEndDate}&viewMode=${viewMode}`
+    })
+  },
+
+  // 点击柱状图
+  onBarTap(e) {
+    const { index } = e.currentTarget.dataset
+    const { monthlyTrend, selectedMonth } = this.data
+    const item = monthlyTrend[index]
+
+    if (selectedMonth === item.month) {
+      // 点击已选中的，取消选中
+      this.setData({
+        showTooltip: false,
+        selectedMonth: null,
+        tooltipData: null
+      })
+    } else {
+      // 选中新的月份
+      this.setData({
+        showTooltip: true,
+        selectedMonth: item.month,
+        tooltipData: {
+          month: item.month,
+          expense: item.expense || 0,
+          income: item.income || 0,
+          balance: item.balance || 0,
+          expenseStr: item.expenseStr,
+          incomeStr: item.incomeStr,
+          balanceStr: item.balanceStr
+        }
+      })
+    }
+  },
+
+  // 隐藏信息卡片
+  hideTooltip() {
+    this.setData({
+      showTooltip: false,
+      selectedMonth: null,
+      tooltipData: null
+    })
+  },
+
+  // 点击甜甜圈图表
+  onDonutTap(e) {
+    const { displayStats } = this.data
+
+    // 没有数据时不处理
+    if (!displayStats || displayStats.length === 0) return
+
+    // 获取点击位置
+    const touch = e.touches[0]
+    const query = wx.createSelectorQuery()
+    query.select('.donut-chart').boundingClientRect(rect => {
+      if (!rect) return
+
+      // 计算点击位置相对于甜甜圈中心的坐标
+      const centerX = rect.width / 2
+      const centerY = rect.height / 2
+      const x = touch.clientX - rect.left - centerX
+      const y = touch.clientY - rect.top - centerY
+
+      // 计算点击角度（从12点钟方向顺时针）
+      let angle = Math.atan2(x, -y) * (180 / Math.PI)
+      if (angle < 0) angle += 360
+
+      // 计算点击位置到中心的距离，判断是否在甜甜圈环内
+      const distance = Math.sqrt(x * x + y * y)
+      const outerRadius = rect.width / 2
+      const innerRadius = outerRadius * 0.6 // 内圈比例
+
+      // 如果点击在中心空白区域或外圈外，隐藏tooltip
+      if (distance < innerRadius || distance > outerRadius) {
+        this.setData({ showDonutTooltip: false, donutTooltipData: null })
+        return
+      }
+
+      // 根据角度找到对应的分类
+      let accumulated = 0
+      let selectedIndex = -1
+      const total = displayStats.reduce((sum, item) => sum + item.amount, 0)
+
+      for (let i = 0; i < displayStats.length; i++) {
+        const item = displayStats[i]
+        const segmentAngle = (item.amount / total) * 360
+        if (angle >= accumulated && angle < accumulated + segmentAngle) {
+          selectedIndex = i
+          break
+        }
+        accumulated += segmentAngle
+      }
+
+      // 找到对应的分类，显示tooltip
+      if (selectedIndex >= 0) {
+        this.setData({
+          showDonutTooltip: true,
+          donutTooltipData: displayStats[selectedIndex]
+        })
+      } else {
+        this.setData({ showDonutTooltip: false, donutTooltipData: null })
+      }
+    }).exec()
+  },
+
+  // 隐藏甜甜圈tooltip
+  hideDonutTooltip() {
+    this.setData({ showDonutTooltip: false, donutTooltipData: null })
+  },
+
+  // 点击甜甜圈包装器（非图表区域）
+  onDonutWrapperTap() {
+    this.setData({ showDonutTooltip: false, donutTooltipData: null })
+  },
+
+  // 点击页面其他区域
+  onPageTap() {
+    if (this.data.showDonutTooltip) {
+      this.setData({ showDonutTooltip: false, donutTooltipData: null })
+    }
+  }
+})

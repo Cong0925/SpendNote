@@ -1,0 +1,204 @@
+/**
+ * 转账页面样式
+ */
+page {
+  background: var(--color-bg);
+}
+
+.container {
+  min-height: 100vh;
+}
+
+/* ============ 表单区域 ============ */
+.form-section {
+  background: var(--color-card);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid var(--color-divider);
+}
+
+.form-row:last-child {
+  border-bottom: none;
+}
+
+.form-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding-right: 24rpx;
+}
+
+.form-left-account {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 24rpx;
+}
+
+.form-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.form-item {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid var(--color-divider);
+}
+
+.form-item:last-child {
+  border-bottom: none;
+}
+
+.form-label {
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.form-account {
+  display: flex;
+  align-items: center;
+}
+
+.form-account-name {
+  font-size: 30rpx;
+  color: var(--color-text);
+  margin-right: 8rpx;
+  flex-shrink: 0;
+}
+
+.form-amount-input {
+  display: flex;
+  align-items: center;
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  padding: 12rpx 16rpx;
+}
+
+.input-prefix {
+  font-size: 30rpx;
+  color: var(--color-text);
+  margin-right: 4rpx;
+}
+
+.form-input {
+  width: 160rpx;
+  text-align: right;
+  font-size: 30rpx;
+  color: var(--color-text);
+  font-weight: 600;
+}
+.remark-input{
+  width: 500rpx;
+}
+.form-picker {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.picker-value {
+  font-size: 30rpx;
+  color: var(--color-text);
+}
+
+.picker-arrow {
+  font-size: 32rpx;
+  color: var(--color-text-tertiary);
+  margin-left: 8rpx;
+}
+
+/* ============ 禁用状态 ============ */
+.form-left-account.disabled,
+.form-amount-input.disabled,
+.form-picker.disabled {
+  opacity: 0.6;
+}
+
+.form-left-account.disabled .form-account-name,
+.form-amount-input.disabled .form-input,
+.form-picker.disabled .picker-value {
+  color: var(--color-text-secondary);
+}
+
+/* ============ 保存按钮 ============ */
+.save-btn {
+  margin-top: 48rpx;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 600;
+  text-align: center;
+  padding: 28rpx;
+  border-radius: var(--radius-full);
+  box-shadow: 0 4rpx 16rpx rgba(37, 99, 235, 0.3);
+  transition: all 0.2s ease;
+}
+
+.save-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* ============ 修改按钮 ============ */
+.edit-btn {
+  margin-top: 48rpx;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #ffffff;
+  font-size: 32rpx;
+  font-weight: 600;
+  text-align: center;
+  padding: 28rpx;
+  border-radius: var(--radius-full);
+  box-shadow: 0 4rpx 16rpx rgba(245, 158, 11, 0.3);
+  transition: all 0.2s ease;
+}
+
+.edit-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* ============ 加载状态 ============ */
+.loading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

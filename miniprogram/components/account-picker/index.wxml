@@ -1,0 +1,60 @@
+<!--components/account-picker/index.wxml-->
+<view class="account-picker-mask {{show ? 'show' : ''}}" bindtap="onClose">
+  <view class="account-picker-container {{show ? 'show' : ''}}" catchtap="onStopPropagation">
+    <!-- 标题栏 -->
+    <view class="picker-header">
+      <text class="picker-title">选择账户</text>
+      <view class="picker-close" bindtap="onClose">
+        <text>✕</text>
+      </view>
+    </view>
+
+    <!-- 不关联账户选项 -->
+    <view class="account-option none-option {{!selectedId ? 'selected' : ''}}" bindtap="onSelectNone">
+      <view class="account-icon-wrap">
+        <text class="account-icon-text">⊘</text>
+      </view>
+      <view class="account-info">
+        <text class="account-name">不关联账户</text>
+        <text class="account-desc">仅记录账目，不涉及账户变动</text>
+      </view>
+      <view class="account-check" wx:if="{{!selectedId}}">
+        <text>✓</text>
+      </view>
+    </view>
+
+    <!-- 骨架屏加载状态 -->
+    <view class="account-list" wx:if="{{loading && accountList.length === 0}}">
+      <view class="account-option skeleton" wx:for="{{4}}" wx:key="*this">
+        <view class="account-icon-wrap skeleton-icon"></view>
+        <view class="account-info">
+          <view class="skeleton-text skeleton-name"></view>
+          <view class="skeleton-text skeleton-desc"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 账户列表 -->
+    <scroll-view class="account-list" scroll-y wx:else>
+      <view
+        class="account-option {{selectedId === item._id ? 'selected' : ''}}"
+        wx:for="{{accountList}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        data-name="{{item.name}}"
+        bindtap="onSelectAccount"
+      >
+        <view class="account-icon-wrap">
+          <image class="account-icon-img" src="{{item.icon}}" mode="aspectFit"></image>
+        </view>
+        <view class="account-info">
+          <text class="account-name">{{item.name}}</text>
+          <text class="account-desc">余额：¥{{item.isDebt ? '-' : ''}}{{item.balance}}</text>
+        </view>
+        <view class="account-check" wx:if="{{selectedId === item._id}}">
+          <text>✓</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

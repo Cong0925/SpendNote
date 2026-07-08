@@ -1,0 +1,17 @@
+<!-- pages/help/help.wxml -->
+<view class="help-page">
+  <!-- 加载提示 -->
+  <view class="loading-mask" wx:if="{{loading}}">
+    <view class="loading-content">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+
+  <!-- 内嵌网页 -->
+  <web-view
+    src="{{helpUrl}}"
+    bindload="onWebviewLoad"
+    binderror="onWebviewError"
+  ></web-view>
+</view>

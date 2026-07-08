@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "openapi": [
+      "security.msgSecCheck",
+      "httpRequest"
+    ]
+  },
+  "triggers": [
+    {
+      "name": "emailTrigger",
+      "type": "timer",
+      "config": "0 0 4 * * * *"
+    }
+  ]
+}

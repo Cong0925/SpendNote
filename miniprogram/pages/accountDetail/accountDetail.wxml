@@ -1,0 +1,147 @@
+<!--
+  账户详情页面 - 完全重构
+  从零开始设计，参考账单详情和统计页面
+  功能：显示/编辑账户信息，删除账户
+-->
+<view class="page">
+  <!-- 顶部账户信息卡片 -->
+  <view class="account-hero">
+    <view class="hero-bg-circle"></view>
+    <view class="hero-content">
+      <view class="account-icon-wrap">
+        <image class="account-icon" src="{{form.icon}}" mode="aspectFit"></image>
+      </view>
+      <text class="account-name">{{form.name || '未命名账户'}}</text>
+      <view class="account-type-badge {{form.isDebt ? 'debt' : 'asset'}}">
+        {{form.isDebt ? '负债账户' : '资产账户'}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 金额显示区域 -->
+  <view class="amount-section">
+    <text class="amount-label">{{form.isDebt ? '应还金额' : '账户余额'}}</text>
+    <view class="amount-input-wrap">
+      <text class="amount-symbol">¥</text>
+      <input
+        class="amount-input"
+        type="digit"
+        placeholder="0.00"
+        value="{{form.balance}}"
+        bindinput="onBalanceInput"
+      />
+    </view>
+  </view>
+
+  <!-- 表单信息区域 -->
+  <view class="form-section">
+    <!-- 账户名称 -->
+    <view class="form-row">
+      <text class="form-label">账户名称</text>
+      <input
+        class="form-input"
+        placeholder="请输入账户名称"
+        value="{{form.name}}"
+        bindinput="onNameInput"
+      />
+    </view>
+
+    <!-- 银行卡号后四位 -->
+    <view class="form-row" wx:if="{{form.type === 'savings' || form.type === 'credit'}}">
+      <text class="form-label">银行卡号后四位</text>
+      <input
+        class="form-input"
+        type="number"
+        placeholder="****"
+        value="{{form.bankCardLast4}}"
+        bindinput="onCardLast4Input"
+        maxlength="4"
+      />
+    </view>
+
+    <!-- 信用卡专属字段 -->
+    <block wx:if="{{form.type === 'credit'}}">
+      <!-- 信用额度 -->
+      <view class="form-row">
+        <text class="form-label">信用额度</text>
+        <view class="credit-limit-wrap">
+          <input
+            class="form-input"
+            type="digit"
+            placeholder="0.00"
+            value="{{form.creditLimit}}"
+            bindinput="onCreditLimitInput"
+          />
+        </view>
+      </view>
+
+      <!-- 账单日 -->
+      <view class="form-row">
+        <text class="form-label">账单日（每月）</text>
+        <view class="day-input-wrap">
+          <input
+            class="form-input day-input"
+            type="number"
+            placeholder="1-31"
+            value="{{form.billDay}}"
+            bindinput="onBillDayInput"
+            maxlength="2"
+          />
+          <text class="day-unit">日</text>
+        </view>
+      </view>
+
+      <!-- 还款日 -->
+      <view class="form-row">
+        <text class="form-label">还款日（每月）</text>
+        <view class="day-input-wrap">
+          <input
+            class="form-input day-input"
+            type="number"
+            placeholder="1-31"
+            value="{{form.repayDay}}"
+            bindinput="onRepayDayInput"
+            maxlength="2"
+          />
+          <text class="day-unit">日</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 花呗/京东白条/美团月付专属字段 -->
+    <block wx:if="{{form.type === 'huabei' || form.type === 'jd' || form.type === 'mt'}}">
+      <!-- 还款日 -->
+      <view class="form-row">
+        <text class="form-label">还款日（每月）</text>
+        <view class="day-input-wrap">
+          <input
+            class="form-input day-input"
+            type="number"
+            placeholder="1-31"
+            value="{{form.repayDay}}"
+            bindinput="onRepayDayInput"
+            maxlength="2"
+          />
+          <text class="day-unit">日</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 备注 -->
+    <view class="form-row">
+      <text class="form-label">备注</text>
+      <input
+        class="form-input"
+        placeholder="{{form.isDebt ? '例如：朋友借款' : (form.bankName ? '工资卡' : '请输入备注')}}"
+        value="{{form.remark}}"
+        bindinput="onRemarkInput"
+      />
+    </view>
+  </view>
+
+  <!-- 操作按钮区域 -->
+  <view class="action-section">
+    <button class="btn-save" bindtap="saveAccount">保存</button>
+    <button class="btn-delete" wx:if="{{isEdit}}" bindtap="deleteAccount">删除账户</button>
+  </view>
+</view>

@@ -1,0 +1,1099 @@
+/* pages/yearly-summary/yearly-summary.wxss */
+
+.summary-page {
+  min-height: 100vh;
+  background: var(--color-bg, #F5F7FA);
+}
+
+/* 内容滚动区 */
+.content-scroll {
+  height: 100vh;
+}
+
+.content-wrapper {
+  padding: 24rpx;
+  padding-bottom: 40rpx;
+}
+
+/* 年度标题 */
+.year-header {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 28rpx;
+  margin: 16rpx 0 24rpx;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 20rpx;
+  gap: 20rpx;
+}
+
+/* 年份徽章 */
+.year-badge {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 16rpx;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 16rpx rgba(59, 130, 246, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 徽章光效 */
+.year-badge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  animation: shine 2.5s ease-in-out infinite;
+}
+
+@keyframes shine {
+  0%, 100% { left: -100%; }
+  50% { left: 150%; }
+}
+
+.year-num {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #ffffff;
+  position: relative;
+  z-index: 1;
+}
+
+/* 文字信息 */
+.year-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.year-text {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--color-text, #1e293b);
+}
+
+.year-sub {
+  font-size: 24rpx;
+  color: var(--color-text-secondary, #64748b);
+}
+
+/* 右侧切换按钮 */
+.year-deco {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx;
+  background: rgba(59, 130, 246, 0.08);
+  border-radius: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.year-deco:active {
+  background: rgba(59, 130, 246, 0.15);
+  transform: scale(0.95);
+}
+
+/* 下拉箭头 */
+.deco-arrow {
+  width: 0;
+  height: 0;
+  border-left: 10rpx solid transparent;
+  border-right: 10rpx solid transparent;
+  border-top: 12rpx solid #3b82f6;
+  opacity: 0.6;
+}
+
+/* 卡片通用样式 */
+.overview-card,
+.analysis-card,
+.usage-card,
+.rank-card,
+.encourage-card {
+  background: var(--color-card, #FFFFFF);
+  border-radius: var(--radius-xl, 32rpx);
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: var(--shadow-card, 0 2rpx 8rpx rgba(0, 0, 0, 0.04));
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--color-text, #1A1D26);
+}
+
+.card-count {
+  font-size: 24rpx;
+  color: var(--color-text-secondary, #6B7280);
+  font-weight: 500;
+}
+
+/* 年度总览 */
+.overview-stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.stat-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32rpx 0;
+  border-radius: var(--radius-lg, 24rpx);
+}
+
+.stat-block.income {
+  background: var(--color-income-light, #DCFCE7);
+}
+
+.stat-block.expense {
+  background: var(--color-expense-light, #FEE2E2);
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: var(--color-text-secondary, #6B7280);
+  margin-bottom: 12rpx;
+}
+
+.stat-value {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: var(--color-text, #1A1D26);
+}
+
+.stat-block.income .stat-value {
+  color: var(--color-income, #22C55E);
+}
+
+.stat-block.expense .stat-value {
+  color: var(--color-expense, #EF4444);
+}
+
+.overview-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid var(--color-border, #E5E7EB);
+}
+
+.balance-label {
+  font-size: 26rpx;
+  color: var(--color-text-secondary, #6B7280);
+}
+
+.balance-value {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+
+.balance-value.positive {
+  color: var(--color-income, #22C55E);
+}
+
+.balance-value.negative {
+  color: var(--color-expense, #EF4444);
+}
+
+/* 消费分析 */
+.analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+}
+
+.analysis-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: var(--color-bg, #F5F7FA);
+  border-radius: var(--radius-lg, 24rpx);
+}
+
+.analysis-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.analysis-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.analysis-label {
+  font-size: 20rpx;
+  color: var(--color-text-secondary, #6B7280);
+  margin-bottom: 4rpx;
+}
+
+.analysis-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text, #1A1D26);
+}
+
+/* 使用情况 */
+.usage-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.usage-item {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
+.usage-icon {
+  font-size: 36rpx;
+  margin-right: 12rpx;
+}
+
+.usage-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.usage-label {
+  font-size: 20rpx;
+  color: var(--color-text-secondary, #6B7280);
+  margin-bottom: 4rpx;
+}
+
+.usage-value {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--color-text, #1A1D26);
+}
+
+.usage-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: var(--color-border, #F0F2F5);
+  margin: 0 8rpx;
+}
+
+/* 分类排行 */
+.rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.rank-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx;
+  background: var(--color-bg, #F5F7FA);
+  border-radius: var(--radius-lg, 24rpx);
+}
+
+.rank-num {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: var(--color-border, #F0F2F5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: var(--color-text-secondary, #6B7280);
+  margin-right: 16rpx;
+}
+
+.rank-num.top {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: #FFF;
+}
+
+.rank-icon {
+  font-size: 32rpx;
+  margin-right: 16rpx;
+}
+
+.rank-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.rank-name {
+  font-size: 24rpx;
+  color: var(--color-text, #1A1D26);
+  margin-bottom: 8rpx;
+  font-weight: 500;
+}
+
+.rank-bar-bg {
+  height: 8rpx;
+  background: var(--color-border, #F0F2F5);
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.rank-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary, #2563EB) 0%, var(--color-primary-light, #3B82F6) 100%);
+  border-radius: 4rpx;
+  transition: width 0.3s ease;
+}
+
+.rank-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-left: 16rpx;
+}
+
+.rank-value {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--color-text, #1A1D26);
+  margin-bottom: 4rpx;
+}
+
+.rank-percent {
+  font-size: 20rpx;
+  color: var(--color-text-secondary, #6B7280);
+}
+
+/* 鼓励语 */
+.encourage-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 28rpx;
+}
+
+.encourage-icon {
+  font-size: 56rpx;
+  margin-bottom: 16rpx;
+}
+
+.encourage-text {
+  font-size: 28rpx;
+  color: var(--color-text-secondary, #6B7280);
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* 月度趋势卡片 */
+.trend-card {
+  background: var(--color-card, #FFFFFF);
+  border-radius: var(--radius-xl, 32rpx);
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: var(--shadow-card, 0 2rpx 8rpx rgba(0, 0, 0, 0.04));
+  position: relative;
+}
+
+.trend-card .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.trend-legend {
+  display: flex;
+  gap: 20rpx;
+}
+
+.trend-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 22rpx;
+  color: var(--color-text-secondary, #6B7280);
+}
+
+.trend-legend-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 4rpx;
+}
+
+.trend-legend-dot.expense {
+  background: var(--color-expense, #EF4444);
+}
+
+.trend-legend-dot.income {
+  background: var(--color-income, #22C55E);
+}
+
+/* ============ 点击信息卡片 ============ */
+.trend-tooltip {
+  position: absolute;
+  top: 80rpx;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10rpx);
+  background: var(--color-card, #FFFFFF);
+  border-radius: var(--radius-lg, 24rpx);
+  padding: 20rpx 24rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  min-width: 280rpx;
+}
+
+.trend-tooltip.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.tooltip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+  padding-bottom: 12rpx;
+  border-bottom: 1rpx solid var(--color-divider, #F0F2F5);
+}
+
+.tooltip-month {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text, #1A1D26);
+}
+
+.tooltip-close {
+  width: 40rpx;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  color: var(--color-text-tertiary, #9CA3AF);
+  border-radius: 50%;
+  background: var(--color-bg, #F5F7FA);
+}
+
+.tooltip-close:active {
+  background: var(--color-divider, #F0F2F5);
+}
+
+.tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.tooltip-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.tooltip-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 3rpx;
+  flex-shrink: 0;
+}
+
+.tooltip-dot.expense {
+  background: var(--color-expense, #EF4444);
+}
+
+.tooltip-dot.income {
+  background: var(--color-income, #22C55E);
+}
+
+.tooltip-label {
+  font-size: 24rpx;
+  color: var(--color-text-secondary, #6B7280);
+  flex: 1;
+}
+
+.tooltip-value {
+  font-size: 26rpx;
+  font-weight: 600;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+}
+
+.tooltip-value.expense {
+  color: var(--color-expense, #EF4444);
+}
+
+.tooltip-value.income {
+  color: var(--color-income, #22C55E);
+}
+
+.tooltip-divider {
+  height: 1rpx;
+  background: var(--color-divider, #F0F2F5);
+  margin: 4rpx 0;
+}
+
+/* ============ 柱状图容器 ============ */
+.bar-chart-container {
+  display: flex;
+  gap: 12rpx;
+}
+
+/* ============ Y轴刻度 ============ */
+.y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 240rpx;
+  padding-bottom: 40rpx;
+}
+
+.y-axis-label {
+  font-size: 18rpx;
+  color: var(--color-text-tertiary, #9CA3AF);
+  text-align: right;
+  min-width: 60rpx;
+}
+
+/* ============ 柱状图区域 ============ */
+.bar-chart {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 8rpx;
+  height: 240rpx;
+  padding-bottom: 40rpx;
+  position: relative;
+}
+
+/* ============ 网格线 ============ */
+.grid-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 40rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.grid-line {
+  height: 1rpx;
+  background: var(--color-divider, #F0F2F5);
+  opacity: 0.5;
+}
+
+/* ============ 柱状图组 ============ */
+.bar-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.bars {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 4rpx;
+  width: 100%;
+}
+
+.bar {
+  flex: 1;
+  border-radius: 4rpx 4rpx 0 0;
+  min-height: 4rpx;
+  transition: height 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease;
+}
+
+.bar.expense-bar {
+  background: var(--color-expense, #EF4444);
+  opacity: 0.85;
+}
+
+.bar.income-bar {
+  background: var(--color-income, #22C55E);
+  opacity: 0.85;
+}
+
+.bar.selected {
+  opacity: 1;
+  filter: brightness(1.1);
+}
+
+.bar-label {
+  position: absolute;
+  bottom: 0;
+  font-size: 18rpx;
+  color: var(--color-text-tertiary, #9CA3AF);
+  white-space: nowrap;
+}
+
+.bar-label.selected {
+  color: var(--color-text, #1A1D26);
+  font-weight: 600;
+}
+
+/* ========== 骨架屏样式 ========== */
+/* 骨架屏基础动画 */
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-line {
+  background: linear-gradient(90deg, #F0F2F5 25%, #E5E7EB 50%, #F0F2F5 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 8rpx;
+}
+
+/* 年度标题骨架 */
+.skeleton-year-header {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 28rpx;
+  margin: 16rpx 0 24rpx;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 20rpx;
+  gap: 20rpx;
+}
+
+.skeleton-year-badge {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 16rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  flex-shrink: 0;
+}
+
+.skeleton-year-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.skeleton-title {
+  width: 120rpx;
+  height: 32rpx;
+}
+
+.skeleton-subtitle {
+  width: 180rpx;
+  height: 24rpx;
+}
+
+.skeleton-year-deco {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+/* 卡片通用骨架样式 */
+.skeleton-card {
+  background: var(--color-card, #FFFFFF);
+  border-radius: var(--radius-xl, 32rpx);
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: var(--shadow-card, 0 2rpx 8rpx rgba(0, 0, 0, 0.04));
+}
+
+.skeleton-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.skeleton-card-title {
+  width: 180rpx;
+  height: 30rpx;
+}
+
+.skeleton-card-count {
+  width: 80rpx;
+  height: 24rpx;
+}
+
+/* 年度总览骨架 */
+.skeleton-overview-stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.skeleton-stat-block {
+  flex: 1;
+  height: 120rpx;
+  border-radius: var(--radius-lg, 24rpx);
+  background: linear-gradient(90deg, #F0F2F5 25%, #E5E7EB 50%, #F0F2F5 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-stat-block.income {
+  background: linear-gradient(90deg, #DCFCE7 25%, #BBF7D0 50%, #DCFCE7 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-stat-block.expense {
+  background: linear-gradient(90deg, #FEE2E2 25%, #FECACA 50%, #FEE2E2 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-overview-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid var(--color-border, #E5E7EB);
+}
+
+.skeleton-balance-label {
+  width: 80rpx;
+  height: 26rpx;
+}
+
+.skeleton-balance-value {
+  width: 120rpx;
+  height: 32rpx;
+}
+
+/* 消费分析骨架 */
+.skeleton-analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+}
+
+.skeleton-analysis-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: var(--color-bg, #F5F7FA);
+  border-radius: var(--radius-lg, 24rpx);
+}
+
+.skeleton-analysis-icon {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
+.skeleton-analysis-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8rpx;
+}
+
+.skeleton-analysis-label {
+  width: 80rpx;
+  height: 20rpx;
+}
+
+.skeleton-analysis-value {
+  width: 60rpx;
+  height: 28rpx;
+}
+
+/* 使用信息骨架 */
+.skeleton-usage-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.skeleton-usage-item {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
+.skeleton-usage-icon {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
+.skeleton-usage-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.skeleton-usage-label {
+  width: 80rpx;
+  height: 20rpx;
+}
+
+.skeleton-usage-value {
+  width: 60rpx;
+  height: 30rpx;
+}
+
+.skeleton-usage-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin: 0 8rpx;
+}
+
+/* 支出分类排行骨架 */
+.skeleton-rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.skeleton-rank-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx;
+  background: var(--color-bg, #F5F7FA);
+  border-radius: var(--radius-lg, 24rpx);
+}
+
+.skeleton-rank-num {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.skeleton-rank-icon {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 8rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.skeleton-rank-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.skeleton-rank-name {
+  width: 100rpx;
+  height: 24rpx;
+}
+
+.skeleton-rank-bar {
+  height: 8rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4rpx;
+}
+
+.skeleton-rank-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-left: 16rpx;
+  gap: 4rpx;
+}
+
+.skeleton-rank-value {
+  width: 80rpx;
+  height: 26rpx;
+}
+
+.skeleton-rank-percent {
+  width: 60rpx;
+  height: 20rpx;
+}
+
+/* 月度趋势骨架 */
+.skeleton-trend-legend {
+  display: flex;
+  gap: 20rpx;
+}
+
+.skeleton-trend-legend-item {
+  width: 80rpx;
+  height: 22rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-chart {
+  display: flex;
+  gap: 12rpx;
+  height: 280rpx;
+}
+
+.skeleton-y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding-bottom: 40rpx;
+}
+
+.skeleton-y-label {
+  width: 60rpx;
+  height: 18rpx;
+}
+
+.skeleton-bar-chart {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 8rpx;
+  height: 100%;
+  padding-bottom: 40rpx;
+  position: relative;
+}
+
+.skeleton-grid-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 40rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.skeleton-grid-line {
+  height: 1rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  opacity: 0.5;
+}
+
+.skeleton-bar-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.skeleton-bars {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 4rpx;
+  width: 100%;
+}
+
+.skeleton-bar {
+  flex: 1;
+  border-radius: 4rpx 4rpx 0 0;
+  min-height: 4rpx;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-bar.expense {
+  background: linear-gradient(90deg, #FEE2E2 25%, #FECACA 50%, #FEE2E2 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-bar.income {
+  background: linear-gradient(90deg, #DCFCE7 25%, #BBF7D0 50%, #DCFCE7 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-bar-label {
+  position: absolute;
+  bottom: 0;
+  width: 40rpx;
+  height: 18rpx;
+}
+
+/* 鼓励语骨架 */
+.skeleton-encourage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 28rpx;
+}
+
+.skeleton-encourage-icon {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #E5E7EB 25%, #D1D5DB 50%, #E5E7EB 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  margin-bottom: 16rpx;
+}
+
+.skeleton-encourage-text {
+  width: 280rpx;
+  height: 28rpx;
+  margin-bottom: 8rpx;
+}
+
+.skeleton-encourage-text.short {
+  width: 180rpx;
+  height: 28rpx;
+}

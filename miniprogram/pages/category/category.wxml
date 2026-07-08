@@ -1,0 +1,169 @@
+<!-- pages/category/category.wxml -->
+<view class="category-page">
+  <!-- 顶部Tab切换 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 'expense' ? 'active' : ''}}" bindtap="switchTab" data-tab="expense">
+      <text class="tab-text">支出分类</text>
+      <view class="tab-indicator" wx:if="{{activeTab === 'expense'}}"></view>
+    </view>
+    <view class="tab-item {{activeTab === 'income' ? 'active' : ''}}" bindtap="switchTab" data-tab="income">
+      <text class="tab-text">收入分类</text>
+      <view class="tab-indicator" wx:if="{{activeTab === 'income'}}"></view>
+    </view>
+  </view>
+
+  <!-- 分类列表 -->
+  <scroll-view
+    class="content-scroll"
+    scroll-y
+    scroll-top="{{scrollTop}}"
+    style="{{scrollDisabled ? 'overflow: hidden;' : ''}}"
+    bindscroll="onScroll"
+  >
+    <view class="content-wrapper">
+      <!-- 骨架屏加载中 -->
+      <view class="skeleton-list" wx:if="{{loading}}">
+        <view class="skeleton-item" wx:for="{{[1,2,3,4,5]}}" wx:key="*this">
+          <view class="skeleton-icon"></view>
+          <view class="skeleton-content">
+            <view class="skeleton-title"></view>
+            <view class="skeleton-desc"></view>
+          </view>
+          <view class="skeleton-actions">
+            <view class="skeleton-btn"></view>
+            <view class="skeleton-btn"></view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{currentCategories.length === 0 && !loading}}">
+        <view class="empty-icon-wrapper">
+          <text class="empty-icon">📂</text>
+        </view>
+        <text class="empty-title">暂无分类</text>
+        <text class="empty-desc">点击右下角+号添加分类</text>
+      </view>
+
+      <!-- 分类列表 -->
+      <view class="category-list" wx:if="{{!loading && currentCategories.length > 0}}">
+        <view
+          class="category-item {{dragIndex === index ? 'dragging' : ''}}"
+          wx:for="{{currentCategories}}"
+          wx:key="_id"
+          style="{{dragIndex >= 0 ? 'transform: translateY(' + itemOffsets[index] + 'px); z-index: ' + (dragIndex === index ? '100' : '1') + ';' : ''}}"
+        >
+          <view
+            class="drag-handle"
+            catchtouchstart="onDragStart"
+            catchtouchmove="onDragMove"
+            catchtouchend="onDragEnd"
+            data-index="{{index}}"
+          >
+            <text class="drag-icon">⋮⋮</text>
+          </view>
+          <view class="category-icon">{{item.icon}}</view>
+          <text class="category-name">{{item.name}}</text>
+          <view class="category-actions">
+            <view class="action-btn edit-btn" bindtap="showEditModal" data-category="{{item}}">
+              <text class="btn-icon">✏️</text>
+            </view>
+            <view class="action-btn delete-btn" bindtap="deleteCategory" data-id="{{item._id}}" data-name="{{item.name}}">
+              <text class="btn-icon">🗑️</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 可拖拽新增按钮 -->
+  <view
+    class="fab-btn {{isDragging ? 'dragging' : ''}}"
+    style="left: {{fabPosition.x}}px; top: {{fabPosition.y}}px;"
+    bindtouchstart="onFabTouchStart"
+    bindtouchmove="onFabTouchMove"
+    bindtouchend="onFabTouchEnd"
+    catchtap="showAddModal"
+  >
+    <text class="fab-icon">+</text>
+  </view>
+
+  <!-- 新增分类弹窗 -->
+  <view class="modal-mask" wx:if="{{showAddModal}}" bindtap="hideAddModal"></view>
+  <view class="modal-content" wx:if="{{showAddModal}}">
+    <view class="modal-header">
+      <text class="modal-title">新增{{activeTab === 'expense' ? '支出' : '收入'}}分类</text>
+      <view class="modal-close" bindtap="hideAddModal">
+        <text class="close-icon">×</text>
+      </view>
+    </view>
+    <view class="modal-body">
+      <!-- 分类名称 -->
+      <view class="form-group">
+        <text class="form-label">分类名称</text>
+        <input class="form-input" placeholder="请输入分类名称（最多4个字）" value="{{newCategory.name}}" bindinput="onInputName" maxlength="4" />
+      </view>
+
+      <!-- 选择图标 -->
+      <view class="form-group">
+        <text class="form-label">选择图标</text>
+        <scroll-view class="icon-scroll" scroll-y>
+          <view class="icon-grid">
+            <view class="icon-item {{selectedIcon === item.icon ? 'selected' : ''}}" wx:for="{{builtinIcons}}" wx:key="name" bindtap="selectIcon" data-icon="{{item.icon}}">
+              <text class="icon-emoji">{{item.icon}}</text>
+              <text class="icon-name">{{item.name}}</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <view class="btn-cancel" bindtap="hideAddModal">
+        <text class="btn-text">取消</text>
+      </view>
+      <view class="btn-confirm" bindtap="addCategory">
+        <text class="btn-text">确定</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 编辑分类弹窗 -->
+  <view class="modal-mask" wx:if="{{showEditModal}}" bindtap="hideEditModal"></view>
+  <view class="modal-content" wx:if="{{showEditModal}}">
+    <view class="modal-header">
+      <text class="modal-title">编辑分类</text>
+      <view class="modal-close" bindtap="hideEditModal">
+        <text class="close-icon">×</text>
+      </view>
+    </view>
+    <view class="modal-body">
+      <!-- 分类名称 -->
+      <view class="form-group">
+        <text class="form-label">分类名称</text>
+        <input class="form-input" placeholder="请输入分类名称（最多4个字）" value="{{editingCategory.name}}" bindinput="onEditInputName" maxlength="4" />
+      </view>
+
+      <!-- 选择图标 -->
+      <view class="form-group">
+        <text class="form-label">选择图标</text>
+        <scroll-view class="icon-scroll" scroll-y>
+          <view class="icon-grid">
+            <view class="icon-item {{selectedIcon === item.icon ? 'selected' : ''}}" wx:for="{{builtinIcons}}" wx:key="name" bindtap="selectEditIcon" data-icon="{{item.icon}}">
+              <text class="icon-emoji">{{item.icon}}</text>
+              <text class="icon-name">{{item.name}}</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <view class="btn-cancel" bindtap="hideEditModal">
+        <text class="btn-text">取消</text>
+      </view>
+      <view class="btn-confirm" bindtap="updateCategory">
+        <text class="btn-text">确定</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,734 @@
+/**
+ * 账户详情页面样式 - 简化版
+ * 采用系统默认导航栏，简化设计
+ */
+
+page {
+  background: #F5F7FA;
+  min-height: 100vh;
+}
+
+.page {
+  padding: 24rpx 32rpx;
+  padding-bottom: 180rpx;
+}
+
+/* ============ 账户信息卡片 ============ */
+.account-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.icon-wrap {
+  width: 96rpx;
+  height: 96rpx;
+  background: #F3F4F6;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+}
+
+.account-icon {
+  width: 56rpx;
+  height: 56rpx;
+}
+
+.info-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.account-name {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 6rpx;
+}
+
+.account-type {
+  font-size: 24rpx;
+  color: #6B7280;
+}
+
+.balance-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1rpx solid #F3F4F6;
+}
+
+.balance-label {
+  font-size: 28rpx;
+  color: #6B7280;
+}
+
+.balance-amount {
+  font-size: 40rpx;
+  font-weight: 700;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+}
+
+.balance-amount.asset {
+  color: #2563EB;
+}
+
+.balance-amount.debt {
+  color: #DC2626;
+}
+
+/* ============ 信用卡专属信息 ============ */
+.card-extra {
+  border-top: 1rpx solid #F3F4F6;
+  padding-top: 24rpx;
+  margin-top: 24rpx;
+  display: flex;
+  justify-content: space-between;
+}
+
+.extra-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.extra-label {
+  font-size: 22rpx;
+  color: #9CA3AF;
+  margin-bottom: 8rpx;
+}
+
+.extra-value {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* ============ 收支统计 ============ */
+.stats-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  display: flex;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  margin-bottom: 8rpx;
+}
+
+.stat-value {
+  font-size: 32rpx;
+  font-weight: 600;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+}
+
+.stat-value.income {
+  color: #16A34A;
+}
+
+.stat-value.expense {
+  color: #DC2626;
+}
+
+.stat-divider {
+  width: 1rpx;
+  background: #F3F4F6;
+}
+
+/* ============ Tab切换和记录列表 ============ */
+.record-section {
+  background: #ffffff;
+  border-radius: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.tab-bar {
+  display: flex;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28rpx 0;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #2563EB;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 4rpx;
+  background: #2563EB;
+  border-radius: 2rpx;
+}
+
+.tab-text {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #6B7280;
+}
+
+.tab-item.active .tab-text {
+  color: #2563EB;
+  font-weight: 600;
+}
+
+.tab-badge {
+  margin-left: 8rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  padding: 0 8rpx;
+  background: #E5E7EB;
+  border-radius: 16rpx;
+  font-size: 20rpx;
+  color: #6B7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-item.active .tab-badge {
+  background: #DBEAFE;
+  color: #2563EB;
+}
+
+.tab-content {
+  min-height: 200rpx;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #111827;
+}
+
+.section-count {
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.empty-state {
+  padding: 80rpx 0;
+  text-align: center;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #9CA3AF;
+}
+
+/* ============ 加载更多 ============ */
+.load-more {
+  padding: 24rpx 0;
+  text-align: center;
+}
+
+.loading-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.load-more-text {
+  font-size: 26rpx;
+  color: #2563EB;
+}
+
+.load-more-text:active {
+  opacity: 0.7;
+}
+
+.no-more {
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.bill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.bill-item:last-child {
+  border-bottom: none;
+}
+
+.bill-item:active {
+  background: #F9FAFB;
+}
+
+.bill-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.bill-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
+.income-bg {
+  background: #DCFCE7;
+}
+
+.expense-bg {
+  background: #FEE2E2;
+}
+
+.bill-emoji {
+  font-size: 28rpx;
+}
+
+.bill-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.bill-category {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 4rpx;
+}
+
+.bill-note {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bill-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.bill-amount {
+  font-size: 30rpx;
+  font-weight: 600;
+  margin-bottom: 4rpx;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+}
+
+.bill-amount.income {
+  color: #16A34A;
+}
+
+.bill-amount.expense {
+  color: #DC2626;
+}
+
+.bill-date {
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+/* ============ 转账记录列表 ============ */
+.transfer-list {
+  /* 转账列表容器 */
+}
+
+.transfer-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.transfer-item:last-child {
+  border-bottom: none;
+}
+
+.transfer-item:active {
+  background: #F9FAFB;
+}
+
+.transfer-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.transfer-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  background: #FEF3C7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
+.transfer-emoji {
+  font-size: 28rpx;
+}
+
+.transfer-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.transfer-route {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4rpx;
+}
+
+.route-account {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #111827;
+  max-width: 160rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.route-arrow {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  margin: 0 8rpx;
+}
+
+.transfer-date {
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+.transfer-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.transfer-amount {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4rpx;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+}
+
+.transfer-remark {
+  font-size: 22rpx;
+  color: #9CA3AF;
+  max-width: 160rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============ 加载状态 ============ */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 0;
+}
+
+.loading-spinner-small {
+  width: 40rpx;
+  height: 40rpx;
+  border: 3rpx solid #E5E7EB;
+  border-top-color: #2563EB;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 16rpx;
+}
+
+.loading-text {
+  font-size: 26rpx;
+  color: #9CA3AF;
+}
+
+/* ============ 底部操作按钮 ============ */
+.bottom-spacer {
+  height: 40rpx;
+}
+
+.action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background: #ffffff;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.action-btn {
+  flex: 1;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16rpx;
+  margin: 0 8rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.action-btn:active {
+  opacity: 0.8;
+}
+
+.btn-delete {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+.btn-transfer {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+.btn-transfer.disabled {
+  background: #F3F4F6;
+  color: #9CA3AF;
+  pointer-events: none;
+}
+
+.btn-add {
+  background: #2563EB;
+  color: #ffffff;
+}
+
+.btn-text {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+/* ============ 加载状态 ============ */
+.loading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #E5E7EB;
+  border-top-color: #2563EB;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============ 骨架屏样式 ============ */
+/* 脉冲动画 */
+@keyframes skeleton-pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.skeleton-pulse {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* 骨架屏基础元素 */
+.skeleton-icon,
+.skeleton-name,
+.skeleton-type,
+.skeleton-label,
+.skeleton-amount,
+.skeleton-stat-label,
+.skeleton-stat-value,
+.skeleton-tab-text,
+.skeleton-item-icon,
+.skeleton-item-title,
+.skeleton-item-subtitle,
+.skeleton-item-amount,
+.skeleton-item-date {
+  background: #E5E7EB;
+  border-radius: 8rpx;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* 账户信息卡片骨架屏 */
+.skeleton-icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 24rpx;
+  flex-shrink: 0;
+}
+
+.skeleton-name {
+  width: 160rpx;
+  height: 34rpx;
+  margin-bottom: 12rpx;
+}
+
+.skeleton-type {
+  width: 80rpx;
+  height: 24rpx;
+}
+
+.skeleton-label {
+  width: 120rpx;
+  height: 28rpx;
+}
+
+.skeleton-amount {
+  width: 180rpx;
+  height: 40rpx;
+}
+
+/* 收支统计骨架屏 */
+.skeleton-stat-label {
+  width: 64rpx;
+  height: 24rpx;
+  margin-bottom: 12rpx;
+}
+
+.skeleton-stat-value {
+  width: 120rpx;
+  height: 32rpx;
+}
+
+/* Tab栏骨架屏 */
+.skeleton-tab-text {
+  width: 96rpx;
+  height: 30rpx;
+}
+
+/* 列表骨架屏 */
+.list-skeleton {
+  padding: 0;
+}
+
+.list-item-skeleton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.list-item-skeleton:last-child {
+  border-bottom: none;
+}
+
+.skeleton-item-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+}
+
+.skeleton-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-item-title {
+  width: 120rpx;
+  height: 30rpx;
+  margin-bottom: 8rpx;
+}
+
+.skeleton-item-subtitle {
+  width: 80rpx;
+  height: 24rpx;
+}
+
+.skeleton-item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.skeleton-item-amount {
+  width: 100rpx;
+  height: 30rpx;
+  margin-bottom: 8rpx;
+}
+
+.skeleton-item-date {
+  width: 80rpx;
+  height: 22rpx;
+}

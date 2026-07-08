@@ -1,0 +1,456 @@
+/**
+ * 账户主页样式 - 与现有页面统一
+ */
+page {
+  background: var(--color-bg);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.scroll-area {
+  flex: 1;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding-bottom: 100rpx;
+}
+
+/* ============ 顶部净资产区域 ============ */
+.hero-card {
+  background: linear-gradient(135deg, #2563EB 0%, #1E40AF 50%, #1E3A8A 100%);
+  border-radius: var(--radius-xl);
+  padding: 40rpx;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8rpx 32rpx rgba(37, 99, 235, 0.3);
+}
+
+.hero-card::before {
+  content: '';
+  position: absolute;
+  top: -60rpx;
+  right: -40rpx;
+  width: 200rpx;
+  height: 200rpx;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+}
+
+.hero-card::after {
+  content: '';
+  position: absolute;
+  bottom: -30rpx;
+  left: 30%;
+  width: 160rpx;
+  height: 160rpx;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+}
+
+.header-title {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 16rpx;
+  font-weight: 400;
+  position: relative;
+  z-index: 1;
+}
+
+.net-asset {
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 20rpx;
+}
+
+.net-asset-value {
+  font-size: 56rpx;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -2rpx;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+}
+
+.hide-btn {
+  margin-left: 20rpx;
+  padding: 10rpx;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-full);
+}
+
+.hide-btn .iconfont {
+  font-size: 36rpx;
+  color: #ffffff;
+}
+
+.summary-row {
+  display: flex;
+  gap: 40rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.summary-item {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+/* ============ 区块 ============ */
+.section {
+  background: var(--color-card);
+  border-radius: var(--radius-xl);
+  margin-top:30rpx;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx 32rpx 20rpx;
+  border-bottom: 1rpx solid var(--color-divider);
+}
+
+.section-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1.5rpx;
+}
+.loan-title{
+  padding:16rpx 32rpx;
+
+}
+
+.add-btn {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--color-primary);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.add-btn:active {
+  transform: scale(0.9);
+  opacity: 0.8;
+}
+
+.add-btn .add-icon-img {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+/* ============ 账户项 ============ */
+.account-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid var(--color-divider);
+  transition: all 0.2s ease;
+}
+
+.account-item:last-child {
+  border-bottom: none;
+}
+
+.account-item:active {
+  background: var(--color-bg);
+  transform: scale(0.98);
+}
+
+.account-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.account-icon {
+  width: 80rpx;
+  height: 80rpx;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.account-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.account-name {
+  font-size: 30rpx;
+  color: var(--color-text);
+  margin-bottom: 8rpx;
+  font-weight: 500;
+}
+
+.account-type {
+  font-size: 24rpx;
+  color: var(--color-text-tertiary);
+}
+
+.account-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.account-amount {
+  font-size: 32rpx;
+  color: var(--color-text);
+  font-weight: 600;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+  letter-spacing: -0.5rpx;
+}
+
+.account-debt-label {
+  font-size: 24rpx;
+  color: var(--color-text-tertiary);
+  margin-right: 12rpx;
+}
+
+.debt-amount {
+  color: var(--color-expense);
+}
+
+/* ============ 添加账户按钮 ============ */
+.add-account-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32rpx;
+  color: var(--color-primary);
+  font-size: 30rpx;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.add-account-btn:active {
+  background: var(--color-bg);
+  transform: scale(0.98);
+}
+
+.add-icon {
+  font-size: 36rpx;
+  margin-right: 12rpx;
+}
+
+/* ============ 借款项 ============ */
+.loan-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid var(--color-divider);
+  transition: all 0.2s ease;
+}
+
+.loan-item:last-child {
+  border-bottom: none;
+}
+
+.loan-item:active {
+  background: var(--color-bg);
+  transform: scale(0.98);
+}
+
+.loan-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.loan-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 24rpx;
+}
+
+.loan-icon-img {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.lend-icon {
+  background: var(--color-expense-light);
+  color: var(--color-expense);
+}
+
+.borrow-icon {
+  background: var(--color-income-light);
+  color: var(--color-income);
+}
+
+.loan-icon .iconfont {
+  font-size: 36rpx;
+}
+
+.loan-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.loan-name {
+  font-size: 30rpx;
+  color: var(--color-text);
+  margin-bottom: 8rpx;
+  font-weight: 500;
+}
+
+.loan-type {
+  font-size: 24rpx;
+  color: var(--color-text-tertiary);
+}
+
+.loan-right {
+  display: flex;
+  align-items: center;
+}
+
+.loan-amount {
+  font-size: 32rpx;
+  color: var(--color-text);
+  font-weight: 600;
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+  letter-spacing: -0.5rpx;
+}
+
+/* ============ 加载状态 ============ */
+.loading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* ============ 局部加载状态 ============ */
+.section-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 0;
+  background: var(--color-card);
+}
+
+.loading-spinner-small {
+  width: 40rpx;
+  height: 40rpx;
+  border: 3rpx solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16rpx;
+}
+
+.loading-text {
+  font-size: 24rpx;
+  color: var(--color-text-tertiary);
+}
+
+/* ============ 借款骨架屏 ============ */
+.loan-skeleton {
+  background: var(--color-card);
+}
+
+.skeleton-item {
+  pointer-events: none;
+}
+
+.skeleton-circle {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+}
+
+.skeleton-text {
+  background: var(--color-border);
+  border-radius: var(--radius-sm);
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-title {
+  width: 80rpx;
+  height: 28rpx;
+  margin-bottom: 12rpx;
+}
+
+.skeleton-subtitle {
+  width: 60rpx;
+  height: 22rpx;
+}
+
+.skeleton-amount {
+  width: 120rpx;
+  height: 32rpx;
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============ 动画效果 ============ */
+.section {
+  animation: slideUp 0.5s ease-out both;
+}
+
+.section:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.section:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(32rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

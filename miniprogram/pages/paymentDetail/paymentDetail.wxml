@@ -1,0 +1,150 @@
+<!--
+  记录详情页面
+-->
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+
+  <!-- 查看模式 -->
+  <view class="detail-card" wx:if="{{paymentInfo && !loading && !isEditing}}">
+    <!-- 信息列表 -->
+    <view class="info-list">
+      <view class="info-row">
+        <text class="info-label">类型</text>
+        <text class="info-value {{paymentInfo.type === 'receive' ? 'income' : 'expense'}}">{{paymentInfo.typeText}}</text>
+      </view>
+      <view class="info-divider"></view>
+      <view class="info-row">
+        <text class="info-label">金额</text>
+        <text class="info-value amount {{paymentInfo.type === 'receive' ? 'income' : 'expense'}}">￥{{paymentInfo.amountStr}}</text>
+      </view>
+      <view class="info-divider"></view>
+      <view class="info-row">
+        <text class="info-label">日期</text>
+        <text class="info-value">{{paymentInfo.dateStr}}</text>
+      </view>
+      <view class="info-divider"></view>
+      <view class="info-row">
+        <text class="info-label">账户</text>
+        <text class="info-value {{!paymentInfo.accountName ? 'empty' : ''}}">{{paymentInfo.accountName || '未关联账户'}}</text>
+      </view>
+      <view class="info-divider"></view>
+      <view class="info-row">
+        <text class="info-label">备注</text>
+        <text class="info-value {{!paymentInfo.remark ? 'empty' : ''}}">{{paymentInfo.remark || '暂无'}}</text>
+      </view>
+    </view>
+
+    <!-- 图片列表 -->
+    <view class="image-section" wx:if="{{paymentInfo.images && paymentInfo.images.length > 0}}">
+      <text class="section-label">附件图片</text>
+      <view class="image-list">
+        <image
+          class="image-item"
+          wx:for="{{paymentInfo.images}}"
+          wx:key="*this"
+          src="{{item}}"
+          mode="aspectFill"
+          bindtap="previewImage"
+          data-url="{{item}}"
+        />
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <view class="action-btn edit" bindtap="startEdit">
+        <text>修改</text>
+      </view>
+      <view class="action-btn delete" bindtap="deletePayment">
+        <text>删除</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 编辑模式 -->
+  <view wx:if="{{paymentInfo && !loading && isEditing}}">
+    <!-- 表单区域 -->
+    <view class="form-section">
+      <!-- 金额 -->
+      <view class="form-item">
+        <text class="form-label">金额:</text>
+        <input
+          class="form-input"
+          type="digit"
+          placeholder="点击输入"
+          value="{{editForm.amount}}"
+          bindinput="onAmountInput"
+        />
+      </view>
+
+      <!-- 日期 -->
+      <view class="form-item">
+        <text class="form-label">时间:</text>
+        <view class="form-picker">
+          <picker mode="date" value="{{editForm.date}}" bindchange="onDateChange">
+            <text>{{editForm.date || '请选择日期'}}</text>
+            <text class="picker-arrow">></text>
+          </picker>
+        </view>
+      </view>
+
+      <!-- 账户 -->
+      <view class="form-item">
+        <text class="form-label">账户:</text>
+        <view class="form-picker" bindtap="openAccountPicker">
+          <text>{{editForm.accountName || '请选择账户'}}</text>
+          <text class="picker-arrow">></text>
+        </view>
+      </view>
+
+      <!-- 备注 -->
+      <view class="form-item">
+        <text class="form-label">备注:</text>
+        <input
+          class="form-input"
+          placeholder="点击输入"
+          value="{{editForm.remark}}"
+          bindinput="onRemarkInput"
+        />
+      </view>
+    </view>
+
+    <!-- 添加图片 -->
+    <view class="image-section">
+      <view class="image-header">
+        <text class="image-title">添加图片</text>
+        <text class="image-count">{{editForm.images.length}}/{{maxImages}}</text>
+      </view>
+      <view class="image-list">
+        <view
+          class="image-item"
+          wx:for="{{editForm.images}}"
+          wx:key="*this"
+        >
+          <image class="preview-image" src="{{item}}" mode="aspectFill" bindtap="previewImage" data-url="{{item}}"></image>
+          <view class="remove-btn" data-index="{{index}}" bindtap="deleteImage">×</view>
+        </view>
+        <view class="add-image-btn" wx:if="{{editForm.images.length < maxImages}}" bindtap="chooseImage">
+          <text class="add-icon">+</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 保存按钮 -->
+    <view class="save-btn" bindtap="saveEdit">保存</view>
+  </view>
+
+  <!-- 账户选择弹窗 -->
+  <account-picker
+    show="{{showAccountPicker}}"
+    accountList="{{accountList}}"
+    selectedId="{{editForm.accountId}}"
+    loading="{{loadingAccounts}}"
+    bind:close="onAccountPickerClose"
+    bind:select="onAccountSelect"
+  />
+</view>

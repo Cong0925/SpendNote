@@ -1,0 +1,262 @@
+<!-- pages/privacy/privacy.wxml -->
+<view class="privacy-page">
+
+  <!-- 内容区 -->
+  <scroll-view class="content-scroll" scroll-y>
+    <view class="content-wrapper">
+      <!-- 更新时间卡片 -->
+      <view class="update-card">
+        <view class="update-icon">
+          <text class="icon-text">🔒</text>
+        </view>
+        <view class="update-info">
+          <text class="update-title">SpendNote 隐私政策</text>
+          <text class="update-time">更新于 2026年7月3日 · 生效于 2026年7月3日</text>
+        </view>
+      </view>
+
+      <!-- 引言 -->
+      <view class="intro-card">
+        <text class="intro-text">我们深知个人信息对您的重要性，我们将按照法律法规的规定，保护您的个人信息及隐私安全。在使用 SpendNote 之前，请您仔细阅读本隐私政策。</text>
+      </view>
+
+      <!-- 隐私政策内容 -->
+      <view class="privacy-content">
+        <!-- 第一章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">01</view>
+            <text class="chapter-title">我们收集的信息</text>
+          </view>
+          <view class="chapter-body">
+            <text class="sub-title">账号信息</text>
+            <view class="info-item">
+              <view class="info-icon">👤</view>
+              <view class="info-content">
+                <text class="info-name">用户昵称</text>
+                <text class="info-desc">用于个性化展示和身份识别</text>
+              </view>
+            </view>
+            <view class="info-item">
+              <view class="info-icon">🖼️</view>
+              <view class="info-content">
+                <text class="info-name">用户头像</text>
+                <text class="info-desc">用于个性化展示</text>
+              </view>
+            </view>
+            <view class="info-item">
+              <view class="info-icon">🔑</view>
+              <view class="info-content">
+                <text class="info-name">OpenID</text>
+                <text class="info-desc">微信用户唯一标识，用于登录和数据关联</text>
+              </view>
+            </view>
+
+            <text class="sub-title">财务数据</text>
+            <view class="info-item">
+              <view class="info-icon">📊</view>
+              <view class="info-content">
+                <text class="info-name">账单记录</text>
+                <text class="info-desc">收入、支出、转账等交易记录</text>
+              </view>
+            </view>
+            <view class="info-item">
+              <view class="info-icon">💳</view>
+              <view class="info-content">
+                <text class="info-name">账户信息</text>
+                <text class="info-desc">银行卡、电子钱包、现金等账户信息</text>
+              </view>
+            </view>
+            <view class="info-item">
+              <view class="info-icon">📝</view>
+              <view class="info-content">
+                <text class="info-name">借贷记录</text>
+                <text class="info-desc">借款、还款等借贷信息</text>
+              </view>
+            </view>
+
+            <text class="sub-title">设备信息</text>
+            <view class="info-item">
+              <view class="info-icon">📱</view>
+              <view class="info-content">
+                <text class="info-name">设备信息</text>
+                <text class="info-desc">设备型号、操作系统版本、应用版本</text>
+              </view>
+            </view>
+            <view class="info-item">
+              <view class="info-icon">🌐</view>
+              <view class="info-content">
+                <text class="info-name">网络信息</text>
+                <text class="info-desc">网络状态、IP地址</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 第二章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">02</view>
+            <text class="chapter-title">我们如何使用信息</text>
+          </view>
+          <view class="chapter-body">
+            <view class="purpose-item">
+              <view class="purpose-icon">✅</view>
+              <view class="purpose-content">
+                <text class="purpose-name">提供核心服务</text>
+                <text class="purpose-desc">记账、统计分析、账户管理、借贷记录等功能</text>
+              </view>
+            </view>
+            <view class="purpose-item">
+              <view class="purpose-icon">☁️</view>
+              <view class="purpose-content">
+                <text class="purpose-name">数据备份</text>
+                <text class="purpose-desc">将您的数据同步至云端，防止数据丢失</text>
+              </view>
+            </view>
+            <view class="purpose-item">
+              <view class="purpose-icon">🛡️</view>
+              <view class="purpose-content">
+                <text class="purpose-name">安全防护</text>
+                <text class="purpose-desc">检测异常行为，保障账号安全</text>
+              </view>
+            </view>
+            <view class="purpose-item">
+              <view class="purpose-icon">📈</view>
+              <view class="purpose-content">
+                <text class="purpose-name">功能优化</text>
+                <text class="purpose-desc">分析使用情况，改进产品体验</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 第三章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">03</view>
+            <text class="chapter-title">信息共享与披露</text>
+          </view>
+          <view class="chapter-body">
+            <text class="paragraph">我们承诺不会主动向第三方共享或出售您的个人信息，但以下情况除外：</text>
+            <view class="list-item">
+              <view class="list-dot"></view>
+              <text class="list-text">获得您的明确同意</text>
+            </view>
+            <view class="list-item">
+              <view class="list-dot"></view>
+              <text class="list-text">根据法律法规要求或政府主管部门的强制性要求</text>
+            </view>
+            <view class="list-item">
+              <view class="list-dot"></view>
+              <text class="list-text">为保护我们或其他用户的合法权益</text>
+            </view>
+            <view class="list-item">
+              <view class="list-dot"></view>
+              <text class="list-text">在紧急情况下为保护您或公众的人身安全</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 第四章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">04</view>
+            <text class="chapter-title">信息存储与保护</text>
+          </view>
+          <view class="chapter-body">
+            <text class="sub-title">存储位置</text>
+            <text class="paragraph">您的数据存储在微信云开发服务器上，服务器位于中国大陆地区。</text>
+            <text class="sub-title">保护措施</text>
+            <view class="list-item">
+              <view class="list-dot"></view>
+              <text class="list-text">数据传输采用加密协议（HTTPS）</text>
+            </view>
+            <view class="list-item">
+              <view class="list-dot"></view>
+              <text class="list-text">敏感数据进行加密存储</text>
+            </view>
+            <view class="list-item">
+              <view class="list-dot"></view>
+              <text class="list-text">严格的访问控制和权限管理</text>
+            </view>
+            <view class="list-item">
+              <view class="list-dot"></view>
+              <text class="list-text">定期安全审计和漏洞扫描</text>
+            </view>
+            <text class="sub-title">保留期限</text>
+            <text class="paragraph">我们将在您使用本服务期间保留您的个人信息。当您注销账号后，我们将在合理期限内删除您的个人信息，法律法规另有规定的除外。</text>
+          </view>
+        </view>
+
+        <!-- 第五章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">05</view>
+            <text class="chapter-title">您的权利</text>
+          </view>
+          <view class="chapter-body">
+            <text class="paragraph">根据相关法律法规，您享有以下权利：</text>
+            <view class="right-item">
+              <text class="right-name">访问权</text>
+              <text class="right-desc">您可以查看您的个人信息和数据</text>
+            </view>
+            <view class="right-item">
+              <text class="right-name">更正权</text>
+              <text class="right-desc">您可以更正不准确的个人信息</text>
+            </view>
+            <view class="right-item">
+              <text class="right-name">删除权</text>
+              <text class="right-desc">您可以请求删除您的个人信息</text>
+            </view>
+            <view class="right-item">
+              <text class="right-name">撤回同意</text>
+              <text class="right-desc">您可以撤回对本隐私政策的同意</text>
+            </view>
+            <view class="right-item">
+              <text class="right-name">注销权</text>
+              <text class="right-desc">您可以申请注销账号并删除数据</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 第六章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">06</view>
+            <text class="chapter-title">未成年人保护</text>
+          </view>
+          <view class="chapter-body">
+            <text class="paragraph">我们高度重视未成年人个人信息的保护。如果您是未满18周岁的未成年人，请在监护人的陪同下阅读本隐私政策，并在征得监护人同意后使用我们的服务。</text>
+            <text class="paragraph">如果我们发现在未获得监护人同意的情况下收集了未成年人的个人信息，我们将设法尽快删除相关数据。</text>
+          </view>
+        </view>
+
+        <!-- 第七章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">07</view>
+            <text class="chapter-title">政策更新</text>
+          </view>
+          <view class="chapter-body">
+            <text class="paragraph">我们可能会适时更新本隐私政策。更新后的政策将在本应用内发布，并注明生效日期。建议您定期查看本隐私政策以了解最新信息。</text>
+            <text class="paragraph">如您在本隐私政策更新后继续使用我们的服务，即表示您同意接受更新后的政策。</text>
+          </view>
+        </view>
+
+        <!-- 第八章 -->
+        <view class="chapter">
+          <view class="chapter-header">
+            <view class="chapter-number">08</view>
+            <text class="chapter-title">联系我们</text>
+          </view>
+          <view class="chapter-body">
+            <text class="paragraph">如果您对本隐私政策有任何疑问、意见或建议，请通过以下方式联系我们：</text>
+            <text class="highlight-text">进入小程序-> 我的-> 问题反馈-> 填写内容</text>
+            <text class="highlight-text">我们将在收到反馈的15个工作日内回复您的请求</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

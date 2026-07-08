@@ -1,0 +1,114 @@
+<!--
+  借款记账页面 - 与现有页面统一风格
+-->
+<view class="container">
+  <scroll-view class="scroll-area" scroll-y enhanced show-scrollbar="{{false}}">
+  <!-- 骨架屏：顶部区域 -->
+  <view class="hero-card skeleton-hero" wx:if="{{loading}}">
+    <view class="hero-content">
+      <!-- 类型切换骨架屏 -->
+      <view class="type-tabs skeleton-type-tabs">
+        <view class="skeleton-tab-item"></view>
+        <view class="skeleton-tab-item"></view>
+      </view>
+      <!-- 金额显示骨架屏 -->
+      <view class="amount-display skeleton-amount-display">
+        <view class="skeleton-line skeleton-amount-label"></view>
+        <view class="skeleton-line skeleton-amount-value"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 顶部区域：实际内容 -->
+  <view class="hero-card" wx:if="{{!loading}}">
+    <!-- 类型切换和金额显示在同一行 -->
+    <view class="hero-content">
+      <!-- 类型切换 -->
+      <view class="type-tabs">
+        <view
+          class="type-tab {{currentType === 'lend' ? 'active' : ''}}"
+          data-type="lend"
+          bindtap="switchType"
+        >
+          <text>借出</text>
+        </view>
+        <view
+          class="type-tab {{currentType === 'borrow' ? 'active' : ''}}"
+          data-type="borrow"
+          bindtap="switchType"
+        >
+          <text>借入</text>
+        </view>
+      </view>
+
+      <!-- 金额显示 -->
+      <view class="amount-display">
+        <text class="amount-label">({{currentType === 'lend' ? '还应收' : '还应还'}})</text>
+        <text class="amount-value">￥{{currentType === 'lend' ? summary.lendReceivableStr : summary.borrowRepayableStr}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 借款记录列表 -->
+  <view class="loan-list">
+    <!-- 骨架屏：列表区域 -->
+    <view wx:if="{{loading}}">
+      <view class="skeleton-loan-item" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="skeleton-loan-left">
+          <view class="skeleton-circle skeleton-icon-placeholder"></view>
+          <view class="skeleton-loan-info">
+            <view class="skeleton-line skeleton-person-name"></view>
+            <view class="skeleton-line skeleton-loan-date"></view>
+          </view>
+        </view>
+        <view class="skeleton-loan-right">
+          <view class="skeleton-line skeleton-loan-total"></view>
+          <view class="skeleton-line skeleton-loan-status"></view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 实际内容：列表 -->
+    <view
+      class="loan-item {{item.status === 'completed' ? 'completed' : ''}}"
+      wx:for="{{loanList}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bindtap="goToLoanDetail"
+      wx:if="{{!loading && loanList.length > 0}}"
+    >
+      <view class="loan-left">
+        <view class="loan-icon {{currentType === 'lend' ? 'lend-icon' : 'borrow-icon'}}">
+          <image
+            class="loan-icon-img"
+            src="{{currentType === 'lend' ? '/images/loan/lend.png' : '/images/loan/borrow.png'}}"
+            mode="aspectFit"
+          />
+        </view>
+        <view class="loan-info">
+          <text class="loan-person">{{item.personName}}</text>
+          <text class="loan-date">{{item.loanDate}}</text>
+        </view>
+      </view>
+      <view class="loan-right">
+        <text class="loan-total">￥{{item.amountStr}}</text>
+        <view class="loan-status">
+          <text>{{currentType === 'lend' ? '还应收' : '还应还'}}:￥{{item.remainingStr}}</text>
+          <text> {{currentType === 'lend' ? '已收' : '已还'}}:￥{{item.paidAmountStr}}</text>
+          <text class="loan-status-tag" wx:if="{{item.status === 'completed'}}">已完成</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!loading && loanList.length === 0}}">
+      <text class="empty-text">暂无{{currentType === 'lend' ? '借出' : '借入'}}记录</text>
+    </view>
+  </view>
+
+  <!-- 新建按钮 -->
+  <view class="add-btn" bindtap="goToAddLoan">
+    <text>新建{{currentType === 'lend' ? '借出' : '借入'}}</text>
+  </view>
+  </scroll-view>
+</view>
